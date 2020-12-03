@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">Abaca Plant Disease Detection App Layout</string>
+    <string name="main_top_bg">Main Top BG</string>
+    <string name="username">Username</string>
+    <string name="account_type">Account Type</string>
+    <string name="user_avatar">User Avatar</string>
+    <string name="weather">Weather</string>
+    <string name="updates">Updates</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</string>
+    <string name="monitor_your_abaca_s_health">Monitor your Abaca\'s health.</string>
+    <string name="assessment">Assessment</string>
+    <string name="diagnose">Diagnose</string>
+    <string name="disease_index">Disease Index</string>
+    <string name="map">Map</string>
+    <string name="_1">1</string>
+    <string name="email_address">Email Address</string>
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password*</string>
+    <string name="lastName">Last Name*</string>
+    <string name="first_name">First Name*</string>
+    <string name="middle_name">Middle Name</string>
+    <string name="don_t_have_an_account_yet">Don\'t have an account yet?</string>
+    <string name="bottom_text">A project of the Philippine Fiber Industry Development Authority \nBeta version 2020</string>
+    <string name="birthday">Birthday*</string>
+    <string name="permanent_address">Permanent Address*</string>
+    <string name="occupation">Occupation*</string>
+    <string name="institution">Institution</string>
+    <string name="fields_with_are_required">Fields with * are required</string>
+    <string name="password_reg">Password*</string>
+    <string name="email_address_reg">Email Address*</string>
+</resources>

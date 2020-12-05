@@ -22,11 +22,11 @@
         <activity
             android:name=".Login"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Register"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

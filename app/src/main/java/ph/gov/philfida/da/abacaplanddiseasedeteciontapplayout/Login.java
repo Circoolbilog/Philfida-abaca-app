@@ -3,7 +3,9 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Patterns;
+import android.view.Display;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -15,6 +17,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 public class Login extends AppCompatActivity {
     Button login;
@@ -32,6 +35,12 @@ public class Login extends AppCompatActivity {
     }
 
     private void layoutAdjustments() {
+        Display display = getWindowManager().getDefaultDisplay();
+        DisplayMetrics displayMetrics = new DisplayMetrics();
+        display.getRealMetrics(displayMetrics);
+
+        ConstraintLayout constraintLayout = findViewById(R.id.loginConstraintL);
+        constraintLayout.getLayoutParams().height = displayMetrics.heightPixels;
         final ScrollView loginScrollView = findViewById(R.id.loginLayout);
         loginScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
                 .OnGlobalLayoutListener() {

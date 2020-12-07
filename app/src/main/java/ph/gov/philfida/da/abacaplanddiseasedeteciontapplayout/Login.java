@@ -122,9 +122,11 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateEmail() && validatePassword()) {
                     //TODO send info to server and validate before opening main activity
-                    Login.super.onBackPressed();
-                    // Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    // startActivity(intent);
+                    //Login.super.onBackPressed();
+                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    finish();
+                    //startActivityIfNeeded(intent, 0);
                 }
 
             }

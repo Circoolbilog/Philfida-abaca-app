@@ -51,6 +51,7 @@ public class Diagnose extends AppCompatActivity
 
     private void setFragment() {
         //TODO set Fragment, Choose camera, use camera2API
+
     }
 
     private boolean hasPermission() {

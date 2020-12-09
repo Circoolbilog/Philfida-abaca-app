@@ -75,7 +75,6 @@ public class Login extends AppCompatActivity {
         });
     }
 
-
     private void assignInputs() {                                                                   //assign id to inputs(TextInputEditText)
         emailAddress = findViewById(R.id.emailAdd);
         password = findViewById(R.id.password);

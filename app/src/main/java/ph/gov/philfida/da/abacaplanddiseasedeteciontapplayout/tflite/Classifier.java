@@ -27,7 +27,7 @@ import androidx.annotation.NonNull;
 public interface Classifier {
     List<Recognition> recognizeImage(Bitmap bitmap);
 
-    void enableStarLogging(final boolean debug);
+    void enableStatLogging(final boolean debug);
 
     String getStatString();
 

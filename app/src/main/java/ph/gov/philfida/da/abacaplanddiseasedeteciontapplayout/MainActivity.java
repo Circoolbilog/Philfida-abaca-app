@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openDiagnoseActivity(View view) {
-        Intent diagnose = new Intent(this,Diagnose.class);
+        Intent diagnose = new Intent(this,DetectorActivity.class);
         startActivity(diagnose);
     }
 }

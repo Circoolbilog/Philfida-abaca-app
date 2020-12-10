@@ -78,9 +78,9 @@ public abstract class Diagnose extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_diagnose);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayShowTitleEnabled(false);
+    //    Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
+ //       getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (hasPermission()) {
             setFragment();

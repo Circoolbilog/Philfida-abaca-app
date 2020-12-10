@@ -67,19 +67,19 @@ public interface Classifier {
             this.confidence = confidence;
             this.location = location;
         }
-        private String getId(){
+        public String getId(){
             return id;
         }
 
-        private String getTitle(){
+        public String getTitle(){
             return title;
         }
 
-        private Float getConfidence(){
+        public Float getConfidence(){
             return confidence;
         }
 
-        private RectF getLocation(){
+        public RectF getLocation(){
             return location;
         }
 

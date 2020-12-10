@@ -18,6 +18,6 @@ import java.util.List;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
 
-public interface ResultsVIew {
+public interface ResultsView {
     public void setResults(final List<Classifier.Recognition> results);
 }

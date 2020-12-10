@@ -82,6 +82,9 @@ public interface Classifier {
         public RectF getLocation(){
             return location;
         }
+        public void setLocation(RectF location) {
+            this.location = location;
+        }
 
         @NonNull
         @Override

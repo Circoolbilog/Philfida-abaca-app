@@ -30,4 +30,7 @@
     <string name="fields_with_are_required">Fields with * are required</string>
     <string name="password_reg">Password*</string>
     <string name="email_address_reg">Email Address*</string>
+
+    <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
+    <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
 </resources>

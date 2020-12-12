@@ -87,7 +87,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/weather"
-                android:layout_width="230dp"
+                android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_margin="10dp"
                 app:cardBackgroundColor="@color/appSecondary"
@@ -96,7 +96,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.5">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -111,7 +113,7 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/updates"
-                android:layout_width="140dp"
+                android:layout_width="0dp"
                 android:layout_height="130dp"
                 android:layout_margin="10dp"
                 app:cardBackgroundColor="@color/appPrimary"
@@ -120,7 +122,9 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.984"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.4">
 
                 <TextView
                     android:layout_width="wrap_content"

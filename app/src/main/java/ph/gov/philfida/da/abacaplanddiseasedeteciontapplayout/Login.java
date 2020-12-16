@@ -24,6 +24,7 @@ public class Login extends AppCompatActivity {
     TextView noAccount;
     TextInputLayout emailAddress;
     TextInputLayout password;
+    String inputEmail;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -93,7 +94,7 @@ public class Login extends AppCompatActivity {
     }
 
     private boolean validateEmail() {
-        String inputEmail = emailAddress.getEditText().getText().toString();
+        inputEmail = emailAddress.getEditText().getText().toString();
         if (inputEmail.isEmpty()) {
             emailAddress.setError("Field can't be empty");
             return false;
@@ -121,14 +122,15 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 if (validateEmail() && validatePassword()) {
                     //TODO send info to server and validate before opening main activity
-                    //Login.super.onBackPressed();
-                    //Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    //intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
+                    setSharedPref();
                     finish();
-                    //startActivityIfNeeded(intent, 0);
                 }
 
             }
         });
+    }
+
+    private void setSharedPref() {
+        SaveSharedPreference.setPrefUserName(this,inputEmail);
     }
 }

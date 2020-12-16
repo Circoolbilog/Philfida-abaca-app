@@ -1,24 +1,34 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 public class MainActivity extends AppCompatActivity {
-    boolean runOnce = false;
+    TextView username, account_type;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (!runOnce){
-            runOnce = true;
+        assignIds();
+        if(SaveSharedPreference.getUsername(MainActivity.this).length() == 0)
+        {
             Intent intent = new Intent(this , Login.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT);
-            startActivityIfNeeded(intent,0);
+            startActivity(intent);
         }
+        else
+        {
+            username.setText(SaveSharedPreference.getUsername(MainActivity.this));
+        }
+    }
+
+    private void assignIds() {
+        username = findViewById(R.id.userName);
     }
 
     public void openDiagnoseActivity(View view) {

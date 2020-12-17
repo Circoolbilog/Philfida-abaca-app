@@ -16,6 +16,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         assignIds();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
         if(SaveSharedPreference.getUsername(MainActivity.this).length() == 0)
         {
             Intent intent = new Intent(this , Login.class);
@@ -34,5 +39,10 @@ public class MainActivity extends AppCompatActivity {
     public void openDiagnoseActivity(View view) {
         Intent diagnose = new Intent(this,DetectorActivity.class);
         startActivity(diagnose);
+    }
+
+    public void openAccoutDetails(View view) {
+        Intent intent = new Intent(MainActivity.this, AccountDetails.class);
+        startActivity(intent);
     }
 }

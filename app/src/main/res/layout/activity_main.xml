@@ -40,7 +40,8 @@
             android:layout_height="match_parent"
             android:layout_margin="10dp"
             android:background="@drawable/ic_m_def_avatar"
-            android:contentDescription="@string/user_avatar" />
+            android:contentDescription="@string/user_avatar"
+            android:onClick="openAccoutDetails"/>
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -61,7 +62,8 @@
         app:layout_constraintWidth_default="percent"
         app:layout_constraintWidth_percent="0.5"
         app:layout_constraintHeight_default="percent"
-        app:layout_constraintHeight_percent="0.065"/>
+        app:layout_constraintHeight_percent="0.065"
+        android:onClick="openAccoutDetails"/>
 
     <TextView
         android:id="@+id/accountType"

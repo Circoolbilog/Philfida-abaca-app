@@ -2,11 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout">
 
-
     <uses-permission android:name="android.permission.CAMERA" />
+
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
-
 
     <application
         android:allowBackup="true"
@@ -15,7 +14,8 @@
         android:roundIcon="@drawable/ic_m_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".DetectorActivity"/>
+        <activity android:name=".AccountDetails"></activity>
+        <activity android:name=".DetectorActivity" />
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan">

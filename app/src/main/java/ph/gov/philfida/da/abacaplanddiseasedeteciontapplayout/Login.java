@@ -35,6 +35,14 @@ public class Login extends AppCompatActivity {
         assignInputs();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.finishAffinity();
+        finishAndRemoveTask();
+        System.exit(1);
+    }
+
     private void layoutAdjustments() {
         Display display = getWindowManager().getDefaultDisplay();
         DisplayMetrics displayMetrics = new DisplayMetrics();

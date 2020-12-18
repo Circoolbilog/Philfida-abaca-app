@@ -3,6 +3,8 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -11,6 +13,7 @@ import android.widget.DatePicker;
 
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import java.text.DateFormat;
 import java.util.Calendar;
@@ -18,6 +21,7 @@ import java.util.Calendar;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndConditionsDialog;
 
 public class Register extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
   TextInputLayout lastName, firstName, middleName,birthday, email, password,confirmPassword,
@@ -36,10 +40,41 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onClick(View v) {
                 //TODO Validate Inputs
+                DialogFragment tnc = new TermsAndConditionsDialog();
+                tnc.show(getSupportFragmentManager(),"T&C/EULA");
+
                 //TODO open Terms and Conditions dialog
             }
         });
 
+    }
+
+    public void postData() {
+        //Start ProgressBar first (Set visibility VISIBLE)
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                //Starting Write and Read data with URL
+                //Creating array for parameters
+                //TODO: Change params
+                String[] field = new String[2];
+                field[0] = "param-1";
+                field[1] = "param-2";
+                //Creating array for data
+                String[] data = new String[2];
+                data[0] = "data-1";
+                data[1] = "data-2";
+                PutData putData = new PutData("https://projects.vishnusivadas.com/AdvancedHttpURLConnection/putDataTest.php", "POST", field, data);
+                if (putData.startPut()) {
+                    if (putData.onComplete()) {
+                        String result = putData.getResult();
+                        //End ProgressBar (Set visibility to GONE)
+                    }
+                }
+                //End Write and Read data with URL
+            }
+        });
     }
 
     private void assignInputs() {                                                                   //assign variables to inputs

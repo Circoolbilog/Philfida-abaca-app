@@ -18,16 +18,15 @@ public class MainActivity extends AppCompatActivity {
         assignIds();
     }
 
+
+
     @Override
-    protected void onPostResume() {
-        super.onPostResume();
-        if(SaveSharedPreference.getUsername(MainActivity.this).length() == 0)
-        {
-            Intent intent = new Intent(this , Login.class);
+    protected void onResume() {
+        super.onResume();
+        if (SaveSharedPreference.getUsername(MainActivity.this).length() == 0) {
+            Intent intent = new Intent(this, Login.class);
             startActivity(intent);
-        }
-        else
-        {
+        } else {
             username.setText(SaveSharedPreference.getUsername(MainActivity.this));
         }
     }

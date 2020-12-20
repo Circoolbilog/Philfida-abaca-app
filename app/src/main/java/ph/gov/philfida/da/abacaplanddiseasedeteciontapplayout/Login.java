@@ -3,7 +3,10 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.Display;
 import android.view.MotionEvent;
@@ -12,8 +15,11 @@ import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.vishnusivadas.advanced_httpurlconnection.FetchData;
+import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +31,8 @@ public class Login extends AppCompatActivity {
     TextInputLayout emailAddress;
     TextInputLayout password;
     String inputEmail;
+    String inputPassword;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -50,11 +58,15 @@ public class Login extends AppCompatActivity {
 
         ConstraintLayout constraintLayout = findViewById(R.id.loginConstraintL);
         constraintLayout.getLayoutParams().height = displayMetrics.heightPixels;
-        final ScrollView loginScrollView = findViewById(R.id.loginLayout);
+        /*
+         *TODO: remove this if users have small phones
+         * the following parts are not necessary for tall phones.
+         */
+        /* final ScrollView loginScrollView = findViewById(R.id.loginLayout);
         loginScrollView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver
                 .OnGlobalLayoutListener() {
             @Override
-            public void onGlobalLayout() {
+           public void onGlobalLayout() {
                 Rect r = new Rect();
                 loginScrollView.getWindowVisibleDisplayFrame(r);
                 int screenHeight = loginScrollView.getRootView().getHeight();                       // r.bottom is the position above soft keypad or device button.
@@ -66,7 +78,6 @@ public class Login extends AppCompatActivity {
                         public void run() {
                             if (emailAddress.hasFocus()) {
                                 loginScrollView.fullScroll(View.FOCUS_DOWN);
-                                emailAddress.requestFocus();
                             }else if (password.hasFocus()){
                                 loginScrollView.fullScroll(View.FOCUS_DOWN);
                                 password.requestFocus();
@@ -75,13 +86,9 @@ public class Login extends AppCompatActivity {
                     });
                 }
             }
+
         });
-        loginScrollView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                return true;
-            }
-        });
+        */
     }
 
     private void assignInputs() {                                                                   //assign id to inputs(TextInputEditText)
@@ -90,7 +97,7 @@ public class Login extends AppCompatActivity {
     }
 
     private boolean validatePassword() {                                                            //validate password before sending it to database
-        String inputPassword = password.getEditText().getText().toString();
+        inputPassword = password.getEditText().getText().toString();
         if (inputPassword.isEmpty()) {
             password.setError("Field can't be empty");
             return false;
@@ -129,15 +136,60 @@ public class Login extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (validateEmail() && validatePassword()) {
-                    //TODO send info to server and validate before opening main activity
-                    setSharedPref();
-                    finish();
+                    postData();
+                   // setSharedPref();
+                    //finish();
                 }
 
             }
         });
     }
 
+    void postData(){
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                //Starting Write and Read data with URL
+                //Creating array for parameters
+                String[] field = new String[2];
+                field[0] = "email_address";
+                field[1] = "password";
+                //Creating array for data
+                String[] data = new String[2];
+                data[0] = inputEmail;
+                data[1] = inputPassword;
+
+                PutData putData = new PutData("http://192.168.2.103/abaca_app_login-register/login.php", "POST", field, data);
+                if (putData.startPut()) {
+                    if (putData.onComplete()) {
+                        String result = putData.getResult();
+                        if (result.equals("Login Success")){
+                            getData();
+                            setSharedPref();
+                            finish();
+                        }
+                        else {
+                            Toast.makeText(getApplicationContext(),result, Toast.LENGTH_LONG).show();
+                        }
+                        //End ProgressBar (Set visibility to GONE)
+                    }
+                }
+
+                //End Write and Read data with URL
+            }
+            private void getData() {
+                FetchData fetchData = new FetchData("http://192.168.2.103/abaca_app_login-register/get.php");
+                if (fetchData.startFetch()) {
+                    if (fetchData.onComplete()) {
+                        String result = fetchData.getResult();
+                        //End ProgressBar (Set visibility to GONE)
+                        Log.i("FetchData", result);
+                    }
+                }
+            }
+        });
+    }
     private void setSharedPref() {
         SaveSharedPreference.setPrefUserName(this,inputEmail);
     }

@@ -2,16 +2,17 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Register;
 
-public class TermsAndConditionsDialog extends DialogFragment {
+public  class TermsAndConditionsDialog extends DialogFragment {
+    private EulaListener listener;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
@@ -21,9 +22,7 @@ public class TermsAndConditionsDialog extends DialogFragment {
                 .setMessage("TODO: EULA or something here")
                 .setPositiveButton("Accept & Register", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        Register register = new Register();
-                        register.postData();
-                        // FIRE ZE MISSILES!
+                        listener.onYesClicked();
                     }
                 })
                 .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
@@ -33,6 +32,21 @@ public class TermsAndConditionsDialog extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
         return builder.create();
+    }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        try {
+            listener = (EulaListener)context;
+        }catch (ClassCastException e){
+            throw new ClassCastException(context.toString()
+                    +"mustImplementEulaListener");
+        }
+
+    }
+
+    public interface EulaListener{
+        void onYesClicked();
     }
 }

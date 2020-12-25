@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.AssesmentActivity;
 
 public class MainActivity extends AppCompatActivity {
     TextView username, account_type;
@@ -40,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
         startActivity(diagnose);
     }
 
+    public void openAssesmentActivity(View view){
+        Intent assessment = new Intent(this, AssesmentActivity.class);
+        startActivity(assessment);
+    }
     public void openAccoutDetails(View view) {
         Intent intent = new Intent(MainActivity.this, AccountDetails.class);
         startActivity(intent);

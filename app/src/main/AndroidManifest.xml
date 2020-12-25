@@ -3,7 +3,7 @@
     package="ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout">
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".AccountDetails"></activity>
+        <activity android:name=".otheractivities.AssesmentActivity"></activity>
+        <activity android:name=".AccountDetails" />
         <activity android:name=".DetectorActivity" />
         <activity
             android:name=".MainActivity"

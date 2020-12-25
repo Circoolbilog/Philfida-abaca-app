@@ -222,7 +222,8 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/ic_m_assessment"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:onClick="openAssesmentActivity"/>
 
                     <TextView
                         android:layout_width="wrap_content"

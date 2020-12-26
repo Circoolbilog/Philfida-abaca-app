@@ -263,7 +263,8 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
   public void CaptureImage(View v) {
     super.CaptureImage(v);
     ByteArrayOutputStream bs = new ByteArrayOutputStream();
-    rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG,50,bs);
+    //rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG,50,bs);
+    cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,50,bs);
     Intent imagePrev = new Intent(this, ImagePreviewActivity.class);
     imagePrev.putExtra("byteArray",bs.toByteArray());
     startActivity(imagePrev);

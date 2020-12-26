@@ -3,6 +3,7 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -34,9 +35,9 @@ import java.nio.ByteBuffer;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
 
 public abstract class Diagnose extends AppCompatActivity
         implements ImageReader.OnImageAvailableListener,
@@ -47,6 +48,7 @@ public abstract class Diagnose extends AppCompatActivity
 
     private static final int PERMISSIONS_REQUEST = 1;
 
+    public Image image;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     protected int previewWidth = 0;
     protected int previewHeight = 0;
@@ -57,6 +59,7 @@ public abstract class Diagnose extends AppCompatActivity
     private boolean isProcessingFrame = false;
     private byte[][] yuvBytes = new byte[3][];
     private int[] rgbBytes = null;
+    public int[] bytesToPass = null;
     private int yRowStride;
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
@@ -78,9 +81,9 @@ public abstract class Diagnose extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_diagnose);
-    //    Toolbar toolbar = findViewById(R.id.toolbar);
+        //    Toolbar toolbar = findViewById(R.id.toolbar);
 //        setSupportActionBar(toolbar);
- //       getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //       getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (hasPermission()) {
             setFragment();
@@ -122,13 +125,11 @@ public abstract class Diagnose extends AppCompatActivity
                         switch (newState) {
                             case BottomSheetBehavior.STATE_HIDDEN:
                                 break;
-                            case BottomSheetBehavior.STATE_EXPANDED:
-                            {
+                            case BottomSheetBehavior.STATE_EXPANDED: {
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_down);
                             }
                             break;
-                            case BottomSheetBehavior.STATE_COLLAPSED:
-                            {
+                            case BottomSheetBehavior.STATE_COLLAPSED: {
                                 bottomSheetArrowImageView.setImageResource(R.drawable.icn_chevron_up);
                             }
                             break;
@@ -141,7 +142,8 @@ public abstract class Diagnose extends AppCompatActivity
                     }
 
                     @Override
-                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {}
+                    public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+                    }
                 });
 
         frameValueTextView = findViewById(R.id.frame_info);
@@ -167,7 +169,9 @@ public abstract class Diagnose extends AppCompatActivity
         return yuvBytes[0];
     }
 
-    /** Callback for android.hardware.Camera API */
+    /**
+     * Callback for android.hardware.Camera API
+     */
     @Override
     public void onPreviewFrame(final byte[] bytes, final Camera camera) {
         if (isProcessingFrame) {
@@ -212,7 +216,9 @@ public abstract class Diagnose extends AppCompatActivity
         processImage();
     }
 
-    /** Callback for Camera2 API */
+    /**
+     * Callback for Camera2 API
+     */
     @Override
     public void onImageAvailable(final ImageReader reader) {
         // We need wait until we have some size from onPreviewSizeChosen
@@ -223,8 +229,7 @@ public abstract class Diagnose extends AppCompatActivity
             rgbBytes = new int[previewWidth * previewHeight];
         }
         try {
-            final Image image = reader.acquireLatestImage();
-
+            image = reader.acquireLatestImage();
             if (image == null) {
                 return;
             }
@@ -365,7 +370,7 @@ public abstract class Diagnose extends AppCompatActivity
                         Toast.LENGTH_LONG)
                         .show();
             }
-            requestPermissions(new String[] {PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
+            requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
         }
     }
 
@@ -532,4 +537,8 @@ public abstract class Diagnose extends AppCompatActivity
     protected abstract void setNumThreads(int numThreads);
 
     protected abstract void setUseNNAPI(boolean isChecked);
+
+    public void CaptureImage(View v) {
+    }
+
 }

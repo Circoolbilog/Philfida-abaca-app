@@ -16,6 +16,7 @@
 
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -29,16 +30,19 @@ import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
 import android.util.Size;
 import android.util.TypedValue;
+import android.view.View;
 import android.widget.Toast;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.OverlayView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.TFLiteObjectDetectionAPIModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxTracker;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -253,5 +257,15 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
   @Override
   protected void setNumThreads(final int numThreads) {
     runInBackground(() -> detector.setNumThreads(numThreads));
+  }
+
+  @Override
+  public void CaptureImage(View v) {
+    super.CaptureImage(v);
+    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+    rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG,50,bs);
+    Intent imagePrev = new Intent(this, ImagePreviewActivity.class);
+    imagePrev.putExtra("byteArray",bs.toByteArray());
+    startActivity(imagePrev);
   }
 }

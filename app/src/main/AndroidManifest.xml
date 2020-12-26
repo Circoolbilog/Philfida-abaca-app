@@ -16,7 +16,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".otheractivities.AssesmentActivity"></activity>
+        <activity android:name=".otheractivities.ImagePreviewActivity"></activity>
+        <activity android:name=".otheractivities.AssesmentActivity" />
         <activity android:name=".AccountDetails" />
         <activity android:name=".DetectorActivity" />
         <activity

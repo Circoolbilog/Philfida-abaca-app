@@ -37,6 +37,9 @@ dependencies {
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.github.VishnuSivadasVS:Advanced-HttpURLConnection:1.2'
+    implementation 'com.androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.androidx.recyclerview:recyclerview:1.1.0'
+    implementation 'com.github.bumptech.glide:glied:4.11.0'
 
     implementation('org.tensorflow:tensorflow-lite:0.0.0-nightly') { changing = true }
     implementation ('org.tensorflow:tensorflow-lite-metadata:0.0.0-nightly') { changing = true }

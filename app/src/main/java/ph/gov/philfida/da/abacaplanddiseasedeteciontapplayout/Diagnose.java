@@ -3,7 +3,6 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.Manifest;
 import android.app.Fragment;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -20,7 +19,6 @@ import android.os.Trace;
 import android.util.Size;
 import android.view.Surface;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -28,16 +26,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomsheet.BottomSheetBehavior;
-
 import java.nio.ByteBuffer;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
 
 public abstract class Diagnose extends AppCompatActivity
         implements ImageReader.OnImageAvailableListener,
@@ -66,12 +59,12 @@ public abstract class Diagnose extends AppCompatActivity
 
     private LinearLayout bottomSheetLayout;
     private LinearLayout gestureLayout;
-    private BottomSheetBehavior<LinearLayout> sheetBehavior;
+//    private BottomSheetBehavior<LinearLayout> sheetBehavior;
 
     protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
     protected ImageView bottomSheetArrowImageView;
     private ImageView plusImageView, minusImageView;
-    private SwitchCompat apiSwitchCompat;
+    //    private SwitchCompat apiSwitchCompat;
     private TextView threadsTextView;
 
     @Override
@@ -82,8 +75,8 @@ public abstract class Diagnose extends AppCompatActivity
 
         setContentView(R.layout.activity_diagnose);
         //    Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-        //       getSupportActionBar().setDisplayShowTitleEnabled(false);
+        //    setSupportActionBar(toolbar);
+        //    getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         if (hasPermission()) {
             setFragment();
@@ -94,13 +87,13 @@ public abstract class Diagnose extends AppCompatActivity
         threadsTextView = findViewById(R.id.threads);
         plusImageView = findViewById(R.id.plus);
         minusImageView = findViewById(R.id.minus);
-        apiSwitchCompat = findViewById(R.id.api_info_switch);
+//        apiSwitchCompat = findViewById(R.id.api_info_switch);
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
-        sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
+//        sheetBehavior = BottomSheetBehavior.from(bottomSheetLayout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
-        ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
+/*        ViewTreeObserver vto = gestureLayout.getViewTreeObserver();
         vto.addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
@@ -110,7 +103,7 @@ public abstract class Diagnose extends AppCompatActivity
                         } else {
                             gestureLayout.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                         }
-                        //                int width = bottomSheetLayout.getMeasuredWidth();
+//                int width = bottomSheetLayout.getMeasuredWidth();
                         int height = gestureLayout.getMeasuredHeight();
 
                         sheetBehavior.setPeekHeight(height);
@@ -154,6 +147,8 @@ public abstract class Diagnose extends AppCompatActivity
 
         plusImageView.setOnClickListener(this);
         minusImageView.setOnClickListener(this);
+
+ */
     }
 
     protected int[] getRgbBytes() {
@@ -485,14 +480,14 @@ public abstract class Diagnose extends AppCompatActivity
                 return 0;
         }
     }
-
+/*
     @Override
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         setUseNNAPI(isChecked);
         if (isChecked) apiSwitchCompat.setText("NNAPI");
         else apiSwitchCompat.setText("TFLITE");
     }
-
+*/
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.plus) {
@@ -513,7 +508,7 @@ public abstract class Diagnose extends AppCompatActivity
             setNumThreads(numThreads);
         }
     }
-
+/*
     protected void showFrameInfo(String frameInfo) {
         frameValueTextView.setText(frameInfo);
     }
@@ -525,6 +520,8 @@ public abstract class Diagnose extends AppCompatActivity
     protected void showInference(String inferenceTime) {
         inferenceTimeTextView.setText(inferenceTime);
     }
+
+ */
 
     protected abstract void processImage();
 

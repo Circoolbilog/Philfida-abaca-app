@@ -21,9 +21,11 @@
         android:usesCleartextTraffic="true">
         <activity android:name=".otheractivities.ImagePreviewActivity"
             android:theme="@style/NoActionBar"/>
-        <activity android:name=".otheractivities.AssesmentActivity" />
+        <activity android:name=".otheractivities.AssesmentActivity"
+            android:theme="@style/NoActionBar"/>
         <activity android:name=".AccountDetails" />
-        <activity android:name=".DetectorActivity" />
+        <activity android:name=".DetectorActivity"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:windowSoftInputMode="adjustPan">

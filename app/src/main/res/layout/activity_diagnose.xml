@@ -43,10 +43,12 @@
             android:onClick="CaptureImage"
             android:text="TEST CAPTURE"
             android:layout_centerHorizontal="true"
-            android:layout_alignTop="@+id/container"/>
+            android:layout_alignBottom="@+id/container"
+            android:layout_marginBottom="30dp"/>
     </RelativeLayout>
-
+<!--
     <include
         android:id="@+id/bottom_sheet_layout"
         layout="@layout/tfe_od_layout_bottom_sheet" />
+        -->
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

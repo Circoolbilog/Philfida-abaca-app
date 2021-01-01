@@ -4,6 +4,9 @@
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
@@ -16,7 +19,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".otheractivities.ImagePreviewActivity"></activity>
+        <activity android:name=".otheractivities.ImagePreviewActivity"
+            android:theme="@style/NoActionBar"/>
         <activity android:name=".otheractivities.AssesmentActivity" />
         <activity android:name=".AccountDetails" />
         <activity android:name=".DetectorActivity" />

@@ -4,8 +4,10 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import androidx.annotation.RequiresApi;
@@ -25,8 +27,10 @@ public class ImagesGallery {
         String[] projection = {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
         String orderBy = MediaStore.Video.Media.DATE_TAKEN;
-        cursor = context.getContentResolver().query(uri,projection, null,
-                null,orderBy+" DESC");
+        cursor = context.getContentResolver().query(uri,projection, MediaStore.Images.Media.DATA + " like ? ",
+                new String[] {"%Assessment%"},orderBy+" DESC");
+       // cursor = context.getContentResolver().query(uri,projection, null,
+       //         null,orderBy+" DESC");
         column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
 
         //get folder name

@@ -88,7 +88,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (!dir.exists()){
             dir.mkdir();
         }
-        File file = new File(dir,filename+".jpg");
+        File file = new File(dir,filename);
         try {
             outputStream = new FileOutputStream(file);
         } catch (FileNotFoundException e) {

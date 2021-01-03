@@ -26,7 +26,8 @@
         android:text="SAVE"
         app:layout_constraintTop_toBottomOf="@id/imageView"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_margin="35dp"        />
+        android:layout_margin="35dp"
+        android:onClick="requestPerms"/>
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

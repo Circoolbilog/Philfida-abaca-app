@@ -9,16 +9,19 @@ import android.provider.MediaStore;
 import java.util.ArrayList;
 
 import androidx.annotation.RequiresApi;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
 
 public class ImagesGallery {
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     public static ArrayList<String> listOfImages(Context context){
-        Uri uri;
         Cursor cursor;
+        Uri uri;
         int column_index_data, column_index_folderName;
         ArrayList<String> listOfAllImages = new ArrayList<>();
         String absolutePathOfImage;
         uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
         String[] projection = {MediaStore.MediaColumns.DATA,
                 MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
         String orderBy = MediaStore.Video.Media.DATE_TAKEN;

@@ -18,7 +18,8 @@
         android:roundIcon="@drawable/ic_m_logo"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:usesCleartextTraffic="true">
+        android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true">
         <activity android:name=".otheractivities.ImagePreviewActivity"
             android:theme="@style/NoActionBar"/>
         <activity android:name=".otheractivities.AssesmentActivity"

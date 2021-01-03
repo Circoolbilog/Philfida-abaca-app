@@ -6,8 +6,10 @@
 
     <color name="appPrimary">#0e9594</color>
     <color name="appSecondary">#4FB2B2</color>
+    <color name="appBGDark">#0a1820</color>
     <color name="appClick">#065c77</color>
     <color name="appError">#f2542d</color>
+    <color name="appErrorClicked">#d30909</color>
     <color name="appAvatarBG">#f5dfbb</color>
     <color name="appBg">#e4e4e4</color>
 

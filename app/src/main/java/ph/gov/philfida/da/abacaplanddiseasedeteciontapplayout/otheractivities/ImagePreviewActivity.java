@@ -42,6 +42,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         Bundle extras = getIntent().getExtras();
         saveImage = findViewById(R.id.save);
 
+        //import image passed from previous activity
         if (extras != null) {
             bitmap = BitmapFactory.decodeByteArray(
                     getIntent().getByteArrayExtra("byteArray"), 0, getIntent().getByteArrayExtra("byteArray").length);
@@ -57,6 +58,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 }
             });
         }
+        //make sure that there are no duplicate names
         loadFileNumber();
     }
     public void saveAssessedImage(Bitmap bitmapX){

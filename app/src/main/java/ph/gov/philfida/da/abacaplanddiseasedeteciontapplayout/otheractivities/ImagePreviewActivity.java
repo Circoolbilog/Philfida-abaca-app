@@ -1,6 +1,8 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities;
 
 import android.Manifest;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -8,8 +10,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.Image;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,7 +73,12 @@ public class ImagePreviewActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST);
         }
         else{
-            saveImage2();
+            //saveImage2();
+            try {
+                saveImage3(bitmap2,filename);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
     @Override
@@ -76,39 +87,47 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (requestCode == REQUEST){
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
                 Toast.makeText(this,"WRITE EXTERNAL STORAGE PERMISSION GRANTED",Toast.LENGTH_SHORT).show();
-                saveImage2();
+                //saveImage2();
+                try {
+                    saveImage3(bitmap2,filename);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }else{
                 Toast.makeText(this,"WRITE EXTERNAL STORAGE PERMISSION DENIED",Toast.LENGTH_SHORT).show();
             }
         }
     }
-    private void saveImage2() {
-        filename = "localImage_" + fileNumber;
-        File dir = new File(Environment.getExternalStorageDirectory(),"Assessment");
-        if (!dir.exists()){
-            dir.mkdir();
-        }
-        File file = new File(dir,filename);
-        try {
-            outputStream = new FileOutputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        bitmap2.compress(Bitmap.CompressFormat.JPEG,100,outputStream);
-        Toast.makeText(ImagePreviewActivity.this,"Successfuly Saved",Toast.LENGTH_SHORT).show();
 
-        try {
-            outputStream.flush();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void saveImage3(Bitmap bitmap3, String name) throws IOException {
+        name = "localImage_" + fileNumber;
+        OutputStream fos; // file output stream
+        File dir = new File(Environment.getExternalStorageDirectory(),"Pictures/Assessment");
+        if (!dir.exists()){
+            boolean success = dir.mkdir();
+            if (success){
+                Toast.makeText(this,"Created Directory",Toast.LENGTH_LONG).show();
+            }
         }
-        try {
-            outputStream.close();
-            incrementFileNumber();
-            finish();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
+            ContentResolver resolver =getContentResolver();
+            ContentValues contentValues = new ContentValues();
+            contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
+            contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH,Environment.DIRECTORY_PICTURES+"/Assessment");
+            Uri uri;
+            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri imageUri = resolver.insert(uri,contentValues);
+            fos = resolver.openOutputStream(Objects.requireNonNull(imageUri));
+        }else{
+            //below android Q
+            File imageFile =  new File(dir,name + "jpg");
+            fos = new FileOutputStream(imageFile);
         }
+        bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fos);
+        Objects.requireNonNull(fos).close();
+        incrementFileNumber();
+        finish();
     }
 
     public void incrementFileNumber() {
@@ -131,7 +150,4 @@ public class ImagePreviewActivity extends AppCompatActivity {
         finish();
     }
 
-    public void saveImage(View view) {
-        saveImage2();
-    }
 }

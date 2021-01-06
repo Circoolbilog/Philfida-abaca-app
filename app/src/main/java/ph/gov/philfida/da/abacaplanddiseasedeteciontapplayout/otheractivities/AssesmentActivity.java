@@ -69,7 +69,7 @@ public class AssesmentActivity extends AppCompatActivity {
         galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
-                Toast.makeText(AssesmentActivity.this,"asd",Toast.LENGTH_SHORT).show();
+                Toast.makeText(AssesmentActivity.this,"asd" + path,Toast.LENGTH_SHORT).show();
                 //open photo
             }
         });

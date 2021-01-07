@@ -12,6 +12,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.GalleryAdapter;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -70,6 +71,9 @@ public class AssesmentActivity extends AppCompatActivity {
             @Override
             public void onPhotoClick(String path) {
                 Toast.makeText(AssesmentActivity.this,"asd" + path,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AssesmentActivity.this, AssesedImageViewer.class);
+                intent.putExtra("file",path);
+                startActivity(intent);
                 //open photo
             }
         });

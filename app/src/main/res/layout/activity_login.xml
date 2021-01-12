@@ -127,6 +127,19 @@
             android:textSize="20sp"
             app:layout_constraintTop_toBottomOf="@+id/loginButton"
             tools:layout_editor_absoluteX="0dp" />
+        <TextView
+            android:id="@+id/openForgotPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="15dp"
+            android:clickable="true"
+            android:focusable="true"
+            android:text="@string/forgot_password"
+            android:textAlignment="center"
+            android:textColor="@color/appPrimary"
+            android:textSize="20sp"
+            app:layout_constraintTop_toBottomOf="@+id/openRegister"
+            tools:layout_editor_absoluteX="0dp" />
 
         <TextView
             android:layout_width="match_parent"
@@ -143,9 +156,19 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/openRegister"
+            app:layout_constraintTop_toBottomOf="@+id/openForgotPass"
             app:layout_constraintVertical_bias="0.797" />
 
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

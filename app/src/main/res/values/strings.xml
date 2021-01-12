@@ -1,4 +1,7 @@
 <resources>
+    <!--Important Strings-->
+    <string name="url">localhost</string>
+    <!--Important Strings-->
     <string name="app_name">Abaca Plant Disease Detection App Layout</string>
     <string name="main_top_bg">Main Top BG</string>
     <string name="username">Username</string>
@@ -34,4 +37,5 @@
     <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
     <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
     <string name="diseaseName">DiseaseName</string>
+    <string name="forgot_password">Forgot Password</string>
 </resources>

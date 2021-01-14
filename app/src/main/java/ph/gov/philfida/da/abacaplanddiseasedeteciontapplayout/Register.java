@@ -11,10 +11,17 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.FirebaseDatabase;
 import com.vishnusivadas.advanced_httpurlconnection.PutData;
 
 import java.text.DateFormat;
@@ -33,12 +40,20 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     Button register;
     String sLastName, sFirstName, sMiddleName, sBirthday, sEmail, sPassword, sConfirmPassword,
             sPermanendAddress, sOccupation, sInstitution;
-
+    ProgressBar progressBar;
+    private FirebaseAuth mAuth;
+    @Override
+    public void onStart() {
+        super.onStart();
+        // Check if user is signed in (non-null) and update UI accordingly.
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        progressBar = findViewById(R.id.progressBar);
         assignInputs();
     }
 
@@ -78,6 +93,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     }
 
     public void validateData() {
+        progressBar.setVisibility(View.VISIBLE);
         sLastName = lastName.getEditText().getText().toString();
         sFirstName = firstName.getEditText().getText().toString();
         sMiddleName = middleName.getEditText().getText().toString();
@@ -124,6 +140,8 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         } else {
             confirmPassword.setError("Passwords Does not match");
         }
+
+        progressBar.setVisibility(View.GONE);
     }
 
     public void postData() {
@@ -168,7 +186,8 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                                     sLastName+sFirstName+sMiddleName+sBirthday+sEmail+sPassword+
                                     sPermanendAddress+sOccupation+sInstitution, Toast.LENGTH_LONG).show();
                         }
-                        //End ProgressBar (Set visibility to GONE)
+
+                        progressBar.setVisibility(View.VISIBLE);
                     }
                 }
                 //End Write and Read data with URL
@@ -176,6 +195,36 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         });
     }
 
+    public void registerUser(){
+        mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
+                .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if(task.isSuccessful()){
+                            User user = new User(sFirstName + " "+ sMiddleName+" "+ sLastName,sEmail);
+                            FirebaseDatabase.getInstance().getReference("Users")
+                                    .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
+                                    .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()){
+                                        Toast.makeText(Register.this,"User Registered Sucessfully",
+                                                Toast.LENGTH_LONG).show();
+                                        progressBar.setVisibility(View.VISIBLE);
+                                        //redirect to login. finish()?
+                                    }else{
+                                        Toast.makeText(Register.this,"Failed to register. Try again.",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            });
+                        }else {
+                            Toast.makeText(Register.this, "Failed to register. Try again.",
+                                    Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+    }
     public void openDatePicker(View view) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         DialogFragment datePicker = new ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DatePickerDialog();

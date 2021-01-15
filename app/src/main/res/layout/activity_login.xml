@@ -91,21 +91,32 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <CheckBox
+            android:id="@+id/keepLogged"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:paddingStart="25dp"
+            android:text="Keep me Logged in"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/password" />
+
+
         <Button
-            android:id="@+id/resetPasswordButton"
+            android:id="@+id/login"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
+            android:layout_marginTop="20dp"
             android:background="@drawable/custom_button"
             android:text="@string/login"
             android:textColor="@android:color/white"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/password"
+            app:layout_constraintTop_toBottomOf="@id/keepLogged"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.6" />
-
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline3"
@@ -116,30 +127,33 @@
 
         <TextView
             android:id="@+id/openRegister"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginStart="28dp"
+            android:layout_marginTop="20dp"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/don_t_have_an_account_yet"
             android:textAlignment="center"
             android:textColor="@color/appPrimary"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/resetPasswordButton"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login" />
+
         <TextView
             android:id="@+id/openForgotPass"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="28dp"
             android:clickable="true"
             android:focusable="true"
             android:text="@string/forgot_password"
             android:textAlignment="center"
             android:textColor="@color/appPrimary"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/openRegister"
-            tools:layout_editor_absoluteX="0dp" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/login" />
 
         <TextView
             android:layout_width="match_parent"
@@ -154,21 +168,19 @@
             android:textStyle="italic"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/openForgotPass"
-            app:layout_constraintVertical_bias="0.797" />
+            app:layout_constraintTop_toBottomOf="@+id/openForgotPass" />
 
         <ProgressBar
+            android:id="@+id/progressBar"
             style="?android:attr/progressBarStyleLarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

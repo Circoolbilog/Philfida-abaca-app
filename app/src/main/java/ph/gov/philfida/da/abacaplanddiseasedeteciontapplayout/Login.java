@@ -7,6 +7,8 @@ import android.util.Patterns;
 import android.view.Display;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +18,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +35,19 @@ public class Login extends AppCompatActivity {
     String inputEmail;
     String inputPassword;
     ProgressBar progressBar;
+    CheckBox keepLoggedIn;
+    boolean keepMeLoggedIn;
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser firebaseUser = mAuth.getCurrentUser();
+        if (firebaseUser!=null){
+            Intent login = new Intent(Login.this,MainActivity.class);
+            startActivity(login);
+            finish();
+        }
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -95,6 +111,13 @@ public class Login extends AppCompatActivity {
     private void assignInputs() {                                                                   //assign id to inputs(TextInputEditText)
         emailAddress = findViewById(R.id.emailAdd);
         password = findViewById(R.id.password);
+        keepLoggedIn = findViewById(R.id.keepLogged);
+        keepLoggedIn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                keepMeLoggedIn = keepLoggedIn.isChecked();
+            }
+        });
     }
 
     private boolean validatePassword() {                                                            //validate password before sending it to database
@@ -132,6 +155,7 @@ public class Login extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
         login = findViewById(R.id.resetPasswordButton);
         login.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -1,6 +1,8 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -79,6 +81,8 @@ public class AccountDetails extends AppCompatActivity {
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
         //SaveSharedPreference.clearUsername(this);
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
         finish();
     }
 }

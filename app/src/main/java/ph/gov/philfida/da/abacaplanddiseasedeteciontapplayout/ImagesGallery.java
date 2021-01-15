@@ -4,14 +4,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Environment;
 import android.provider.MediaStore;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import androidx.annotation.RequiresApi;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
 
 public class ImagesGallery {
 

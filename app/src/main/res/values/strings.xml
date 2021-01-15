@@ -24,7 +24,7 @@
     <string name="lastName">Last Name*</string>
     <string name="first_name">First Name*</string>
     <string name="middle_name">Middle Name</string>
-    <string name="don_t_have_an_account_yet">Don\'t have an account yet?</string>
+    <string name="don_t_have_an_account_yet">Register</string>
     <string name="bottom_text">A project of the Philippine Fiber Industry Development Authority \nBeta version 2020</string>
     <string name="birthday">Birthday*</string>
     <string name="permanent_address">Permanent Address*</string>
@@ -37,5 +37,6 @@
     <string name="tfe_od_app_name" translation_description="Object Detection demo app [CHAR_LIMIT=40]">TFL Detect</string>
     <string name="tfe_od_camera_error" translation_description="Error regarding camera support[CHAR_LIMIT=40]">This device doesn\'t support Camera2 API.</string>
     <string name="diseaseName">DiseaseName</string>
-    <string name="forgot_password">Forgot Password</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="reset_password">Reset Password</string>
 </resources>

@@ -38,7 +38,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.Overlay
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities.ImagePreviewActivity;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.ImagePreviewActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.TFLiteObjectDetectionAPIModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxTracker;

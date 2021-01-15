@@ -92,7 +92,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <Button
-            android:id="@+id/loginButton"
+            android:id="@+id/resetPasswordButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
@@ -125,7 +125,7 @@
             android:textAlignment="center"
             android:textColor="@color/appPrimary"
             android:textSize="20sp"
-            app:layout_constraintTop_toBottomOf="@+id/loginButton"
+            app:layout_constraintTop_toBottomOf="@+id/resetPasswordButton"
             tools:layout_editor_absoluteX="0dp" />
         <TextView
             android:id="@+id/openForgotPass"

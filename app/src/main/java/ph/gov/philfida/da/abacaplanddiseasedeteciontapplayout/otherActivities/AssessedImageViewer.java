@@ -1,15 +1,14 @@
-package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities;
+package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.widget.ImageView;
 
-public class AssesedImageViewer extends AppCompatActivity {
+public class AssessedImageViewer extends AppCompatActivity {
 
     ImageView assessedImage;
     Bitmap selectedImage;

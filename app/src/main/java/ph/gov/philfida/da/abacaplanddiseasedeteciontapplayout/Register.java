@@ -1,9 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
-import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.app.Dialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -39,14 +36,14 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     TextInputEditText birthdayPick;
     Button register;
     String sLastName, sFirstName, sMiddleName, sBirthday, sEmail, sPassword, sConfirmPassword,
-            sPermanendAddress, sOccupation, sInstitution;
+            sPermanentAddress, sOccupation, sInstitution;
     ProgressBar progressBar;
     private FirebaseAuth mAuth;
     @Override
     public void onStart() {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser;
     }
 
     @Override
@@ -54,6 +51,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         progressBar = findViewById(R.id.progressBar);
+        mAuth = FirebaseAuth.getInstance();
         assignInputs();
     }
 
@@ -101,7 +99,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         sEmail = email.getEditText().getText().toString();
         sPassword = password.getEditText().getText().toString();
         sConfirmPassword = confirmPassword.getEditText().getText().toString();
-        sPermanendAddress = permanentAddress.getEditText().getText().toString();
+        sPermanentAddress = permanentAddress.getEditText().getText().toString();
         sOccupation = occupation.getEditText().getText().toString();
         sInstitution = institution.getEditText().getText().toString();
         if (sLastName.isEmpty()) {
@@ -125,7 +123,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         if (sConfirmPassword.isEmpty()) {
             confirmPassword.setError("Field is required");
         }
-        if (sPermanendAddress.isEmpty()) {
+        if (sPermanentAddress.isEmpty()) {
             permanentAddress.setError("Field is required");
         }
         if (sOccupation.isEmpty()) {
@@ -144,7 +142,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         progressBar.setVisibility(View.GONE);
     }
 
-    public void postData() {
+   /* public void postData() {
         //Start ProgressBar first (Set visibility VISIBLE)
         Handler handler = new Handler(Looper.getMainLooper());
         handler.post(new Runnable() {
@@ -170,7 +168,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                 data[3] = sBirthday;
                 data[4] = sEmail;
                 data[5] = sPassword;
-                data[6] = sPermanendAddress;
+                data[6] = sPermanentAddress;
                 data[7] = sOccupation;
                 data[8] = sInstitution;
                 PutData putData = new PutData("http://192.168.2.103/abaca_app_login-register/signup.php", "POST", field, data);
@@ -184,7 +182,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                         else {
                             Toast.makeText(getApplicationContext(),result +
                                     sLastName+sFirstName+sMiddleName+sBirthday+sEmail+sPassword+
-                                    sPermanendAddress+sOccupation+sInstitution, Toast.LENGTH_LONG).show();
+                                    sPermanentAddress +sOccupation+sInstitution, Toast.LENGTH_LONG).show();
                         }
 
                         progressBar.setVisibility(View.VISIBLE);
@@ -194,14 +192,14 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             }
         });
     }
-
+*/
     public void registerUser(){
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
-                            User user = new User(sFirstName + " "+ sMiddleName+" "+ sLastName,sEmail);
+                            User user = new User(sLastName, sMiddleName, sFirstName, sBirthday, sEmail, sPermanentAddress, sOccupation, sInstitution);
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -211,6 +209,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                                         Toast.makeText(Register.this,"User Registered Sucessfully",
                                                 Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.VISIBLE);
+                                        finish();
                                         //redirect to login. finish()?
                                     }else{
                                         Toast.makeText(Register.this,"Failed to register. Try again.",
@@ -244,6 +243,8 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
 
     @Override
     public void onYesClicked() {
-        postData();
+        //postData();
+        progressBar.setVisibility(View.VISIBLE);
+        registerUser();
     }
 }

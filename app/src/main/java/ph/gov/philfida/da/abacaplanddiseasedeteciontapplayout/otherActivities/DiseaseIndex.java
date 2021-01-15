@@ -1,4 +1,4 @@
-package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities;
+package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;

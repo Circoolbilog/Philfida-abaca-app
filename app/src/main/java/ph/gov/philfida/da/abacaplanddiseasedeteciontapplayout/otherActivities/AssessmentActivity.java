@@ -1,4 +1,4 @@
-package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otheractivities;
+package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -21,7 +21,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class AssesmentActivity extends AppCompatActivity {
+public class AssessmentActivity extends AppCompatActivity {
     RecyclerView recyclerView;
     GalleryAdapter galleryAdapter;
     List<String> images;
@@ -38,9 +38,9 @@ public class AssesmentActivity extends AppCompatActivity {
         gallery_number = findViewById(R.id.gallery_number);
         recyclerView = findViewById(R.id.recyclerView_gallery_images);
         //Check for permission
-        if (ContextCompat.checkSelfPermission(AssesmentActivity.this,
+        if (ContextCompat.checkSelfPermission(AssessmentActivity.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(AssesmentActivity.this,
+            ActivityCompat.requestPermissions(AssessmentActivity.this,
                     new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MY_READ_PERMISSION_CODE);
         }
         else{
@@ -70,8 +70,8 @@ public class AssesmentActivity extends AppCompatActivity {
         galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
-                Toast.makeText(AssesmentActivity.this,"asd" + path,Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(AssesmentActivity.this, AssesedImageViewer.class);
+                Toast.makeText(AssessmentActivity.this,"asd" + path,Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
                 intent.putExtra("file",path);
                 startActivity(intent);
                 //open photo

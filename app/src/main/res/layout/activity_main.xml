@@ -41,7 +41,7 @@
             android:layout_margin="10dp"
             android:background="@drawable/ic_m_def_avatar"
             android:contentDescription="@string/user_avatar"
-            android:onClick="openAccoutDetails"/>
+            android:onClick="openAccountDetails"/>
     </androidx.cardview.widget.CardView>
 
     <TextView
@@ -63,7 +63,7 @@
         app:layout_constraintWidth_percent="0.5"
         app:layout_constraintHeight_default="percent"
         app:layout_constraintHeight_percent="0.065"
-        android:onClick="openAccoutDetails"/>
+        android:onClick="openAccountDetails"/>
 
     <TextView
         android:id="@+id/accountType"
@@ -223,7 +223,7 @@
                         android:background="@drawable/ic_m_assessment"
                         android:clickable="true"
                         android:focusable="true"
-                        android:onClick="openAssesmentActivity"/>
+                        android:onClick="openAssessmentActivity"/>
 
                     <TextView
                         android:layout_width="wrap_content"

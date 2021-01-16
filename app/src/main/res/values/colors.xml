@@ -12,6 +12,7 @@
     <color name="appErrorClicked">#d30909</color>
     <color name="appAvatarBG">#f5dfbb</color>
     <color name="appBg">#e4e4e4</color>
+    <color name="translucent_bg">#500e9594</color>
 
     <color name="tfe_color_primary">#ffa800</color>
     <color name="tfe_color_primary_dark">#ff6f00</color>

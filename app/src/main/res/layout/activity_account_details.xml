@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:background="@drawable/gradient_bg"
     tools:context=".AccountDetails">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/abaca_plant_bg"
+        android:alpha="0.3"/>
 
     <ImageView
         android:id="@+id/cardBG"
@@ -46,67 +51,83 @@
         android:padding="10dp"
         android:orientation="vertical">
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/lastName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Last Name:"
+            android:text="Last Name: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/firstName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="First Name:"
+            android:text="First Name: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/middleName"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Middle Name:"
+            android:text="Middle Name: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/emailAdd"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Email Address:"
+            android:text="Email Address: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/birthday"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Birthday:"
+            android:text="Birthday: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/permanentAddress"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Permanent Address:"
+            android:text="Permanent Address: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/occupation"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Occupation:"
+            android:text="Occupation: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
         <TextView
+            android:layout_margin="5dp"
+            android:background="@drawable/text_input_bg"
             android:id="@+id/institution"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Institution:"
+            android:text="Institution: "
             android:textSize="20sp"
             android:textColor="@android:color/black"/>
 
@@ -114,6 +135,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="log out"
-            android:onClick="logOut"/>
+            android:onClick="logOut"
+            android:background="@drawable/custom_button"
+            android:textColor="@android:color/white"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

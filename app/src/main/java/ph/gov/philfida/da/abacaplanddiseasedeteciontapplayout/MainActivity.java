@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
 
 public class MainActivity extends AppCompatActivity {
     TextView username, account_type;
@@ -70,6 +71,11 @@ public class MainActivity extends AppCompatActivity {
     }
     public void openAccountDetails(View view) {
         Intent intent = new Intent(MainActivity.this, AccountDetails.class);
+        startActivity(intent);
+    }
+
+    public void openDiseaseIndex(View view) {
+        Intent intent = new Intent(MainActivity.this, DiseaseIndex.class);
         startActivity(intent);
     }
 }

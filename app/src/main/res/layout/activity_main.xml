@@ -6,6 +6,11 @@
     android:layout_height="match_parent"
     android:background="@color/appBg"
     tools:context=".MainActivity">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/abaca_plant_bg"
+        android:alpha="0.4"/>
 
     <ImageView
         android:id="@+id/mainActBG"
@@ -261,7 +266,8 @@
                         android:layout_margin="10dp"
                         android:background="@drawable/ic_m_disease_index"
                         android:clickable="true"
-                        android:focusable="true" />
+                        android:focusable="true"
+                        android:onClick="openDiseaseIndex"/>
 
                     <TextView
                         android:layout_width="wrap_content"

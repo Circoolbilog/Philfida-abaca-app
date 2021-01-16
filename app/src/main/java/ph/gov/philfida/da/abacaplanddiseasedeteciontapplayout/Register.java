@@ -1,13 +1,15 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.app.DatePickerDialog;
+import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,14 +21,19 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
-import com.vishnusivadas.advanced_httpurlconnection.PutData;
+
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
 
 import java.text.DateFormat;
 import java.util.Calendar;
 
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.DialogFragment;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndConditionsDialog;
 
@@ -37,14 +44,11 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     Button register;
     String sLastName, sFirstName, sMiddleName, sBirthday, sEmail, sPassword, sConfirmPassword,
             sPermanentAddress, sOccupation, sInstitution;
-    ProgressBar progressBar;
+    ProgressBar progressBar, registrationProgress;
+    ConstraintLayout cardLayout,rootView;
+    int regProgress = 1;
     private FirebaseAuth mAuth;
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser;
-    }
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -52,7 +56,10 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         setContentView(R.layout.activity_register);
         progressBar = findViewById(R.id.progressBar);
         mAuth = FirebaseAuth.getInstance();
+        cardLayout = findViewById(R.id.cardLayout);
+        rootView = findViewById(R.id.rootView);
         assignInputs();
+        layoutAdjustments();
     }
 
 
@@ -72,25 +79,28 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
+                    cardLayout.setVisibility(View.GONE);
                     getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
                     DialogFragment datePicker = new ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DatePickerDialog();
                     datePicker.show(getSupportFragmentManager(), "date picker");
+                }else {
+                    cardLayout.setVisibility(View.VISIBLE);
                 }
             }
         });
         register = findViewById(R.id.registerButton);
+        registrationProgress = findViewById(R.id.progress);
+        register.setText("Proceed");
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Validate Inputs
-                validateData();
-
+                validateData(regProgress);
             }
         });
         //lastname, firstname, email, password, confirmPassword, permanentAddress, occupation = required;
     }
 
-    public void validateData() {
+    public void validateData(int prog) {
         progressBar.setVisibility(View.VISIBLE);
         sLastName = lastName.getEditText().getText().toString();
         sFirstName = firstName.getEditText().getText().toString();
@@ -102,128 +112,143 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         sPermanentAddress = permanentAddress.getEditText().getText().toString();
         sOccupation = occupation.getEditText().getText().toString();
         sInstitution = institution.getEditText().getText().toString();
-        if (sLastName.isEmpty()) {
-            lastName.setError("Field is required");
-        }
-        if (sFirstName.isEmpty()) {
-            firstName.setError("Field is required");
-        }
-        if (sMiddleName.isEmpty()) {
-            sMiddleName = "N/A";
-        }
-        if (sBirthday.isEmpty()) {
-            birthday.setError("Field is required");
-        }
-        if (sEmail.isEmpty()) {
-            email.setError("Field is required");
-        }
-        if (sPassword.isEmpty()) {
-            password.setError("Field is required");
-        }
-        if (sConfirmPassword.isEmpty()) {
-            confirmPassword.setError("Field is required");
-        }
-        if (sPermanentAddress.isEmpty()) {
-            permanentAddress.setError("Field is required");
-        }
-        if (sOccupation.isEmpty()) {
-            occupation.setError("Field is required");
-        }
-        if (sInstitution.isEmpty()) {
-            sInstitution = "N/A";
-        }
-        if (sPassword.equals(sConfirmPassword)) {
-            DialogFragment tnc = new TermsAndConditionsDialog();
-            tnc.show(getSupportFragmentManager(), "T&C/EULA");
-        } else {
-            confirmPassword.setError("Passwords Does not match");
+        int percentage = (prog / 3) * 100;
+        switch (prog) {
+            case 1:
+                UIUtil.hideKeyboard(this);
+                progressBar.setVisibility(View.GONE);
+                registrationProgress.setProgress(percentage);
+                if (sLastName.isEmpty()) {
+                    lastName.setError("Field is required");
+                    lastName.requestFocus();
+                    return;
+                }
+                if (sFirstName.isEmpty()) {
+                    firstName.setError("Field is required");
+                    firstName.requestFocus();
+                    return;
+                }
+                if (sMiddleName.isEmpty()) {
+                    sMiddleName = "N/A";
+                }
+                if (sBirthday.isEmpty()) {
+                    birthday.setError("Field is required");
+                    birthday.requestFocus();
+                    return;
+                }
+                lastName.setVisibility(View.GONE);
+                firstName.setVisibility(View.GONE);
+                middleName.setVisibility(View.GONE);
+                birthday.setVisibility(View.GONE);
+                email.setVisibility(View.VISIBLE);
+                password.setVisibility(View.VISIBLE);
+                confirmPassword.setVisibility(View.VISIBLE);
+                regProgress += 1;
+                return;
+            case 2:
+                UIUtil.hideKeyboard(this);
+                progressBar.setVisibility(View.GONE);
+                registrationProgress.setProgress(percentage);
+                if (sEmail.isEmpty()) {
+                    email.setError("Field is required");
+                    email.requestFocus();
+                    return;
+                }
+                if (sPassword.isEmpty()) {
+                    password.setError("Field is required");
+                    password.requestFocus();
+                    return;
+                }
+                if (sConfirmPassword.isEmpty()) {
+                    confirmPassword.setError("Field is required");
+                    confirmPassword.requestFocus();
+                    return;
+                }
+                email.setVisibility(View.GONE);
+                password.setVisibility(View.GONE);
+                confirmPassword.setVisibility(View.GONE);
+                permanentAddress.setVisibility(View.VISIBLE);
+                occupation.setVisibility(View.VISIBLE);
+                institution.setVisibility(View.VISIBLE);
+                register.setText("Register");
+                regProgress += 1;
+                return;
+            case 3:
+                UIUtil.hideKeyboard(this);
+                progressBar.setVisibility(View.GONE);
+                registrationProgress.setProgress(percentage);
+                if (sPermanentAddress.isEmpty()) {
+                    permanentAddress.setError("Field is required");
+                    permanentAddress.requestFocus();
+                    return;
+                }
+                if (sOccupation.isEmpty()) {
+                    occupation.setError("Field is required");
+                    occupation.requestFocus();
+                    return;
+                }
+                if (sInstitution.isEmpty()) {
+                    sInstitution = "N/A";
+                }
+                if (sPassword.equals(sConfirmPassword)) {
+                    DialogFragment tnc = new TermsAndConditionsDialog();
+                    tnc.show(getSupportFragmentManager(), "T&C/EULA");
+                } else {
+                    confirmPassword.setError("Passwords Does not match");
+                    progressBar.setVisibility(View.GONE);
+                }
         }
 
-        progressBar.setVisibility(View.GONE);
+
     }
 
-   /* public void postData() {
-        //Start ProgressBar first (Set visibility VISIBLE)
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
+    private void layoutAdjustments() {
+        KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
             @Override
-            public void run() {
-                //Starting Write and Read data with URL
-                //Creating array for parameters
-                String[] field = new String[9];
-                field[0] = "last_name";
-                field[1] = "first_name";
-                field[2] = "middle_name";
-                field[3] = "birthday";
-                field[4] = "email_address";
-                field[5] = "password";
-                field[6] = "permanent_address";
-                field[7] = "occupation";
-                field[8] = "institution";
-                //Creating array for data
-                String[] data = new String[9];
-                data[0] = sLastName;
-                data[1] = sFirstName;
-                data[2] = sMiddleName;
-                data[3] = sBirthday;
-                data[4] = sEmail;
-                data[5] = sPassword;
-                data[6] = sPermanentAddress;
-                data[7] = sOccupation;
-                data[8] = sInstitution;
-                PutData putData = new PutData("http://192.168.2.103/abaca_app_login-register/signup.php", "POST", field, data);
-                if (putData.startPut()) {
-                    if (putData.onComplete()) {
-                        String result = putData.getResult();
-                        if (result.equals("Sign Up Success")){
-                            Toast.makeText(getApplicationContext(),"Successfully Registered", Toast.LENGTH_LONG).show();
-                            finish();
-                        }
-                        else {
-                            Toast.makeText(getApplicationContext(),result +
-                                    sLastName+sFirstName+sMiddleName+sBirthday+sEmail+sPassword+
-                                    sPermanentAddress +sOccupation+sInstitution, Toast.LENGTH_LONG).show();
-                        }
-
-                        progressBar.setVisibility(View.VISIBLE);
-                    }
+            public void onVisibilityChanged(boolean isOpen) {
+                if (isOpen) {
+                    cardLayout.setVisibility(View.GONE);
+                } else {
+                    cardLayout.setVisibility(View.VISIBLE);
                 }
-                //End Write and Read data with URL
             }
         });
     }
-*/
-    public void registerUser(){
+
+
+    public void registerUser() {
         mAuth.createUserWithEmailAndPassword(sEmail, sPassword)
                 .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        if(task.isSuccessful()){
+                        if (task.isSuccessful()) {
                             User user = new User(sLastName, sMiddleName, sFirstName, sBirthday, sEmail, sPermanentAddress, sOccupation, sInstitution);
                             FirebaseDatabase.getInstance().getReference("Users")
                                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                                     .setValue(user).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
-                                    if (task.isSuccessful()){
-                                        Toast.makeText(Register.this,"User Registered Sucessfully",
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(Register.this, "User Registered Sucessfully",
                                                 Toast.LENGTH_LONG).show();
                                         progressBar.setVisibility(View.VISIBLE);
+                                        Intent login = new Intent(Register.this, Login.class);
+                                        startActivity(login);
                                         finish();
-                                        //redirect to login. finish()?
-                                    }else{
-                                        Toast.makeText(Register.this,"Failed to register. Try again.",
+                                    } else {
+                                        Toast.makeText(Register.this, "Failed to register. Try again.",
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 }
                             });
-                        }else {
+                        } else {
                             Toast.makeText(Register.this, "Failed to register. Try again.",
                                     Toast.LENGTH_LONG).show();
                         }
                     }
                 });
     }
+
     public void openDatePicker(View view) {
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
         DialogFragment datePicker = new ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DatePickerDialog();

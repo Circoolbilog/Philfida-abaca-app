@@ -112,7 +112,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
         sPermanentAddress = permanentAddress.getEditText().getText().toString();
         sOccupation = occupation.getEditText().getText().toString();
         sInstitution = institution.getEditText().getText().toString();
-        int percentage = (prog / 3) * 100;
+        int percentage = (prog *100) /3;
         switch (prog) {
             case 1:
                 UIUtil.hideKeyboard(this);

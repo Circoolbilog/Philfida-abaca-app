@@ -2,256 +2,284 @@
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/appBg"
-    tools:context=".MainActivity"
-    android:id="@+id/drawerLayout">
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <ImageView
-        android:id="@+id/imageView2"
+    tools:context=".MainActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:alpha="0.4"
-        android:background="@drawable/abaca_plant_bg"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:layout_height="match_parent">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/weather"
-        android:layout_width="0dp"
-        android:layout_height="130dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="20dp"
-        app:cardBackgroundColor="@color/appSecondary"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diseaseIndex"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.43"
-        >
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:alpha="0.4"
+            android:background="@drawable/abaca_plant_bg"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/weather"
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            app:cardBackgroundColor="@color/appSecondary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/diseaseIndex"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/weather"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/updates"
+            android:layout_width="0dp"
+            android:layout_height="130dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            app:cardBackgroundColor="@color/appPrimary"
+            app:cardCornerRadius="5dp"
+            app:cardElevation="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/map"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="15dp"
+                android:layout_marginTop="10dp"
+                android:text="@string/updates"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </androidx.cardview.widget.CardView>
 
         <TextView
+            android:id="@+id/monitorText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/weather"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
+            android:layout_marginTop="16dp"
+            android:text="@string/monitor"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView2" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/updates"
-        android:layout_width="0dp"
-        android:layout_height="130dp"
-        android:layout_marginTop="20dp"
-        android:layout_marginEnd="16dp"
-        app:cardBackgroundColor="@color/appPrimary"
-        app:cardCornerRadius="30dp"
-        app:cardElevation="20dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/map"
-        app:layout_constraintWidth_default="percent"
-        app:layout_constraintWidth_percent="0.43">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:text="@string/updates"
-            android:textColor="@android:color/white"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </androidx.cardview.widget.CardView>
-
-
-    <TextView
-        android:id="@+id/monitorText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/monitor_your_abaca_s_health"
-        android:textColor="@android:color/black"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/imageView2" />
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/diagnose"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="25dp"
-        app:layout_constraintEnd_toStartOf="@+id/assessment"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/monitorText">
-
-        <LinearLayout
-            android:layout_width="match_parent"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/diagnose"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/diagnoseButton"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:adjustViewBounds="true"
-                android:background="@drawable/ic_m_diagnose"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="openDiagnoseActivity" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            android:clickable="true"
+            android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openDiagnoseActivity"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toStartOf="@+id/assessment"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/monitorText"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4">
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/diagnose"
-                android:textColor="@color/appPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_margin="15dp"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/diagnoseButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:adjustViewBounds="true"
+                    android:background="@drawable/ic_m_diagnose"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="openDiagnoseActivity" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/assessment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/diagnose"
-        app:layout_constraintTop_toBottomOf="@id/monitorText">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/diagnose"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/assessment"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/assessmentButton"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_m_assessment"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="openAssessmentActivity" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            android:elevation="20dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/diagnose"
+            app:layout_constraintTop_toBottomOf="@id/monitorText"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4"
+            android:clickable="true">
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/assessment"
-                android:textColor="@color/appPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_margin="15dp"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/assessmentButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_m_assessment"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="openAssessmentActivity" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/diseaseIndex"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="25dp"
-        app:layout_constraintEnd_toStartOf="@+id/map"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/diagnose">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/assessment"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/diseaseIndex"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/diseaseIndexButton"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_m_disease_index"
-                android:clickable="true"
-                android:focusable="true"
-                android:onClick="openDiseaseIndex" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            android:elevation="20dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toStartOf="@+id/map"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/diagnose"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4"
+            android:clickable="true">
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/disease_index"
-                android:textColor="@color/appPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_margin="15dp"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/diseaseIndexButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_m_disease_index"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="openDiseaseIndex" />
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/map"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:elevation="20dp"
-        app:cardCornerRadius="25sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/diseaseIndex"
-        app:layout_constraintTop_toBottomOf="@id/assessment">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/disease_index"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/map"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:orientation="vertical">
-
-            <ImageButton
-                android:id="@+id/mapButton"
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:layout_gravity="center"
-                android:layout_margin="10dp"
-                android:background="@drawable/ic_m_map"
-                android:clickable="true"
-                android:focusable="true" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            android:elevation="20dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/diseaseIndex"
+            app:layout_constraintTop_toBottomOf="@id/assessment"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4"
+            android:clickable="true">
+            <ImageView
+                android:layout_width="200dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/map"
-                android:textColor="@color/appPrimary"
-                android:textSize="15sp"
-                android:textStyle="bold" />
+                android:layout_margin="15dp"
+                android:orientation="vertical">
 
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                <ImageButton
+                    android:id="@+id/mapButton"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_m_map"
+                    android:clickable="true"
+                    android:focusable="true" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="@string/map"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navView"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        app:headerLayout="@layout/nav_header"
-        app:menu="@menu/nav_nemu"
         android:layout_gravity="start"
-        android:fitsSystemWindows="true"/>
+        android:fitsSystemWindows="true"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/nav_nemu" />
 </androidx.drawerlayout.widget.DrawerLayout>

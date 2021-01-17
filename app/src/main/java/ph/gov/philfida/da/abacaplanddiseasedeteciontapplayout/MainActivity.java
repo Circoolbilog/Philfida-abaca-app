@@ -1,7 +1,9 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -22,6 +24,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
 
@@ -33,13 +36,13 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference reference;
     private String userID;
+    String firstName,lastName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         getDBDetails();
-        setUpNavDrawer();
     }
 
     private void setUpNavDrawer() {
@@ -50,22 +53,35 @@ public class MainActivity extends AppCompatActivity {
         toggle.syncState();
         ActionBar actionBar = MainActivity.this.getSupportActionBar();
         actionBar.setDisplayHomeAsUpEnabled(true);
+        // get menu from navigationView
+        Menu menu = navigationView.getMenu();
+        MenuItem userNameInNav = menu.findItem(R.id.userName);
+        userNameInNav.setTitle(firstName + " "+ lastName);
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @SuppressLint("NonConstantResourceId")
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.userName:
-                        Toast.makeText(MainActivity.this,"Username selected",Toast.LENGTH_LONG).show();
+                        openAccountDetails();
                         return true;
                     case R.id.settings:
                         Toast.makeText(MainActivity.this,"Settings selected",Toast.LENGTH_LONG).show();
                         return true;
+                    case R.id.logout:
+                        logOut();
                 }
                 return false;
             }
         });
     }
-
+    public void logOut() {
+        FirebaseAuth.getInstance().signOut();
+        //SaveSharedPreference.clearUsername(this);
+        Intent intent = new Intent(this, Login.class);
+        startActivity(intent);
+        finish();
+    }
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(toggle.onOptionsItemSelected(item)){
@@ -83,8 +99,9 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User userProfile = snapshot.getValue(User.class);
                 if (userProfile != null){
-                    String lastName = userProfile.lastName;
-                    String firstName = userProfile.firstName;
+                    firstName = userProfile.firstName;
+                    lastName = userProfile.lastName;
+                    setUpNavDrawer();
                 }
             }
 
@@ -104,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         Intent assessment = new Intent(this, AssessmentActivity.class);
         startActivity(assessment);
     }
-    public void openAccountDetails(View view) {
+    public void openAccountDetails() {
         Intent intent = new Intent(MainActivity.this, AccountDetails.class);
         startActivity(intent);
     }

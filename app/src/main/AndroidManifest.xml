@@ -22,7 +22,8 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".otherActivities.ForgotPasswordActivity"></activity>
+        <activity android:name=".otherActivities.DiseaseInfo"></activity>
+        <activity android:name=".otherActivities.ForgotPasswordActivity" />
         <activity android:name=".otherActivities.SettingsActivity" />
         <activity android:name=".otherActivities.DiseaseIndex" />
         <activity android:name=".otherActivities.AssessedImageViewer" />
@@ -32,14 +33,13 @@
         <activity
             android:name=".otherActivities.AssessmentActivity"
             android:theme="@style/NoActionBar" />
-        <activity android:name=".AccountDetails" />
+        <activity android:name=".otherActivities.AccountDetails" />
         <activity
             android:name=".DetectorActivity"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            />
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Login"
             android:theme="@style/NoActionBar">

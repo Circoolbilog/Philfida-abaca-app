@@ -4,4 +4,6 @@
         android:title="Username" />
     <item android:id="@+id/settings"
         android:title="Settings" />
+    <item android:id="@+id/logout"
+        android:title="Log Out"/>
 </menu>

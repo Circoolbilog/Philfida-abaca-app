@@ -1,8 +1,7 @@
-package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
+package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -17,9 +16,12 @@ import com.google.firebase.database.ValueEventListener;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Login;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.User;
 
 public class AccountDetails extends AppCompatActivity {
-    TextView lastName, firstName, middleName, emailAdd, birthday, permanentAdd, occupation, institution;
+    TextView name, emailAdd, birthday, permanentAdd, occupation, institution;
     private FirebaseUser user;
     private DatabaseReference reference;
     private String userID;
@@ -33,9 +35,7 @@ public class AccountDetails extends AppCompatActivity {
     }
 
     private void assignIDS() {
-        lastName = findViewById(R.id.lastName);
-        firstName = findViewById(R.id.firstName);
-        middleName = findViewById(R.id.middleName);
+        name = findViewById(R.id.lastName);
         emailAdd = findViewById(R.id.emailAdd);
         birthday = findViewById(R.id.birthday);
         permanentAdd = findViewById(R.id.permanentAddress);
@@ -60,9 +60,11 @@ public class AccountDetails extends AppCompatActivity {
                     String permanentAddS = userProfile.permanentAddress;
                     String occupationS = userProfile.occupation;
                     String institutionS = userProfile.institution;
-                    lastName.append(lastNameS);
-                    firstName.append(firstNameS);
-                    middleName.append(middleNameS);
+                    name.append(firstNameS + " ");
+                    if (!middleNameS.equals("N/A")){
+                        name.append(middleNameS + " ");
+                    }
+                    name.append(lastNameS);
                     emailAdd.append(emailAddS);
                     birthday.append(birthdayS);
                     permanentAdd.append(permanentAddS);

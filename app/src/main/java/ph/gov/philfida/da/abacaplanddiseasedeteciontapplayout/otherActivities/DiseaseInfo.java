@@ -24,7 +24,7 @@ public class DiseaseInfo extends AppCompatActivity {
 
     private void loadDiseaseInfo() {
         Bundle display = getIntent().getExtras();
-        int position = display.getInt("position") + 1;
+        int position = display.getInt("position");
         diseaseName.append(" "+position);
 
     }

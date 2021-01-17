@@ -22,9 +22,12 @@ public class DiseaseIndex extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_disease_index);
         item = new ArrayList<>();
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease0"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease1"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease2"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease3"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease4"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease5"));
         buildRecyclerView();
 
     }

@@ -44,4 +44,6 @@
     <string name="close">Close</string>
     <string name="monitor">Monitor your Abaca\'s health</string>
     <string name="disease_name">Disease Name</string>
+    <string name="save">SAVE</string>
+    <string name="discard">DISCARD</string>
 </resources>

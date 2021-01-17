@@ -36,15 +36,18 @@
             >
 
         </FrameLayout>
-        <Button
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="289dp"
             android:onClick="CaptureImage"
-            android:text="TEST CAPTURE"
             android:layout_centerHorizontal="true"
             android:layout_alignBottom="@+id/container"
-            android:layout_marginBottom="30dp"/>
+            android:layout_marginBottom="30dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_capture"/>
+
     </RelativeLayout>
 <!--
     <include

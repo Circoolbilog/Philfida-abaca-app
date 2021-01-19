@@ -1,6 +1,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -25,6 +26,16 @@ public class AccountDetails extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference reference;
     private String userID;
+    String lastNameS, firstNameS, middleNameS, emailAddS, birthdayS, permanentAddS, occupationS, institutionS;
+    public static final String SHARED_PREFS = "USER_DATA";
+    public static final String EMAIL = "EMAIL";
+    public static final String LAST_NAME = "LAST_NAME";
+    public static final String FIRST_NAME = "FIRST_NAME";
+    public static final String MIDDLE_NAME = "MIDDLE_NAME";
+    public static final String BIRTHDAY = "BIRTHDAY";
+    public static final String PERM_ADD = "PERM_ADD";
+    public static final String OCCUPATION = "OCCUPATION";
+    public static final String INSTITUTION = "INSTITUTION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +43,35 @@ public class AccountDetails extends AppCompatActivity {
         setContentView(R.layout.activity_account_details);
         assignIDS();
         getDBDetails();
+        loadUserData();
+    }
+
+
+
+    private void loadUserData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        lastNameS = sharedPreferences.getString(LAST_NAME, "");
+        firstNameS = sharedPreferences.getString(FIRST_NAME, "");
+        middleNameS = sharedPreferences.getString(MIDDLE_NAME, "");
+        emailAddS = sharedPreferences.getString(EMAIL, "");
+        birthdayS = sharedPreferences.getString(BIRTHDAY, "");
+        permanentAddS = sharedPreferences.getString(PERM_ADD, "");
+        occupationS = sharedPreferences.getString(OCCUPATION, "");
+        institutionS = sharedPreferences.getString(INSTITUTION, "");
+        updateViews();
+    }
+
+    private void updateViews() {
+        name.append(firstNameS + " ");
+        if (!middleNameS.equals("N/A")) {
+            name.append(middleNameS + " ");
+        }
+        name.append(lastNameS);
+        emailAdd.append(emailAddS);
+        birthday.append(birthdayS);
+        permanentAdd.append(permanentAddS);
+        occupation.append(occupationS);
+        institution.append(institutionS);
     }
 
     private void assignIDS() {
@@ -52,37 +92,31 @@ public class AccountDetails extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 User userProfile = snapshot.getValue(User.class);
                 if (userProfile != null) {
-                    String lastNameS = userProfile.lastName;
-                    String firstNameS = userProfile.firstName;
-                    String middleNameS = userProfile.middleName;
-                    String emailAddS = userProfile.email;
-                    String birthdayS = userProfile.birthday;
-                    String permanentAddS = userProfile.permanentAddress;
-                    String occupationS = userProfile.occupation;
-                    String institutionS = userProfile.institution;
-                    name.append(firstNameS + " ");
-                    if (!middleNameS.equals("N/A")){
-                        name.append(middleNameS + " ");
-                    }
-                    name.append(lastNameS);
-                    emailAdd.append(emailAddS);
-                    birthday.append(birthdayS);
-                    permanentAdd.append(permanentAddS);
-                    occupation.append(occupationS);
-                    institution.append(institutionS);
+                    lastNameS = userProfile.lastName;
+                    firstNameS = userProfile.firstName;
+                    middleNameS = userProfile.middleName;
+                    emailAddS = userProfile.email;
+                    birthdayS = userProfile.birthday;
+                    permanentAddS = userProfile.permanentAddress;
+                    occupationS = userProfile.occupation;
+                    institutionS = userProfile.institution;
+                    updateViews();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(AccountDetails.this,"Something Wrong Happened",Toast.LENGTH_LONG).show();
+                Toast.makeText(AccountDetails.this, "Something Wrong Happened", Toast.LENGTH_LONG).show();
             }
         });
     }
 
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
-        //SaveSharedPreference.clearUsername(this);
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
         finish();

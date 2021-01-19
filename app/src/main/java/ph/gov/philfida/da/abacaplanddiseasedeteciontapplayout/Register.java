@@ -129,7 +129,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                     return;
                 }
                 if (sMiddleName.isEmpty()) {
-                    sMiddleName = "N/A";
+                    sMiddleName = "N.A.";
                 }
                 if (sBirthday.isEmpty()) {
                     birthday.setError("Field is required");

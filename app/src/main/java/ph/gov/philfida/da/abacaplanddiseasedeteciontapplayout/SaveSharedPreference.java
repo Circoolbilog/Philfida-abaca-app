@@ -13,7 +13,7 @@ public class SaveSharedPreference {
     public static void setPrefUserName(Context context, String username){
         SharedPreferences.Editor editor =getSharedPreference(context).edit();
         editor.putString(PREF_USER_NAME,username);
-        editor.commit();
+        editor.apply();
     }
     public static String getUsername(Context context){
         return getSharedPreference(context).getString(PREF_USER_NAME,"");
@@ -21,6 +21,6 @@ public class SaveSharedPreference {
     public static void clearUsername(Context context){
         SharedPreferences.Editor editor = getSharedPreference(context).edit();
         editor.clear();
-        editor.commit();
+        editor.apply();
     }
 }

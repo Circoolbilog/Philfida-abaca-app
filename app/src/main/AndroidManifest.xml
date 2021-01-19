@@ -22,7 +22,9 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".otherActivities.DiseaseInfo"></activity>
+        <activity android:name=".otherActivities.Map"
+            android:theme="@style/NoActionBar"/>
+        <activity android:name=".otherActivities.DiseaseInfo" />
         <activity android:name=".otherActivities.ForgotPasswordActivity" />
         <activity android:name=".otherActivities.SettingsActivity" />
         <activity android:name=".otherActivities.DiseaseIndex" />

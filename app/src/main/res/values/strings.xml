@@ -46,4 +46,6 @@
     <string name="disease_name">Disease Name</string>
     <string name="save">SAVE</string>
     <string name="discard">DISCARD</string>
+    <string name="log_out">log out</string>
+    <string name="feature_coming_soon">Feature Coming Soon</string>
 </resources>

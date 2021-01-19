@@ -1,6 +1,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -45,7 +46,10 @@ public class Login extends AppCompatActivity {
     CheckBox keepLoggedIn;
     ConstraintLayout loginLayout;
     ImageView card, logo;
-    boolean keepMeLoggedIn;
+    boolean keepMeLoggedIn = true;
+
+    public static final String SHARED_PREFS = "loginData";
+    public static final String REMEMBER = "rememberMe";
 
     @Override
     protected void onStart() {
@@ -70,6 +74,7 @@ public class Login extends AppCompatActivity {
         assignButtons();
         assignInputs();
         layoutAdjustments();
+        loadUserData();
     }
 
     @Override
@@ -159,9 +164,13 @@ public class Login extends AppCompatActivity {
                     progressBar.setVisibility(View.GONE);
                     Intent login = new Intent(Login.this,MainActivity.class);
                     startActivity(login);
+                    if (keepMeLoggedIn){
+                        saveUserData();
+                    }
                     finish();
                 }else{
                     Toast.makeText(Login.this,"Failed to login",Toast.LENGTH_LONG).show();
+                    progressBar.setVisibility(View.GONE);
                 }
             }
         });
@@ -180,5 +189,18 @@ public class Login extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void saveUserData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        SharedPreferences.Editor editor= sharedPreferences.edit();
+        editor.putBoolean(REMEMBER,keepMeLoggedIn);
+        editor.apply();
+    }
+    public void loadUserData(){
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        keepMeLoggedIn = sharedPreferences.getBoolean(REMEMBER,true);
+        keepLoggedIn.setChecked(keepMeLoggedIn);
+
     }
 }

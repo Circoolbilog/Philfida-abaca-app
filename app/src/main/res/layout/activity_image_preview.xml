@@ -6,7 +6,16 @@
     android:layout_height="match_parent"
     android:background="@android:color/black"
     tools:context=".otherActivities.ImagePreviewActivity">
-
+<TextView
+    android:id="@+id/diseasePredicion"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintBottom_toTopOf="@+id/imageView"
+    android:text="Prediction"
+    android:textColor="@android:color/white"
+    android:textStyle="bold"
+    android:textSize="20sp"
+    android:layout_margin="15dp"/>
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"

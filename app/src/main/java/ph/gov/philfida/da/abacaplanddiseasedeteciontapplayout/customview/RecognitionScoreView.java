@@ -20,6 +20,8 @@ import android.graphics.Paint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
+
+import java.util.ArrayList;
 import java.util.List;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
@@ -57,11 +59,14 @@ public class RecognitionScoreView extends View implements ResultsView {
         int y = (int) (fgPaint.getTextSize() * 1.5f);
 
         canvas.drawPaint(bgPaint);
-
+        ArrayList<Float> conf = new ArrayList<Float>();
+        ArrayList<String> title = new ArrayList<String>();
         if (results != null) {
             for (final Classifier.Recognition recog : results) {
                 canvas.drawText(recog.getTitle() + ": " + recog.getConfidence(), x, y, fgPaint);
                 y += (int) (fgPaint.getTextSize() * 1.5f);
+                conf.add(recog.getConfidence());
+                title.add(recog.getTitle());
             }
         }
     }

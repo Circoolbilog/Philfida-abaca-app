@@ -16,6 +16,7 @@ import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -39,6 +40,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     ImageView prev;
     Bitmap bitmap,bitmap2;
     OutputStream outputStream;
+    TextView title;
     private static final int REQUEST = 112;
 
     @Override
@@ -47,11 +49,13 @@ public class ImagePreviewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_image_preview);
         prev = findViewById(R.id.imageView);
         Bundle extras = getIntent().getExtras();
+        title = findViewById(R.id.diseasePredicion);
 
         //import image passed from previous activity
         if (extras != null) {
             bitmap = BitmapFactory.decodeByteArray(
                     getIntent().getByteArrayExtra("byteArray"), 0, getIntent().getByteArrayExtra("byteArray").length);
+            title.setText(extras.getString("diseaseName"));
             float degrees = 90;
             Matrix matrix = new Matrix();
             matrix.setRotate(degrees);

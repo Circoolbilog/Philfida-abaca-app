@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -91,6 +92,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
     List<String> detectedSymptomsList = new ArrayList<>();
     List<Float> confidenceList = new ArrayList<>();
+    int lastDetection;
 
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
@@ -209,13 +211,12 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                                 new LinkedList<Classifier.Recognition>();
 
                         for (final Classifier.Recognition result : results) {
-                            detectedSymptomsList.add(result.getTitle());
-                            confidenceList.add(result.getConfidence());
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
                                 canvas.drawRect(location, paint);
-
                                 cropToFrameTransform.mapRect(location);
+                                detectedSymptomsList.add(result.getTitle());
+                                confidenceList.add(result.getConfidence());
 
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
@@ -283,12 +284,34 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         Intent imagePrev = new Intent(this, ImagePreviewActivity.class);
         imagePrev.putExtra("byteArray", bs.toByteArray());
         imagePrev.putExtra("diseaseName", getDetectionInfo());
+        imagePrev.putExtra("confidence", getConfidence());
+        lastDetection = confidenceList.size();
         startActivity(imagePrev);
     }
 
     private String getDetectionInfo() {
         String predictionName;
-        predictionName = detectedSymptomsList.get(0);
+        if (lastDetection < detectedSymptomsList.size()) {
+            predictionName = detectedSymptomsList.get(detectedSymptomsList.size() - 1);
+        } else {
+            predictionName = "";
+        }
         return predictionName;
+    }
+
+    private String getConfidence() {
+        String formatted;
+        Float confidence;
+        if (lastDetection < confidenceList.size()) {
+            confidence = confidenceList.get(detectedSymptomsList.size() - 1);
+            confidence = confidence * 100;
+
+            DecimalFormat df = new DecimalFormat("##.##");
+            formatted = df.format(confidence);
+            return formatted + "%";
+        }else{
+            formatted = "";
+            return formatted;
+        }
     }
 }

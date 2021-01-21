@@ -55,7 +55,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (extras != null) {
             bitmap = BitmapFactory.decodeByteArray(
                     getIntent().getByteArrayExtra("byteArray"), 0, getIntent().getByteArrayExtra("byteArray").length);
-            title.setText(extras.getString("diseaseName"));
+            title.setText(extras.getString("diseaseName") + " "+ extras.getString("confidence"));
             float degrees = 90;
             Matrix matrix = new Matrix();
             matrix.setRotate(degrees);

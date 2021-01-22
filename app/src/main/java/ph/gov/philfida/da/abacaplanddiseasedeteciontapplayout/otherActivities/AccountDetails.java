@@ -4,6 +4,9 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,8 +18,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Login;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.User;
@@ -36,6 +43,11 @@ public class AccountDetails extends AppCompatActivity {
     public static final String PERM_ADD = "PERM_ADD";
     public static final String OCCUPATION = "OCCUPATION";
     public static final String INSTITUTION = "INSTITUTION";
+    boolean editMode;
+    Button editProfile;
+    ImageView cardBG;
+    CardView profilePicture;
+    EditText editName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +56,38 @@ public class AccountDetails extends AppCompatActivity {
         assignIDS();
         getDBDetails();
         loadUserData();
+        updateViews();
+        layoutAdjustments();
+        if (editMode){
+            enterEditMode();
+        }
     }
+    private void layoutAdjustments() {
+        KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
+            @Override
+            public void onVisibilityChanged(boolean isOpen) {
+                if (isOpen) {
+                    cardBG.setVisibility(View.GONE);
+                    profilePicture.setVisibility(View.GONE);
+                } else {
+                    profilePicture.setVisibility(View.VISIBLE);
+                    cardBG.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+    }
+    private void enterEditMode() {
+        editProfile.setVisibility(View.GONE);
+        name.setVisibility(View.GONE);
+        editName.setVisibility(View.VISIBLE);
+        editName.setText(firstNameS + " "+lastNameS+" ");
+        profilePicture.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
+            }
+        });
+    }
 
 
     private void loadUserData() {
@@ -58,11 +100,10 @@ public class AccountDetails extends AppCompatActivity {
         permanentAddS = sharedPreferences.getString(PERM_ADD, "");
         occupationS = sharedPreferences.getString(OCCUPATION, "");
         institutionS = sharedPreferences.getString(INSTITUTION, "");
-        updateViews();
     }
 
     private void updateViews() {
-        name.append(firstNameS + " ");
+        name.setText(firstNameS + " ");
         if (!middleNameS.equals("N/A")) {
             name.append(middleNameS + " ");
         }
@@ -75,6 +116,16 @@ public class AccountDetails extends AppCompatActivity {
     }
 
     private void assignIDS() {
+        cardBG = findViewById(R.id.cardBG);
+        editName = findViewById(R.id.editLastName);
+        profilePicture = findViewById(R.id.cardView);
+        editProfile = findViewById(R.id.edit_profile);
+        editProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                enterEditMode();
+            }
+        });
         name = findViewById(R.id.lastName);
         emailAdd = findViewById(R.id.emailAdd);
         birthday = findViewById(R.id.birthday);
@@ -100,7 +151,6 @@ public class AccountDetails extends AppCompatActivity {
                     permanentAddS = userProfile.permanentAddress;
                     occupationS = userProfile.occupation;
                     institutionS = userProfile.institution;
-                    updateViews();
                 }
             }
 

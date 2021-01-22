@@ -2,14 +2,11 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -19,7 +16,6 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.FirebaseDatabase;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
@@ -28,6 +24,7 @@ import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.regex.Pattern;
 
 
 import androidx.annotation.NonNull;
@@ -48,7 +45,8 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     ConstraintLayout cardLayout,rootView;
     int regProgress = 1;
     private FirebaseAuth mAuth;
-
+    private static final Pattern NAME_PATTERN =
+            Pattern.compile("^[a-zA-Z]+$");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -117,9 +115,13 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             case 1:
                 UIUtil.hideKeyboard(this);
                 progressBar.setVisibility(View.GONE);
-                registrationProgress.setProgress(percentage);
                 if (sLastName.isEmpty()) {
                     lastName.setError("Field is required");
+                    lastName.requestFocus();
+                    return;
+                }
+                if (!NAME_PATTERN.matcher(sLastName).matches()){
+                    lastName.setError("Enter Valid Name");
                     lastName.requestFocus();
                     return;
                 }
@@ -128,8 +130,18 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                     firstName.requestFocus();
                     return;
                 }
+                if (!NAME_PATTERN.matcher(sFirstName).matches()){
+                    firstName.setError("Enter Valid Name");
+                    firstName.requestFocus();
+                    return;
+                }
                 if (sMiddleName.isEmpty()) {
                     sMiddleName = "N.A.";
+                }
+                if (!NAME_PATTERN.matcher(sMiddleName).matches() & !sMiddleName.equals("N.A.")){
+                    middleName.setError("Enter Valid Name");
+                    middleName.requestFocus();
+                    return;
                 }
                 if (sBirthday.isEmpty()) {
                     birthday.setError("Field is required");
@@ -148,7 +160,6 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             case 2:
                 UIUtil.hideKeyboard(this);
                 progressBar.setVisibility(View.GONE);
-                registrationProgress.setProgress(percentage);
                 if (sEmail.isEmpty()) {
                     email.setError("Field is required");
                     email.requestFocus();
@@ -176,7 +187,6 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
             case 3:
                 UIUtil.hideKeyboard(this);
                 progressBar.setVisibility(View.GONE);
-                registrationProgress.setProgress(percentage);
                 if (sPermanentAddress.isEmpty()) {
                     permanentAddress.setError("Field is required");
                     permanentAddress.requestFocus();
@@ -197,8 +207,9 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
                     confirmPassword.setError("Passwords Does not match");
                     progressBar.setVisibility(View.GONE);
                 }
-        }
 
+        }
+        registrationProgress.setProgress(percentage);
 
     }
 

@@ -48,4 +48,5 @@
     <string name="discard">DISCARD</string>
     <string name="log_out">log out</string>
     <string name="feature_coming_soon">Feature Coming Soon</string>
+    <string name="save_changes">Save changes</string>
 </resources>

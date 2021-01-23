@@ -37,9 +37,10 @@
         <ImageView
             android:id="@+id/userAvatar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:background="@drawable/ic_m_def_avatar"
+            android:src="@drawable/ic_m_def_avatar"
+            android:adjustViewBounds="true"
             android:contentDescription="@string/user_avatar" />
     </androidx.cardview.widget.CardView>
 
@@ -72,13 +73,44 @@
         app:layout_constraintWidth_percent="0.35">
 
         <TextView
+            android:id="@+id/labelName"
             android:layout_width="match_parent"
             android:layout_height="47dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Name: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="17sp"/>
+        <TextView
+            android:id="@+id/labelLastName"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/text_bg"
+            android:text="Last Name: "
+            android:textColor="@android:color/black"
+            android:textSize="17sp"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/labelMiddleName"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/text_bg"
+            android:text="Middle Name: "
+            android:textColor="@android:color/black"
+            android:textSize="17sp"
+            android:visibility="gone" />
+        <TextView
+            android:id="@+id/labelFirstName"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/text_bg"
+            android:text="FirstName: "
+            android:textColor="@android:color/black"
+            android:textSize="17sp"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_width="match_parent"
@@ -153,7 +185,27 @@
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:autofillHints="Lastname, Middlename, Firstname"
+            android:hint="Last Name"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
+        <EditText
+            android:id="@+id/editMiddleName"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="Middle Name"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
+        <EditText
+            android:id="@+id/editFistName"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="FistName"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
@@ -165,6 +217,16 @@
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <EditText
+            android:id="@+id/editEmailAdd"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="Email Address"
+            android:inputType="textEmailAddress"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/birthday"
@@ -174,6 +236,16 @@
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <EditText
+            android:id="@+id/editBirthday"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="LastName"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/permanentAddress"

@@ -2,7 +2,11 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,18 +14,28 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
+import java.io.ByteArrayOutputStream;
+
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Login;
@@ -29,6 +43,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.User;
 
 public class AccountDetails extends AppCompatActivity {
+    private static final String TAG = "AccountDetails";
     TextView name, emailAdd, birthday, permanentAdd, occupation, institution;
     private FirebaseUser user;
     private DatabaseReference reference;
@@ -43,11 +58,14 @@ public class AccountDetails extends AppCompatActivity {
     public static final String PERM_ADD = "PERM_ADD";
     public static final String OCCUPATION = "OCCUPATION";
     public static final String INSTITUTION = "INSTITUTION";
+    String PROFILE_IMAGE_URL = null;
+    Bitmap profilePicBitmap;
     boolean editMode;
     Button editProfile;
-    ImageView cardBG;
-    CardView profilePicture;
+    ImageView cardBG,profilePicture;
+    CardView cardView;
     EditText editName;
+    int TAKE_IMAGE_CODE = 10001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,27 +86,94 @@ public class AccountDetails extends AppCompatActivity {
             public void onVisibilityChanged(boolean isOpen) {
                 if (isOpen) {
                     cardBG.setVisibility(View.GONE);
-                    profilePicture.setVisibility(View.GONE);
+                    cardView.setVisibility(View.GONE);
                 } else {
-                    profilePicture.setVisibility(View.VISIBLE);
+                    cardView.setVisibility(View.VISIBLE);
                     cardBG.setVisibility(View.VISIBLE);
                 }
             }
         });
+    }
+    private void exitEditView(){
+
     }
     private void enterEditMode() {
         editProfile.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
         editName.setVisibility(View.VISIBLE);
         editName.setText(firstNameS + " "+lastNameS+" ");
-        profilePicture.setOnClickListener(new View.OnClickListener() {
+        cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                handleOnImageClick();
             }
         });
     }
 
+    private void handleOnImageClick() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (intent.resolveActivity(getPackageManager())!=null){
+            startActivityForResult(intent, TAKE_IMAGE_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == TAKE_IMAGE_CODE){
+            switch (resultCode){
+                case RESULT_OK:
+                    Bitmap bitmap = (Bitmap) data.getExtras().get("data");
+                    profilePicture.setImageBitmap(bitmap);
+                    handleUpload(bitmap);
+            }
+        }
+    }
+
+    private void handleUpload(Bitmap bitmap) {
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG,100,byteArrayOutputStream);
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("ProfilePictures")
+                .child(userID+".jpeg");
+        reference.putBytes(byteArrayOutputStream.toByteArray()).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+            @Override
+            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                getDownloadUrl(reference);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.e(TAG, "onFailure: ",e.getCause() );
+            }
+        });
+    }
+
+    private void getDownloadUrl(StorageReference reference) {
+        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Log.d(TAG, "onSuccess: "+uri);
+                setProfileUrl(uri);
+            }
+        });
+    }
+
+    private void setProfileUrl(Uri uri){
+        UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
+                .setPhotoUri(uri)
+                .build();
+        user.updateProfile(request).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                Toast.makeText(AccountDetails.this, "Uploaded Successfully", Toast.LENGTH_SHORT).show();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(AccountDetails.this, "Upload Failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 
     private void loadUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -113,12 +198,19 @@ public class AccountDetails extends AppCompatActivity {
         permanentAdd.append(permanentAddS);
         occupation.append(occupationS);
         institution.append(institutionS);
+        profilePicture.setImageBitmap(profilePicBitmap);
+        if (user.getPhotoUrl() != null){
+            Glide.with(AccountDetails.this)
+                    .load(user.getPhotoUrl())
+                    .into(profilePicture);
+        }
     }
 
     private void assignIDS() {
+        profilePicture = findViewById(R.id.userAvatar);
         cardBG = findViewById(R.id.cardBG);
         editName = findViewById(R.id.editLastName);
-        profilePicture = findViewById(R.id.cardView);
+        cardView = findViewById(R.id.cardView);
         editProfile = findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -152,6 +244,11 @@ public class AccountDetails extends AppCompatActivity {
                     occupationS = userProfile.occupation;
                     institutionS = userProfile.institution;
                 }
+                if (user.getPhotoUrl()!= null){
+                    Glide.with(AccountDetails.this)
+                            .load(user.getPhotoUrl())
+                            .into(profilePicture);
+                }
             }
 
             @Override
@@ -160,7 +257,8 @@ public class AccountDetails extends AppCompatActivity {
             }
         });
     }
-
+//
+//log out the user
     public void logOut(View view) {
         FirebaseAuth.getInstance().signOut();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

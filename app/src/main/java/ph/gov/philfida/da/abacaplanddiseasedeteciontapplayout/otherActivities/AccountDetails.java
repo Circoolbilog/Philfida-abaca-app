@@ -64,7 +64,7 @@ public class AccountDetails extends AppCompatActivity {
     Button editProfile;
     ImageView cardBG,profilePicture;
     CardView cardView;
-    EditText editName;
+    EditText editLastName,editFirstName, editMiddleName, editEmail, editBirthday, editPermanentAdd, editOccupation, editInstitution;
     int TAKE_IMAGE_CODE = 10001;
 
     @Override
@@ -100,8 +100,13 @@ public class AccountDetails extends AppCompatActivity {
     private void enterEditMode() {
         editProfile.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
-        editName.setVisibility(View.VISIBLE);
-        editName.setText(firstNameS + " "+lastNameS+" ");
+        editLastName.setVisibility(View.VISIBLE);
+        editLastName.setText(lastNameS);
+        editFirstName.setVisibility(View.VISIBLE);
+        editMiddleName.setVisibility(View.VISIBLE);
+        editFirstName.setText(firstNameS);
+        editMiddleName.setText(middleNameS);
+
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,16 +205,36 @@ public class AccountDetails extends AppCompatActivity {
         institution.append(institutionS);
         profilePicture.setImageBitmap(profilePicBitmap);
         if (user.getPhotoUrl() != null){
+//            Glide.with(AccountDetails.this)
+//                    .asBitmap()
+//                    .load(user.getPhotoUrl())
+//                    .into(new SimpleTarget<Bitmap>() {
+//                        @Override
+//                        public void onResourceReady(Bitmap bitmap,
+//                                                    Transition<? super Bitmap> transition) {
+//                            int w = bitmap.getWidth();
+//                            int h = bitmap.getHeight();
+//                            profilePicture.setImageBitmap(bitmap);
+//                        }
+//                    });
             Glide.with(AccountDetails.this)
                     .load(user.getPhotoUrl())
+                    .override(400,400)
                     .into(profilePicture);
         }
     }
 
     private void assignIDS() {
+        editFirstName = findViewById(R.id.editFistName);
+        editMiddleName = findViewById(R.id.editMiddleName);
+        editEmail = findViewById(R.id.editEmailAdd);
+        editBirthday = findViewById(R.id.editBirthday);
+        editPermanentAdd = findViewById(R.id.editPermanentAdd);
+        editOccupation = findViewById(R.id.editOccupation);
+        editInstitution =findViewById(R.id.editInstitution);
         profilePicture = findViewById(R.id.userAvatar);
         cardBG = findViewById(R.id.cardBG);
-        editName = findViewById(R.id.editLastName);
+        editLastName = findViewById(R.id.editLastName);
         cardView = findViewById(R.id.cardView);
         editProfile = findViewById(R.id.edit_profile);
         editProfile.setOnClickListener(new View.OnClickListener() {

@@ -34,14 +34,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/cardBG">
 
-        <ImageView
-            android:id="@+id/userAvatar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:src="@drawable/ic_m_def_avatar"
-            android:adjustViewBounds="true"
-            android:contentDescription="@string/user_avatar" />
+            <ImageView
+                android:id="@+id/userAvatar"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:adjustViewBounds="true"
+                android:contentDescription="@string/user_avatar"
+                android:src="@drawable/ic_m_def_avatar"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                android:scaleType="centerCrop"/>
     </androidx.cardview.widget.CardView>
 
     <Button
@@ -243,7 +248,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:hint="LastName"
+            android:hint="Birthday"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
@@ -255,6 +260,16 @@
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <EditText
+            android:id="@+id/editPermanentAdd"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="Permanent Address"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/occupation"
@@ -264,6 +279,17 @@
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <EditText
+            android:id="@+id/editOccupation"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="Occupation"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
+
 
         <TextView
             android:id="@+id/institution"
@@ -273,6 +299,17 @@
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
             android:textSize="15sp" />
+        <EditText
+            android:id="@+id/editInstitution"
+            android:layout_width="match_parent"
+            android:layout_height="47dp"
+            android:layout_marginTop="8dp"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:hint="Institution"
+            android:inputType="textPersonName"
+            android:visibility="gone"/>
+
     </LinearLayout>
 
     <Button
@@ -295,7 +332,8 @@
         android:text="@string/save_changes"
         android:textColor="@android:color/white"
         app:layout_constraintTop_toBottomOf="@+id/linearLayout2"
-        tools:layout_editor_absoluteX="0dp" />
+        tools:layout_editor_absoluteX="0dp"
+        android:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

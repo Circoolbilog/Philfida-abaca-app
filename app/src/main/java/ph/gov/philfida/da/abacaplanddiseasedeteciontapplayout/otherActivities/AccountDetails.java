@@ -121,6 +121,7 @@ public class AccountDetails extends AppCompatActivity {
         editInstitution.setVisibility(View.GONE);
         logout.setVisibility(View.VISIBLE);
         save.setVisibility(View.GONE);
+        cardView.setClickable(false);
     }
 
     //show edit text to enable the user to edit info
@@ -307,6 +308,14 @@ public class AccountDetails extends AppCompatActivity {
         institution = findViewById(R.id.institution);
         logout = findViewById(R.id.logout);
         save = findViewById(R.id.save);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                updateDatabase();
+                updateViews();
+                exitEditView();
+            }
+        });
     }
 
     //get the user info from firebase database
@@ -363,4 +372,13 @@ public class AccountDetails extends AppCompatActivity {
         }
         super.onBackPressed();
     }
+
+    //send edited info to the database
+    //TODO: Validate user info
+
+    public void updateDatabase(){
+        User user = new User(lastNameS,middleNameS,firstNameS,birthdayS,emailAddS,permanentAddS,occupationS,institutionS);
+       // reference.child(userID).updateChildren();
+    }
+
 }

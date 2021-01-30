@@ -80,6 +80,7 @@ public class AccountDetails extends AppCompatActivity {
             enterEditMode();
         }
     }
+    //make sure that the layout looks good even when typing
     private void layoutAdjustments() {
         KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
             @Override
@@ -94,9 +95,15 @@ public class AccountDetails extends AppCompatActivity {
             }
         });
     }
+
+    //exit edit mode and save changes made.(update database)
+
     private void exitEditView(){
 
     }
+
+    //show edit text to enable the user to edit info
+
     private void enterEditMode() {
         editProfile.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
@@ -115,12 +122,16 @@ public class AccountDetails extends AppCompatActivity {
         });
     }
 
+    //open camera to change profile picture of user
+
     private void handleOnImageClick() {
         Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         if (intent.resolveActivity(getPackageManager())!=null){
             startActivityForResult(intent, TAKE_IMAGE_CODE);
         }
     }
+
+    //get image taken from camera and pass it to handleUpload method as a Bitmap
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -134,6 +145,8 @@ public class AccountDetails extends AppCompatActivity {
             }
         }
     }
+
+    //upload profile picture to the database.
 
     private void handleUpload(Bitmap bitmap) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -153,6 +166,7 @@ public class AccountDetails extends AppCompatActivity {
         });
     }
 
+    //get the url for the profile picture of user
     private void getDownloadUrl(StorageReference reference) {
         reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
@@ -163,6 +177,7 @@ public class AccountDetails extends AppCompatActivity {
         });
     }
 
+    //upload the picture taken to the firebase database
     private void setProfileUrl(Uri uri){
         UserProfileChangeRequest request = new UserProfileChangeRequest.Builder()
                 .setPhotoUri(uri)
@@ -180,6 +195,8 @@ public class AccountDetails extends AppCompatActivity {
         });
     }
 
+    //laod user data from shared preferences (locally stored)
+
     private void loadUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         lastNameS = sharedPreferences.getString(LAST_NAME, "");
@@ -191,6 +208,8 @@ public class AccountDetails extends AppCompatActivity {
         occupationS = sharedPreferences.getString(OCCUPATION, "");
         institutionS = sharedPreferences.getString(INSTITUTION, "");
     }
+
+    //update views,(text, images etc)
 
     private void updateViews() {
         name.setText(firstNameS + " ");

@@ -33,6 +33,7 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.io.ByteArrayOutputStream;
+import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -378,7 +379,24 @@ public class AccountDetails extends AppCompatActivity {
 
     public void updateDatabase(){
         User user = new User(lastNameS,middleNameS,firstNameS,birthdayS,emailAddS,permanentAddS,occupationS,institutionS);
-       // reference.child(userID).updateChildren();
+        lastNameS = editLastName.getText().toString();
+        middleNameS = editMiddleName.getText().toString();
+        firstNameS = editFirstName.getText().toString();
+        birthdayS = editBirthday.getText().toString();
+        emailAddS = editEmail.getText().toString();
+        permanentAddS = editPermanentAdd.getText().toString();
+        occupationS = editOccupation.getText().toString();
+        institutionS = editInstitution.getText().toString();
+        HashMap hashMap = new HashMap();
+        hashMap.put("lastName", lastNameS);
+        hashMap.put("firstName", firstNameS);
+        hashMap.put("middleName", middleNameS);
+        hashMap.put("birthday", birthdayS);
+        hashMap.put("email", emailAddS);
+        hashMap.put("permanentAddress", permanentAddS);
+        hashMap.put("occupation", occupationS);
+        hashMap.put("institution", institutionS);
+        reference.child(userID).updateChildren(hashMap);
     }
 
 }

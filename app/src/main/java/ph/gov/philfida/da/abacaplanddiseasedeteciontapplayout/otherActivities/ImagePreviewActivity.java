@@ -35,7 +35,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String fileNum = "fileNumber";
     public int fileNumber = 0;
-    String filename;
+    String filename, location, detection, confidence,detectionInfo;
     Image image;
     ImageView prev;
     Bitmap bitmap,bitmap2;
@@ -55,12 +55,17 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (extras != null) {
             bitmap = BitmapFactory.decodeByteArray(
                     getIntent().getByteArrayExtra("byteArray"), 0, getIntent().getByteArrayExtra("byteArray").length);
-            title.setText(extras.getString("diseaseName") + " "+ extras.getString("confidence"));
             float degrees = 90;
             Matrix matrix = new Matrix();
             matrix.setRotate(degrees);
             bitmap2 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
             prev.setImageBitmap(bitmap2);
+            detection  = extras.getString("diseaseName");
+            confidence = extras.getString("confidence");
+            location = extras.getString("location");
+            title.setText("");
+            title.append(detection + " "+ confidence);
+            detectionInfo = detection + " " + confidence + "\n" + location;
         }
         //make sure that there are no duplicate names
         loadFileNumber();
@@ -126,9 +131,13 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         Objects.requireNonNull(fos).close();
+        File textFile = new File(dir, name + ".txt");
+        fos=new FileOutputStream(textFile);
+        fos.write(detectionInfo.getBytes());
         incrementFileNumber();
         finish();
     }
+
 
     public void incrementFileNumber() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

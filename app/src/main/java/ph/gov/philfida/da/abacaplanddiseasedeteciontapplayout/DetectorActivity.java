@@ -89,7 +89,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     private MultiBoxTracker tracker;
 
     private BorderedText borderedText;
-
+    RectF passLocation;
     List<String> detectedSymptomsList = new ArrayList<>();
     List<Float> confidenceList = new ArrayList<>();
     int lastDetection;
@@ -217,7 +217,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                                 cropToFrameTransform.mapRect(location);
                                 detectedSymptomsList.add(result.getTitle());
                                 confidenceList.add(result.getConfidence());
-
+                                passLocation = location;
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
                             }
@@ -285,8 +285,13 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         imagePrev.putExtra("byteArray", bs.toByteArray());
         imagePrev.putExtra("diseaseName", getDetectionInfo());
         imagePrev.putExtra("confidence", getConfidence());
+        imagePrev.putExtra("location", getLocation());
         lastDetection = confidenceList.size();
         startActivity(imagePrev);
+    }
+
+    private String getLocation() {
+        return passLocation.toString();
     }
 
     private String getDetectionInfo() {

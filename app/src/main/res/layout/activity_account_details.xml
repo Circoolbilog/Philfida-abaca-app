@@ -24,11 +24,11 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="72dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="70dp"
         app:cardBackgroundColor="@color/appAvatarBG"
-        app:cardCornerRadius="75dp"
+        app:cardCornerRadius="60dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
@@ -50,6 +50,7 @@
     </androidx.cardview.widget.CardView>
 
     <Button
+        android:textSize="12sp"
         android:id="@+id/edit_profile"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -78,89 +79,107 @@
         app:layout_constraintWidth_percent="0.35">
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:id="@+id/labelName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Name: "
             android:textColor="@android:color/black"
-            android:textSize="17sp"/>
+            android:textSize="14sp"/>
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:id="@+id/labelLastName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Last Name: "
             android:textColor="@android:color/black"
-            android:textSize="17sp"
+            android:textSize="14sp"
             android:visibility="gone" />
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:id="@+id/labelMiddleName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Middle Name: "
             android:textColor="@android:color/black"
-            android:textSize="17sp"
+            android:textSize="14sp"
             android:visibility="gone" />
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:id="@+id/labelFirstName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="FirstName: "
             android:textColor="@android:color/black"
-            android:textSize="17sp"
+            android:textSize="14sp"
             android:visibility="gone"/>
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Email Address: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Birthday: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Permanent Address: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Occupation: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
 
         <TextView
+            android:gravity="center_vertical"
+            android:padding="5dp"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:text="Institution: "
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
+            android:textSize="14sp" />
     </LinearLayout>
 
     <LinearLayout
@@ -176,136 +195,150 @@
         app:layout_constraintWidth_percent="0.65">
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/lastName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editLastName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Last Name"
             android:inputType="textPersonName"
             android:visibility="gone"/>
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editMiddleName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Middle Name"
             android:inputType="textPersonName"
             android:visibility="gone"/>
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editFistName"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="FistName"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/emailAdd"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editEmailAdd"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Email Address"
             android:inputType="textEmailAddress"
             android:visibility="gone"/>
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/birthday"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editBirthday"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Birthday"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/permanentAddress"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editPermanentAdd"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Permanent Address"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/occupation"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editOccupation"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Occupation"
             android:inputType="textPersonName"
             android:visibility="gone"/>
 
 
         <TextView
+            android:gravity="center_vertical"
             android:id="@+id/institution"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:background="@drawable/text_bg"
             android:textColor="@android:color/black"
-            android:textSize="15sp" />
+            android:textSize="12sp" />
         <EditText
+            android:gravity="center_vertical"
             android:id="@+id/editInstitution"
             android:layout_width="match_parent"
-            android:layout_height="47dp"
+            android:layout_height="45dp"
             android:layout_marginTop="8dp"
             android:textColor="@android:color/black"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:hint="Institution"
             android:inputType="textPersonName"
             android:visibility="gone"/>

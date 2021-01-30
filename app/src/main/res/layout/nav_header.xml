@@ -21,9 +21,15 @@
             android:id="@+id/userAvatar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:background="@drawable/ic_m_def_avatar"
-            android:contentDescription="@string/user_avatar" />
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/user_avatar"
+            android:src="@drawable/ic_m_def_avatar"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:scaleType="centerCrop"/>
     </androidx.cardview.widget.CardView>
 
     <TextView

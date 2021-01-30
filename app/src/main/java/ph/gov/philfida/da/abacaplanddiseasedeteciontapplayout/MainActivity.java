@@ -7,9 +7,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -57,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
         saveUserData();
     }
 
+    //Load user data from Shared Preference(locally stored)
 
     private void loadUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -68,14 +71,22 @@ public class MainActivity extends AppCompatActivity {
         permAdd = sharedPreferences.getString(PERM_ADD, "");
         occupation = sharedPreferences.getString(OCCUPATION, "");
         institution = sharedPreferences.getString(INSTITUTION, "");
-        setUpNavDrawer();
     }
+
+    //setting up navigation drawer(sidebar)
 
     private void setUpNavDrawer() {
         navigationView = findViewById(R.id.navView);
         View header = navigationView.getHeaderView(0);
         TextView navName = header.findViewById(R.id.navUserName);
         navName.setText(firstName + " " + lastName);
+        ImageView navPicture = header.findViewById(R.id.userAvatar);
+        if (user.getPhotoUrl() != null){
+            Glide.with(MainActivity.this)
+                    .load(user.getPhotoUrl())
+                    .override(400,400)
+                    .into(navPicture );
+        }
         drawerLayout = findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
         drawerLayout.addDrawerListener(toggle);
@@ -104,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //Logout user
+
     public void logOut() {
         FirebaseAuth.getInstance().signOut();
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -115,6 +128,8 @@ public class MainActivity extends AppCompatActivity {
         finish();
     }
 
+    //set up what happens whe user selects item from the menu
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (toggle.onOptionsItemSelected(item)) {
@@ -122,6 +137,8 @@ public class MainActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //Download user data from Firebase Database
 
     private void getDBDetails() {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -149,17 +166,25 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        setUpNavDrawer();
     }
+
+    //Open Diagnose Activity
 
     public void openDiagnoseActivity(View view) {
         Intent diagnose = new Intent(this, DetectorActivity.class);
         startActivity(diagnose);
     }
 
+    //Open Assesment Activity
+
     public void openAssessmentActivity(View view) {
         Intent assessment = new Intent(this, AssessmentActivity.class);
         startActivity(assessment);
     }
+
+    //Open AccountDetails Activity
 
     public void openAccountDetails() {
         Intent intent = new Intent(MainActivity.this, AccountDetails.class);
@@ -167,10 +192,14 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    //open Disease Index Activity
+
     public void openDiseaseIndex(View view) {
         Intent intent = new Intent(MainActivity.this, DiseaseIndex.class);
         startActivity(intent);
     }
+
+    //save user info to shared prefs(store locally)
 
     public void saveUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
@@ -186,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         editor.apply();
     }
 
+    //open account details when clicked from navigation menu
     public void openAccountDetailsFromNav(View view) {
         openAccountDetails();
     }

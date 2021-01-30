@@ -44,7 +44,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.User;
 
 public class AccountDetails extends AppCompatActivity {
     private static final String TAG = "AccountDetails";
-    TextView name, emailAdd, birthday, permanentAdd, occupation, institution;
+    TextView name, labelName, lastName, firstName, middleName, emailAdd, birthday, permanentAdd, occupation, institution;
     private FirebaseUser user;
     private DatabaseReference reference;
     private String userID;
@@ -61,7 +61,7 @@ public class AccountDetails extends AppCompatActivity {
     String PROFILE_IMAGE_URL = null;
     Bitmap profilePicBitmap;
     boolean editMode;
-    Button editProfile;
+    Button editProfile,logout,save;
     ImageView cardBG,profilePicture;
     CardView cardView;
     EditText editLastName,editFirstName, editMiddleName, editEmail, editBirthday, editPermanentAdd, editOccupation, editInstitution;
@@ -99,20 +99,63 @@ public class AccountDetails extends AppCompatActivity {
     //exit edit mode and save changes made.(update database)
 
     private void exitEditView(){
-
+        editMode = false;
+        editProfile.setVisibility(View.VISIBLE);
+        name.setVisibility(View.VISIBLE);
+        labelName.setVisibility(View.VISIBLE);
+        lastName.setVisibility(View.GONE);
+        firstName.setVisibility(View.GONE);
+        middleName.setVisibility(View.GONE);
+        editLastName.setVisibility(View.GONE);
+        editFirstName.setVisibility(View.GONE);
+        editMiddleName.setVisibility(View.GONE);
+        emailAdd.setVisibility(View.VISIBLE);
+        editEmail.setVisibility(View.GONE);
+        birthday.setVisibility(View.VISIBLE);
+        editBirthday.setVisibility(View.GONE);
+        permanentAdd.setVisibility(View.VISIBLE);
+        editPermanentAdd.setVisibility(View.GONE);
+        occupation.setVisibility(View.VISIBLE);
+        editOccupation.setVisibility(View.GONE);
+        institution.setVisibility(View.VISIBLE);
+        editInstitution.setVisibility(View.GONE);
+        logout.setVisibility(View.VISIBLE);
+        save.setVisibility(View.GONE);
     }
 
     //show edit text to enable the user to edit info
 
     private void enterEditMode() {
+        editMode = true;
         editProfile.setVisibility(View.GONE);
         name.setVisibility(View.GONE);
+        labelName.setVisibility(View.GONE);
+        lastName.setVisibility(View.VISIBLE);
+        firstName.setVisibility(View.VISIBLE);
+        middleName.setVisibility(View.VISIBLE);
         editLastName.setVisibility(View.VISIBLE);
         editLastName.setText(lastNameS);
         editFirstName.setVisibility(View.VISIBLE);
         editMiddleName.setVisibility(View.VISIBLE);
         editFirstName.setText(firstNameS);
         editMiddleName.setText(middleNameS);
+        emailAdd.setVisibility(View.GONE);
+        editEmail.setVisibility(View.VISIBLE);
+        editEmail.setText(emailAddS);
+        birthday.setVisibility(View.GONE);
+        editBirthday.setVisibility(View.VISIBLE);
+        editBirthday.setText(birthdayS);
+        permanentAdd.setVisibility(View.GONE);
+        editPermanentAdd.setVisibility(View.VISIBLE);
+        editPermanentAdd.setText(permanentAddS);
+        occupation.setVisibility(View.GONE);
+        editOccupation.setVisibility(View.VISIBLE);
+        editOccupation.setText(occupationS);
+        institution.setVisibility(View.GONE);
+        editInstitution.setVisibility(View.VISIBLE);
+        editInstitution.setText(institutionS);
+        logout.setVisibility(View.GONE);
+        save.setVisibility(View.VISIBLE);
 
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -224,24 +267,14 @@ public class AccountDetails extends AppCompatActivity {
         institution.append(institutionS);
         profilePicture.setImageBitmap(profilePicBitmap);
         if (user.getPhotoUrl() != null){
-//            Glide.with(AccountDetails.this)
-//                    .asBitmap()
-//                    .load(user.getPhotoUrl())
-//                    .into(new SimpleTarget<Bitmap>() {
-//                        @Override
-//                        public void onResourceReady(Bitmap bitmap,
-//                                                    Transition<? super Bitmap> transition) {
-//                            int w = bitmap.getWidth();
-//                            int h = bitmap.getHeight();
-//                            profilePicture.setImageBitmap(bitmap);
-//                        }
-//                    });
             Glide.with(AccountDetails.this)
                     .load(user.getPhotoUrl())
                     .override(400,400)
                     .into(profilePicture);
         }
     }
+
+    //this is where views are assigned with their ids.
 
     private void assignIDS() {
         editFirstName = findViewById(R.id.editFistName);
@@ -263,12 +296,20 @@ public class AccountDetails extends AppCompatActivity {
             }
         });
         name = findViewById(R.id.lastName);
+        labelName = findViewById(R.id.labelName);
+        lastName = findViewById(R.id.labelLastName);
+        firstName = findViewById(R.id.labelFirstName);
+        middleName = findViewById(R.id.labelMiddleName);
         emailAdd = findViewById(R.id.emailAdd);
         birthday = findViewById(R.id.birthday);
         permanentAdd = findViewById(R.id.permanentAddress);
         occupation = findViewById(R.id.occupation);
         institution = findViewById(R.id.institution);
+        logout = findViewById(R.id.logout);
+        save = findViewById(R.id.save);
     }
+
+    //get the user info from firebase database
 
     private void getDBDetails() {
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -312,5 +353,14 @@ public class AccountDetails extends AppCompatActivity {
         Intent intent = new Intent(this, Login.class);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (editMode){
+            exitEditView();
+            return;
+        }
+        super.onBackPressed();
     }
 }

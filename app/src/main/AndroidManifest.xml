@@ -35,7 +35,8 @@
         <activity
             android:name=".otherActivities.AssessmentActivity"
             android:theme="@style/NoActionBar" />
-        <activity android:name=".otherActivities.AccountDetails" />
+        <activity android:name=".otherActivities.AccountDetails"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".DetectorActivity"
             android:theme="@style/NoActionBar" />

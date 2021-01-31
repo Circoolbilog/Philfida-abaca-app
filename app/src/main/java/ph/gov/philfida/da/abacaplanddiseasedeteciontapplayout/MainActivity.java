@@ -27,6 +27,7 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
@@ -107,12 +108,19 @@ public class MainActivity extends AppCompatActivity {
                     case R.id.settings:
                         Toast.makeText(MainActivity.this, "Settings selected", Toast.LENGTH_LONG).show();
                         return true;
+                    case R.id.about:
+                        openAboutActivity();
                     case R.id.logout:
                         logOut();
                 }
                 return false;
             }
         });
+    }
+
+    private void openAboutActivity() {
+        Intent intent = new Intent(this, AboutApp.class);
+        startActivity(intent);
     }
 
     //Logout user

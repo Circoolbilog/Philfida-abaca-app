@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/userName"
-        android:title="Username" />
+        android:title="@string/usernameO" />
     <item android:id="@+id/settings"
-        android:title="Settings" />
+        android:title="@string/settings" />
+    <item android:id="@+id/about"
+        android:title="@string/about"/>
     <item android:id="@+id/logout"
-        android:title="Log Out"/>
+        android:title="@string/log_out"/>
 </menu>

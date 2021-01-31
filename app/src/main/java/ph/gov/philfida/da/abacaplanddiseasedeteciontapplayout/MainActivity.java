@@ -31,6 +31,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ab
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
@@ -106,16 +107,23 @@ public class MainActivity extends AppCompatActivity {
                         openAccountDetails();
                         return true;
                     case R.id.settings:
-                        Toast.makeText(MainActivity.this, "Settings selected", Toast.LENGTH_LONG).show();
+                        openSettings();
                         return true;
                     case R.id.about:
                         openAboutActivity();
+                        return true;
                     case R.id.logout:
                         logOut();
+                        return  true;
                 }
                 return false;
             }
         });
+    }
+
+    private void openSettings() {
+        Intent intent = new Intent(this,SettingsActivity.class);
+        startActivity(intent);
     }
 
     private void openAboutActivity() {

@@ -70,7 +70,6 @@ public class AssessmentActivity extends AppCompatActivity {
         galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
-                Toast.makeText(AssessmentActivity.this,"asd" + path,Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
                 intent.putExtra("file",path);
                 startActivity(intent);

@@ -100,16 +100,16 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
 
     public void validateData(int prog) {
         progressBar.setVisibility(View.VISIBLE);
-        sLastName = lastName.getEditText().getText().toString();
-        sFirstName = firstName.getEditText().getText().toString();
-        sMiddleName = middleName.getEditText().getText().toString();
-        sBirthday = birthday.getEditText().getText().toString();
-        sEmail = email.getEditText().getText().toString();
-        sPassword = password.getEditText().getText().toString();
-        sConfirmPassword = confirmPassword.getEditText().getText().toString();
-        sPermanentAddress = permanentAddress.getEditText().getText().toString();
-        sOccupation = occupation.getEditText().getText().toString();
-        sInstitution = institution.getEditText().getText().toString();
+        sLastName = lastName.getEditText().getText().toString().trim();
+        sFirstName = firstName.getEditText().getText().toString().trim();
+        sMiddleName = middleName.getEditText().getText().toString().trim();
+        sBirthday = birthday.getEditText().getText().toString().trim();
+        sEmail = email.getEditText().getText().toString().trim();
+        sPassword = password.getEditText().getText().toString().trim();
+        sConfirmPassword = confirmPassword.getEditText().getText().toString().trim();
+        sPermanentAddress = permanentAddress.getEditText().getText().toString().trim();
+        sOccupation = occupation.getEditText().getText().toString().trim();
+        sInstitution = institution.getEditText().getText().toString().trim();
         int percentage = (prog *100) /3;
         switch (prog) {
             case 1:

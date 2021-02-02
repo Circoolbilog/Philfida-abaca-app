@@ -46,7 +46,7 @@ public class Register extends AppCompatActivity implements DatePickerDialog.OnDa
     int regProgress = 1;
     private FirebaseAuth mAuth;
     private static final Pattern NAME_PATTERN =
-            Pattern.compile("^[a-zA-Z]+$");
+            Pattern.compile("^[a-zA-Z ]+$");
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {

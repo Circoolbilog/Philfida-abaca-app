@@ -278,7 +278,7 @@
             android:hint="Birthday"
             android:inputType="textPersonName"
             android:visibility="gone"
-            />
+            android:onClick="openDatePicker"/>
 
         <TextView
             android:gravity="center_vertical"

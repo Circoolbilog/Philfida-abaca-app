@@ -277,7 +277,8 @@
             android:textSize="12sp"
             android:hint="Birthday"
             android:inputType="textPersonName"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
         <TextView
             android:gravity="center_vertical"

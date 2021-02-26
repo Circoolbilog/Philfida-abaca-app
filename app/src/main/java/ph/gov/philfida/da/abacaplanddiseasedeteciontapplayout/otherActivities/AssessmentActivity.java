@@ -1,5 +1,15 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
+import android.Manifest;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,16 +20,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.ImagesGallery;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.GalleryAdapter;
-
-import android.Manifest;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.os.Bundle;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import java.util.List;
 
 public class AssessmentActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -39,11 +39,10 @@ public class AssessmentActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView_gallery_images);
         //Check for permission
         if (ContextCompat.checkSelfPermission(AssessmentActivity.this,
-                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(AssessmentActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},MY_READ_PERMISSION_CODE);
-        }
-        else{
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
+        } else {
             loadImages();
         }
     }
@@ -52,12 +51,12 @@ public class AssessmentActivity extends AppCompatActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == MY_READ_PERMISSION_CODE){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"READ EXTERNAL STORAGE PERMISSION GRANTED",Toast.LENGTH_SHORT).show();
+        if (requestCode == MY_READ_PERMISSION_CODE) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "READ EXTERNAL STORAGE PERMISSION GRANTED", Toast.LENGTH_SHORT).show();
                 loadImages();
-            }else{
-                Toast.makeText(this,"READ EXTERNAL STORAGE PERMISSION DENIED",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "READ EXTERNAL STORAGE PERMISSION DENIED", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -65,18 +64,18 @@ public class AssessmentActivity extends AppCompatActivity {
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void loadImages() {
         recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new GridLayoutManager(this,4));
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         images = ImagesGallery.listOfImages(this);
         galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
             @Override
             public void onPhotoClick(String path) {
                 Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
-                intent.putExtra("file",path);
+                intent.putExtra("file", path);
                 startActivity(intent);
                 //open photo
             }
         });
         recyclerView.setAdapter(galleryAdapter);
-        gallery_number.setText("Photos ("+ images.size()+")");
+        gallery_number.setText("Photos (" + images.size() + ")");
     }
 }

@@ -31,6 +31,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ab
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Map;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 
 public class MainActivity extends AppCompatActivity {
@@ -234,5 +235,10 @@ public class MainActivity extends AppCompatActivity {
     //open account details when clicked from navigation menu
     public void openAccountDetailsFromNav(View view) {
         openAccountDetails();
+    }
+
+    public void openMap(View view) {
+        Intent map = new Intent(this, Map.class);
+        startActivity(map);
     }
 }

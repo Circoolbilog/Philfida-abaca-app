@@ -26,6 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.Reader;
 import java.nio.ByteBuffer;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -216,6 +217,7 @@ public abstract class Diagnose extends AppCompatActivity
      */
     @Override
     public void onImageAvailable(final ImageReader reader) {
+
         // We need wait until we have some size from onPreviewSizeChosen
         if (previewWidth == 0 || previewHeight == 0) {
             return;
@@ -274,6 +276,8 @@ public abstract class Diagnose extends AppCompatActivity
             return;
         }
         Trace.endSection();
+
+
     }
 
     @Override

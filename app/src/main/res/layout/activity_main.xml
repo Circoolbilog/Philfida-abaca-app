@@ -238,7 +238,8 @@
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.4"
             android:clickable="true"
-            android:focusable="true">
+            android:focusable="true"
+            android:onClick="openMap">
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
@@ -257,7 +258,8 @@
                     android:layout_margin="10dp"
                     android:background="@drawable/ic_m_map"
                     android:clickable="true"
-                    android:focusable="true" />
+                    android:focusable="true"
+                    android:onClick="openMap"/>
 
                 <TextView
                     android:layout_width="wrap_content"

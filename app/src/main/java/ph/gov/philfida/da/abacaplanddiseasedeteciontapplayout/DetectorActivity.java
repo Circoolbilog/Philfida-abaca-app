@@ -288,6 +288,8 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         imagePrev.putExtra("location", getLocation());
         lastDetection = confidenceList.size();
         startActivity(imagePrev);
+
+        
     }
 
     private String getLocation() {

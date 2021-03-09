@@ -64,7 +64,7 @@ public class Map extends AppCompatActivity {
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
 
-
+//change
         getCurrentLocation();
         CompassOverlay compassOverlay = new CompassOverlay(this, map);
         compassOverlay.enableCompass();

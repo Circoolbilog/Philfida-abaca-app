@@ -1,5 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -8,7 +9,9 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -33,17 +36,21 @@ import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 
 import java.io.ByteArrayOutputStream;
+import java.text.DateFormat;
+import java.util.Calendar;
 import java.util.HashMap;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
+import androidx.fragment.app.DialogFragment;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Login;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.User;
 
-public class AccountDetails extends AppCompatActivity {
+public class AccountDetails extends AppCompatActivity implements DatePickerDialog.OnDateSetListener {
     private static final String TAG = "AccountDetails";
     TextView name, labelName, lastName, firstName, middleName, emailAdd, birthday, permanentAdd, occupation, institution;
     private FirebaseUser user;
@@ -158,7 +165,18 @@ public class AccountDetails extends AppCompatActivity {
         editInstitution.setText(institutionS);
         logout.setVisibility(View.GONE);
         save.setVisibility(View.VISIBLE);
-
+        editBirthday.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    cardBG.setVisibility(View.GONE);
+                    cardView.setVisibility(View.GONE);
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+                    DialogFragment datePicker = new ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DatePickerDialog();
+                    datePicker.show(getSupportFragmentManager(), "date picker");
+                }
+            }
+        });
         cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -319,6 +337,15 @@ public class AccountDetails extends AppCompatActivity {
         });
     }
 
+    //openDate Picker dialog
+
+    public void openDatePicker(View view) {
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+        DialogFragment datePicker = new ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DatePickerDialog();
+        datePicker.show(getSupportFragmentManager(), "date picker");
+    }
+
+
     //get the user info from firebase database
 
     private void getDBDetails() {
@@ -399,4 +426,13 @@ public class AccountDetails extends AppCompatActivity {
         reference.child(userID).updateChildren(hashMap);
     }
 
+    @Override
+    public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.YEAR, year);
+        c.set(Calendar.MONTH, month);
+        c.set(Calendar.DATE, dayOfMonth);
+        String currentDateString = DateFormat.getDateInstance().format(c.getTime());
+        editBirthday.setText(currentDateString);
+    }
 }

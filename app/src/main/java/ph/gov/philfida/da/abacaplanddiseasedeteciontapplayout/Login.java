@@ -53,6 +53,7 @@ public class Login extends AppCompatActivity {
 
     @Override
     protected void onStart() {
+        //TODO: Add Language selector on first start
         super.onStart();
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser!=null){

@@ -11,5 +11,13 @@ public class SettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
+
+        //TODO: Add language (English/Filipino)
+        //TODO: Add Change Camera
+        //TODO: Add Dark Mode
+        //TODO: Add update and notif settings
+        //TODO: Weather
+        //TODO: Other
+        //TODO: About App(Might merge about app with settings
     }
 }

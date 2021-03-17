@@ -8,7 +8,7 @@
 
 
     <org.osmdroid.views.MapView
-        android:id="@+id/mapview"
+        android:id="@+id/map"
         titlesource = "Mapnik"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

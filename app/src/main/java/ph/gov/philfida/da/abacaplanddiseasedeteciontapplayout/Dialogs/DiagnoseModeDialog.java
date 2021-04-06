@@ -11,6 +11,7 @@ import androidx.fragment.app.DialogFragment;
 
 public class DiagnoseModeDialog extends DialogFragment {
     DiagModeListener listener;
+    //TODO: Add default mode and remember mode sleected checkbox
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {

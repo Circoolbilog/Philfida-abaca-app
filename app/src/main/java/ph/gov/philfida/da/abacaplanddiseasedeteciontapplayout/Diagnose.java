@@ -30,7 +30,9 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.DialogFragment;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DiagnoseModeDialog;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
@@ -39,7 +41,8 @@ public abstract class Diagnose extends AppCompatActivity
         implements ImageReader.OnImageAvailableListener,
         Camera.PreviewCallback,
         CompoundButton.OnCheckedChangeListener,
-        View.OnClickListener {
+        View.OnClickListener,
+        DiagnoseModeDialog.DiagModeListener {
     private static final Logger LOGGER = new Logger();
 
     private int mode = 0;
@@ -78,6 +81,8 @@ public abstract class Diagnose extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_diagnose);
 
+        DialogFragment diagnoseMode = new DiagnoseModeDialog();
+        diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
         if (hasPermission()) {
             setFragment();
         } else {
@@ -91,6 +96,16 @@ public abstract class Diagnose extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
 
+    }
+
+    @Override
+    public void onSingleModeClicked() {
+        //TODO: Shared Prefs on what mode was selected
+    }
+
+    @Override
+    public void onDualModeClicked() {
+        //TODO: Shared prefs on what mode was selected
     }
 
     protected int[] getRgbBytes() {

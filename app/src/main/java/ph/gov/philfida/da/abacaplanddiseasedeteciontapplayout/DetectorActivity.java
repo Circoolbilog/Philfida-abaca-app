@@ -56,7 +56,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  */
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
-
     // Configuration values for the prepackaged SSD model.
     private static final int TF_OD_API_INPUT_SIZE = 640;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
@@ -227,17 +226,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         trackingOverlay.postInvalidate();
 
                         computingDetection = false;
-/*
-            runOnUiThread(
-                new Runnable() {
-                  @Override
-                  public void run() {
-                    showFrameInfo(previewWidth + "x" + previewHeight);
-                    showCropInfo(cropCopyBitmap.getWidth() + "x" + cropCopyBitmap.getHeight());
-                    showInference(lastProcessingTimeMs + "ms");
-                  }
-                });
-            */
+
                     }
                 });
     }
@@ -272,6 +261,8 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     protected void setNumThreads(final int numThreads) {
         runInBackground(() -> detector.setNumThreads(numThreads));
     }
+//TODO: Add 2 part capture to enable detection of stunting
+    //add settings to enable single capture mode
 
     @Override
     public void CaptureImage(View v) {
@@ -288,8 +279,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         imagePrev.putExtra("location", getLocation());
         lastDetection = confidenceList.size();
         startActivity(imagePrev);
-
-        
     }
 
     private String getLocation() {

@@ -81,8 +81,6 @@ public abstract class Diagnose extends AppCompatActivity
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_diagnose);
 
-        DialogFragment diagnoseMode = new DiagnoseModeDialog();
-        diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
         if (hasPermission()) {
             setFragment();
         } else {
@@ -95,16 +93,17 @@ public abstract class Diagnose extends AppCompatActivity
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-
+        DialogFragment diagnoseMode = new DiagnoseModeDialog();
+        diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
     }
 
     @Override
-    public void onSingleModeClicked() {
+    public void onSingleModeClicked(Boolean isRemember) {
         //TODO: Shared Prefs on what mode was selected
     }
 
     @Override
-    public void onDualModeClicked() {
+    public void onDualModeClicked(Boolean isRemember) {
         //TODO: Shared prefs on what mode was selected
     }
 

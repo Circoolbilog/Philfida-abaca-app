@@ -52,4 +52,5 @@
     <string name="usernameO">Username</string>
     <string name="settings">Settings</string>
     <string name="about">About</string>
+    <string name="detection_mode_desc">Single Diagnose mode for detecting symptoms found on a localized area \n \nDual Diagnose mode for detecting symptoms in more than one area (this allows detection of stunting)</string>
 </resources>

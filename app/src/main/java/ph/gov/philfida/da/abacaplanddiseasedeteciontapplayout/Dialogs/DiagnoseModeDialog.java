@@ -1,6 +1,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs;
 
 import android.app.AlertDialog;
+import android.app.Application;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -56,6 +58,7 @@ public class DiagnoseModeDialog extends DialogFragment {
                 });
         // Create the AlertDialog object and return it
         rememberChoice = view.findViewById(R.id.rememberChoice);
+
         return builder.create();
     }
 

@@ -68,11 +68,12 @@ public abstract class Diagnose extends AppCompatActivity
     private LinearLayout gestureLayout;
 //    private BottomSheetBehavior<LinearLayout> sheetBehavior;
 
-    protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView;
+    protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView, detectionModeText;
     protected ImageView bottomSheetArrowImageView;
     private ImageView plusImageView, minusImageView;
     //    private SwitchCompat apiSwitchCompat;
     private TextView threadsTextView;
+
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -93,17 +94,34 @@ public abstract class Diagnose extends AppCompatActivity
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        DialogFragment diagnoseMode = new DiagnoseModeDialog();
-        diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
+        detectionModeText = findViewById(R.id.detectionModeText);
+        if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()){
+            DialogFragment diagnoseMode = new DiagnoseModeDialog();
+            diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
+        }
+        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0){
+            setDialogText("DEFAULT: " + "Single Capture Mode");
+        }else{
+            setDialogText("DEFAULT: " + "Dual Capture Mode");
+        }
+    }
+    public void setDialogText(String text){
+        detectionModeText.setText(text);
     }
 
     @Override
     public void onSingleModeClicked(Boolean isRemember) {
+        ((SettingsContainer) this.getApplication()).setDiagnoseMode(0);
+        ((SettingsContainer) this.getApplication()).setDiagDialogRemember(isRemember);
+        setDialogText("Single Capture Mode");
         //TODO: Shared Prefs on what mode was selected
     }
 
     @Override
     public void onDualModeClicked(Boolean isRemember) {
+        ((SettingsContainer) this.getApplication()).setDiagnoseMode(1);
+        ((SettingsContainer) this.getApplication()).setDiagDialogRemember(isRemember);
+        setDialogText("Dual Capture Mode");
         //TODO: Shared prefs on what mode was selected
     }
 

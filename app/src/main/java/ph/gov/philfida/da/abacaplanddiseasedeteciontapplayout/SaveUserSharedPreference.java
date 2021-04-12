@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-public class SaveSharedPreference {
+public class SaveUserSharedPreference {
     static final String PREF_USER_NAME = "username";
 
     static SharedPreferences getSharedPreference(Context context) {

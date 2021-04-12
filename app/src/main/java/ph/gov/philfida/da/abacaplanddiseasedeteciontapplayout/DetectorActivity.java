@@ -278,6 +278,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         imagePrev.putExtra("confidence", getConfidence());
         imagePrev.putExtra("location", getLocation());
         lastDetection = confidenceList.size();
+        Toast.makeText(this, "arraySize: " + confidenceList.size(), Toast.LENGTH_SHORT).show();
         startActivity(imagePrev);
     }
 

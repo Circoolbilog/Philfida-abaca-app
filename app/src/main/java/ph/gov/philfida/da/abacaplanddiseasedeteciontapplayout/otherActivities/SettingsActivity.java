@@ -12,6 +12,7 @@ public class SettingsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
 
+        //TODO: Add default diagnose mode
         //TODO: Add language (English/Filipino)
         //TODO: Add Change Camera
         //TODO: Add Dark Mode

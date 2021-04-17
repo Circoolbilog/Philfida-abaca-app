@@ -26,8 +26,8 @@ public class DiagnoseModeDialog extends DialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         try {
-            listener = (DiagModeListener)context;
-        }catch(ClassCastException e) {
+            listener = (DiagModeListener) context;
+        } catch (ClassCastException e) {
             throw new ClassCastException(context.toString()
                     + "mustImplementEulaListener");
         }
@@ -50,7 +50,7 @@ public class DiagnoseModeDialog extends DialogFragment {
                         listener.onSingleModeClicked(isRememberChoice);
                     }
                 })
-                .setPositiveButton("Dual Capture Mode", new DialogInterface.OnClickListener() {
+                .setPositiveButton("Multiple Capture Mode", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         isRememberChoice = rememberChoice.isChecked();
                         listener.onDualModeClicked(isRememberChoice);
@@ -62,8 +62,9 @@ public class DiagnoseModeDialog extends DialogFragment {
         return builder.create();
     }
 
-    public interface DiagModeListener{
+    public interface DiagModeListener {
         void onSingleModeClicked(Boolean isRemember);
+
         void onDualModeClicked(Boolean isRemember);
     }
 }

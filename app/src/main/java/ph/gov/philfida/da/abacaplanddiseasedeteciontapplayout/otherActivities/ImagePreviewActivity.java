@@ -27,9 +27,11 @@ import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
 public class ImagePreviewActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -41,6 +43,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     Bitmap bitmap,bitmap2;
     OutputStream outputStream;
     TextView title;
+    CardView nextCapture;
     private static final int REQUEST = 112;
 
     @Override
@@ -50,6 +53,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         prev = findViewById(R.id.imageView);
         Bundle extras = getIntent().getExtras();
         title = findViewById(R.id.diseasePredicion);
+        nextCapture = findViewById(R.id.captureNextImage);
 
         //import image passed from previous activity
         if (extras != null) {
@@ -66,6 +70,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
             title.setText("");
             title.append(detection + " "+ confidence);
             detectionInfo = detection + " " + confidence + "\n" + location;
+        }
+        if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
+
         }
         //make sure that there are no duplicate names
         loadFileNumber();

@@ -72,7 +72,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             detectionInfo = detection + " " + confidence + "\n" + location;
         }
         if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
-
+            nextCapture.setVisibility(View.VISIBLE);
         }
         //make sure that there are no duplicate names
         loadFileNumber();
@@ -166,4 +166,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
         finish();
     }
 
+    public void captureNextImage(View view) {
+
+        finish();
+    }
 }

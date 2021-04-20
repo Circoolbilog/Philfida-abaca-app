@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.CapturedImageDiseasePrediction;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.OverlayView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
@@ -280,6 +281,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         lastDetection = confidenceList.size();
         Toast.makeText(this, "arraySize: " + confidenceList.size(), Toast.LENGTH_SHORT).show();
         startActivity(imagePrev);
+
     }
 
     private String getLocation() {

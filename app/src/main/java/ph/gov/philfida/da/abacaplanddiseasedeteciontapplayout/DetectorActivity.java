@@ -36,6 +36,7 @@ import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -55,6 +56,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  * An activity that uses a TensorFlowMultiBoxDetector and ObjectTracker to detect and then track
  * objects.
  */
+
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
     private static final Logger LOGGER = new Logger();
     // Configuration values for the prepackaged SSD model.
@@ -209,7 +211,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
-
+                        detectedSymptomsList.clear();
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -276,10 +278,13 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         Intent imagePrev = new Intent(this, ImagePreviewActivity.class);
         imagePrev.putExtra("byteArray", bs.toByteArray());
         imagePrev.putExtra("diseaseName", getDetectionInfo());
-        imagePrev.putExtra("confidence", getConfidence());
+//        imagePrev.putExtra("confidence", getConfidence());
         imagePrev.putExtra("location", getLocation());
+        String[] names = detectedSymptomsList.toArray(new String[0]);
+        imagePrev.putExtra("diseaseNameArray",names);
+
         lastDetection = confidenceList.size();
-        Toast.makeText(this, "arraySize: " + confidenceList.size(), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "arraySize: " + detectedSymptomsList.size(), Toast.LENGTH_SHORT).show();
         startActivity(imagePrev);
 
     }

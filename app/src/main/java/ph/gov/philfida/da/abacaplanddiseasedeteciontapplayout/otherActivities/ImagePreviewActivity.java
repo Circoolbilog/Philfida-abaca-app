@@ -24,6 +24,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Objects;
+import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -36,6 +37,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Setting
 public class ImagePreviewActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String fileNum = "fileNumber";
+    public static final String SYMPTOMS_ARRAY = "symptomsArray";
     public int fileNumber = 0;
     String filename, location, detection, confidence,detectionInfo;
     Image image;
@@ -44,6 +46,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
     OutputStream outputStream;
     TextView title;
     CardView nextCapture;
+    String[] detectedSymptoms;
+    Set<String> symptomNamesToSave;
     private static final int REQUEST = 112;
 
     @Override
@@ -65,11 +69,18 @@ public class ImagePreviewActivity extends AppCompatActivity {
             bitmap2 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
             prev.setImageBitmap(bitmap2);
             detection  = extras.getString("diseaseName");
-            confidence = extras.getString("confidence");
+  //          confidence = extras.getString("confidence");
             location = extras.getString("location");
             title.setText("");
-            title.append(detection + " "+ confidence);
+            //title.append(detection + " "+ confidence);
             detectionInfo = detection + " " + confidence + "\n" + location;
+            detectedSymptoms = extras.getStringArray("diseaseNameArray");
+            for(String names: detectedSymptoms){
+                symptomNamesToSave.add(names);
+                title.append("Symptoms: ");
+                title.append(names);
+                title.append("\n");
+            }
         }
         if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
             nextCapture.setVisibility(View.VISIBLE);
@@ -146,6 +157,12 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
 
+    public void setSymptomsArray(){
+        SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+        SharedPreferences.Editor spE = sp.edit();
+        spE.putStringSet(SYMPTOMS_ARRAY,symptomNamesToSave);
+        spE.apply();
+    }
     public void incrementFileNumber() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();

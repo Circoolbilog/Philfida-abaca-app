@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 import android.Manifest;
@@ -42,6 +43,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 public class Map extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,9 +69,9 @@ public class Map extends AppCompatActivity {
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
 
-        requestPermissionsIfNecessary(new String[] {
+        requestPermissionsIfNecessary(new String[]{
                 // if you need to show the current location, uncomment the line below
-                 Manifest.permission.ACCESS_FINE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION,
                 // WRITE_EXTERNAL_STORAGE is required in order to show the map
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
@@ -90,7 +92,7 @@ public class Map extends AppCompatActivity {
     private void addOverlays(Context ctx) {
         //Location Overlay
 
-        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx),map);
+        MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation();
         //Compass Overlay
@@ -101,12 +103,12 @@ public class Map extends AppCompatActivity {
         //Start Location.
         GeoPoint myLocation = mLocationOverlay.getMyLocation();
         map.postInvalidate();
-        if (myLocation != null){
+        if (myLocation != null) {
             map.getController().setCenter(mLocationOverlay.getMyLocation());
             return;
         }
         Toast.makeText(ctx, "Location is null", Toast.LENGTH_SHORT).show();
-        GeoPoint point = new GeoPoint(0.0,0.0);
+        GeoPoint point = new GeoPoint(0.0, 0.0);
         map.getController().setCenter(point);
         map.getOverlays().add(mLocationOverlay);
         map.getOverlays().add(mCompassOverlay);

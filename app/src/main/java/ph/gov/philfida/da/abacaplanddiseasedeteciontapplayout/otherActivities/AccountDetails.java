@@ -270,6 +270,7 @@ public class AccountDetails extends AppCompatActivity implements DatePickerDialo
         permanentAddS = sharedPreferences.getString(PERM_ADD, "");
         occupationS = sharedPreferences.getString(OCCUPATION, "");
         institutionS = sharedPreferences.getString(INSTITUTION, "");
+
     }
 
     //update views,(text, images etc)

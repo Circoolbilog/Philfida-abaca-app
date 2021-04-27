@@ -2,10 +2,14 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String SYMPTOMS_TABLE = "SYMPTOMS_TABLE";
@@ -18,7 +22,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "ID";
 
     public DataBaseHelper(@Nullable Context context) {
-        super(context, "Symptoms.db", null, 1);
+        super(context, "Symptoms2.db", null, 1);
     }
 
     //firstTime db access
@@ -54,6 +58,38 @@ public class DataBaseHelper extends SQLiteOpenHelper {
 
         long insert = db.insert(SYMPTOMS_TABLE, null, cv);
         return insert != -1;
+    }
+    public List<SymptomModel> getSymptoms(){
+        List<SymptomModel> returnList = new ArrayList<>();
+
+        //get data from db
+
+        String queryString = "SELECT * FROM " + SYMPTOMS_TABLE;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        Cursor cursor = db.rawQuery(queryString,null);
+
+        if (cursor.moveToFirst()){
+            //loop through results, creaet a new symptom object, put it to return list
+            do {
+                int symptomID = cursor.getInt(0);
+                String symptom = cursor.getString(1);
+                boolean bract = cursor.getInt(2) == 1;
+                boolean bunchy = cursor.getInt(3) == 1;
+                boolean gen = cursor.getInt(4) == 1;
+                boolean cmv = cursor.getInt(5) == 1;
+                boolean scmv = cursor.getInt(6) == 1;
+                SymptomModel newSymptom = new SymptomModel(symptomID,symptom,bract,bunchy,gen,cmv,scmv);
+                returnList.add(newSymptom);
+            }while (cursor.moveToNext());
+        }else {
+            //do not add blah blah blah
+        }
+        //close both cursor and db when done
+        cursor.close();
+        db.close();
+        return returnList;
     }
 
 }

@@ -1,13 +1,14 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers;
 
 public class SymptomModel {
+    int id;
     private String symptomName;
     private Boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
 
     public SymptomModel() {
     }
 
-    public SymptomModel(String symptomName, Boolean Bract_Mosaic, Boolean Bunchy_Top, Boolean CMV, Boolean Gen_Mosaic, Boolean SCMV) {
+    public SymptomModel(int id, String symptomName, Boolean Bract_Mosaic, Boolean Bunchy_Top, Boolean CMV, Boolean Gen_Mosaic, Boolean SCMV) {
         this.symptomName = symptomName;
         this.Bract_Mosaic = Bract_Mosaic;
         this.Bunchy_Top = Bunchy_Top;
@@ -16,6 +17,13 @@ public class SymptomModel {
         this.SCMV = SCMV;
     }
 
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     //getter and setter
     public String getSymptomName() {
@@ -69,10 +77,12 @@ public class SymptomModel {
 
     //toString
 
+
     @Override
     public String toString() {
         return "SymptomModel{" +
-                "symptomName='" + symptomName + '\'' +
+                "id=" + id +
+                ", symptomName='" + symptomName + '\'' +
                 ", Bract_Mosaic=" + Bract_Mosaic +
                 ", Bunchy_Top=" + Bunchy_Top +
                 ", CMV=" + CMV +

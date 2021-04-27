@@ -31,6 +31,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
@@ -109,6 +110,7 @@ public class MainActivity extends AppCompatActivity {
 //                      Toast.makeText(MainActivity.this, "Iteration: " + String.valueOf(i), Toast.LENGTH_SHORT).show();
                         addToLocalDB();
                     }
+                    displayDB();
                 }
             }
 
@@ -120,18 +122,24 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void displayDB() {
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
+        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
+//        Toast.makeText(this, everSymptom.toString(), Toast.LENGTH_LONG).show();
+    }
+
     private void addToLocalDB() {
         SymptomModel symptomModel;
         try {
-            symptomModel = new SymptomModel(symptomName,Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
-            Toast.makeText(this, symptomModel.toString(), Toast.LENGTH_SHORT).show();
+            symptomModel = new SymptomModel(0,symptomName,Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
+//            Toast.makeText(this, symptomModel.toString(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
 //            Toast.makeText(this, "Error somehow?", Toast.LENGTH_SHORT).show();
-            symptomModel = new SymptomModel("NULL",false, false, false, false, false);
+            symptomModel = new SymptomModel(0,"NULL",false, false, false, false, false);
         }
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
         boolean success = dataBaseHelper.addOne(symptomModel);
-        Toast.makeText(this, "success: "+success, Toast.LENGTH_SHORT).show();
+//        Toast.makeText(this, "success: "+success, Toast.LENGTH_SHORT).show();
     }
 
     //Load user data from Shared Preference(locally stored)

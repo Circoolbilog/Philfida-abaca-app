@@ -1,13 +1,14 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 public class User {
-    public String lastName,middleName, firstName, birthday, email, permanentAddress, occupation, institution;
+    public String lastName, middleName, firstName, birthday, email, permanentAddress, occupation, institution;
 
-    public User(){
+    public User() {
 
     }
 
-    public User(String lastName, String middleName, String firstName, String birthday, String email, String permanentAddress, String occupation, String institution) {
+    public User(String lastName, String middleName, String firstName, String birthday,
+                String email, String permanentAddress, String occupation, String institution) {
         this.lastName = lastName;
         this.middleName = middleName;
         this.firstName = firstName;

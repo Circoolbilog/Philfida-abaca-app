@@ -27,16 +27,22 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".otherActivities.WelcomeScreen"></activity>
+        <activity
+            android:name=".otherActivities.BasicInstructions"
+            android:theme="@style/NoActionBar" />
+        <activity android:name=".otherActivities.WelcomeScreen"
+            android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.AboutApp" />
         <activity
             android:name=".otherActivities.Map"
             android:theme="@style/NoActionBar" />
-        <activity android:name=".otherActivities.DiseaseInfo" />
+        <activity android:name=".otherActivities.DiseaseInfo"
+            android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.ForgotPasswordActivity" />
         <activity android:name=".otherActivities.SettingsActivity" />
         <activity android:name=".otherActivities.DiseaseIndex" />
-        <activity android:name=".otherActivities.AssessedImageViewer" />
+        <activity android:name=".otherActivities.AssessedImageViewer"
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".otherActivities.ImagePreviewActivity"
             android:theme="@style/NoActionBar" />

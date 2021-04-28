@@ -42,6 +42,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.As
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Map;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen;
 
 public class MainActivity extends AppCompatActivity {
     ActionBarDrawerToggle toggle;
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        welcomeScreen();
         loadUserData();
         getDBDetails();
         saveUserData();
@@ -80,10 +82,17 @@ public class MainActivity extends AppCompatActivity {
         createLocalDB();
     }
 
+    private void welcomeScreen() {
+        Intent intent = new Intent(this, WelcomeScreen.class);
+        startActivity(intent);
+    }
+
     private void createLocalDB() {
     }
 
     private void downloadSymptomMap() {
+        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
+        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference2 = FirebaseDatabase.getInstance().getReference("Symptoms");
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -91,26 +100,31 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
 //                IDK WHY but this part says no parsable data
 //                Symptom symptom = snapshot.getValue(Symptom.class);
-                if (snapshot.exists()) {
-                    for (long i =0;i<snapshot.getChildrenCount();i++) {
+
+                if (snapshot.exists() && snapshot.getChildrenCount() != everSymptom.size()) {
+                    for (SymptomModel symptom : everSymptom) {
+                        dataBaseHelper.clear(symptom);
+//                      Clear table
+                    }
+                    Log.d(TAG, "onDataChange: TABLE is cleared and ready to be repopulated");
+                    for (long i = 0; i < snapshot.getChildrenCount(); i++) {
 //                       symptomName = snapshot.child("0").child("SymptomName").getValue().toString();
                         symptomName = snapshot.child(String.valueOf(i)).child("SymptomName").getValue().toString();
                         stringVal_Bract_Mosaic = snapshot.child(String.valueOf(i)).child("Bract_Mosaic").getValue().toString();
-                        stringVal_Bunchy_Top= snapshot.child(String.valueOf(i)).child("Bunchy_Top").getValue().toString();
-                        stringVal_CMV= snapshot.child(String.valueOf(i)).child("CMV").getValue().toString();
-                        stringVal_Gen_Mosaic= snapshot.child(String.valueOf(i)).child("Gen_Mosaic").getValue().toString();
-                        stringVal_SCMV= snapshot.child(String.valueOf(i)).child("SCMV").getValue().toString();
-                        Bract_Mosaic =Boolean.parseBoolean(stringVal_Bract_Mosaic);
-                        Bunchy_Top=Boolean.parseBoolean(stringVal_Bunchy_Top);
-                        CMV=Boolean.parseBoolean(stringVal_CMV);
-                        Gen_Mosaic=Boolean.parseBoolean(stringVal_Gen_Mosaic);
-                        SCMV=Boolean.parseBoolean(stringVal_SCMV);
-//                        Toast.makeText(MainActivity.this, symptomName + " pos: " + i + " out of: "+ snapshot.getChildrenCount(), Toast.LENGTH_SHORT).show();
-                        Log.d(TAG, "onDataChange: "+symptomName + " pos: " + i + " out of: "+ snapshot.getChildrenCount());
-//                      Toast.makeText(MainActivity.this, "Iteration: " + String.valueOf(i), Toast.LENGTH_SHORT).show();
+                        stringVal_Bunchy_Top = snapshot.child(String.valueOf(i)).child("Bunchy_Top").getValue().toString();
+                        stringVal_CMV = snapshot.child(String.valueOf(i)).child("CMV").getValue().toString();
+                        stringVal_Gen_Mosaic = snapshot.child(String.valueOf(i)).child("Gen_Mosaic").getValue().toString();
+                        stringVal_SCMV = snapshot.child(String.valueOf(i)).child("SCMV").getValue().toString();
+                        Bract_Mosaic = Boolean.parseBoolean(stringVal_Bract_Mosaic);
+                        Bunchy_Top = Boolean.parseBoolean(stringVal_Bunchy_Top);
+                        CMV = Boolean.parseBoolean(stringVal_CMV);
+                        Gen_Mosaic = Boolean.parseBoolean(stringVal_Gen_Mosaic);
+                        SCMV = Boolean.parseBoolean(stringVal_SCMV);
+                        Log.d(TAG, "onDataChange, Populating db: " + symptomName + " pos: " + i + " out of: " + snapshot.getChildrenCount());
                         addToLocalDB();
                     }
-                    displayDB();
+                } else if (snapshot.exists()) {
+                    Log.d(TAG, "onDataChange: db does need to be updated");
                 }
             }
 
@@ -122,23 +136,19 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void displayDB() {
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
-//        Toast.makeText(this, everSymptom.toString(), Toast.LENGTH_LONG).show();
-    }
 
     private void addToLocalDB() {
         SymptomModel symptomModel;
         try {
-            symptomModel = new SymptomModel(0,symptomName,Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
+            symptomModel = new SymptomModel(0, symptomName, Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
 //            Toast.makeText(this, symptomModel.toString(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
 //            Toast.makeText(this, "Error somehow?", Toast.LENGTH_SHORT).show();
-            symptomModel = new SymptomModel(0,"NULL",false, false, false, false, false);
+            symptomModel = new SymptomModel(0, "NULL", false, false, false, false, false);
         }
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
         boolean success = dataBaseHelper.addOne(symptomModel);
+
 //        Toast.makeText(this, "success: "+success, Toast.LENGTH_SHORT).show();
     }
 
@@ -164,11 +174,11 @@ public class MainActivity extends AppCompatActivity {
         TextView navName = header.findViewById(R.id.navUserName);
         navName.setText(firstName + " " + lastName);
         ImageView navPicture = header.findViewById(R.id.userAvatar);
-        if (user.getPhotoUrl() != null){
+        if (user.getPhotoUrl() != null) {
             Glide.with(MainActivity.this)
                     .load(user.getPhotoUrl())
-                    .override(400,400)
-                    .into(navPicture );
+                    .override(400, 400)
+                    .into(navPicture);
         }
         drawerLayout = findViewById(R.id.drawerLayout);
         toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
@@ -195,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
                         return true;
                     case R.id.logout:
                         logOut();
-                        return  true;
+                        return true;
                 }
                 return false;
             }
@@ -203,7 +213,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openSettings() {
-        Intent intent = new Intent(this,SettingsActivity.class);
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 

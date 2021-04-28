@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/abaca_plant_bg"
-        android:alpha="0.4"/>
+        android:alpha="0.2"/>
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,7 +17,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:padding="15dp">
 
             <TextView
                 android:id="@+id/textView"
@@ -29,14 +30,15 @@
                 app:layout_constraintBottom_toTopOf="@+id/diseaseNameInd"
                 app:layout_constraintEnd_toEndOf="@+id/diseaseImageInd"
                 app:layout_constraintStart_toStartOf="@+id/diseaseImageInd"
-                app:layout_constraintTop_toTopOf="@+id/diseaseImageInd" />
+                app:layout_constraintTop_toTopOf="@+id/diseaseImageInd"
+                android:textColor="@color/translucent_bg"/>
 
             <ImageView
                 android:id="@+id/diseaseImageInd"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:adjustViewBounds="true"
-                android:alpha="0.7"
+                android:alpha="0.8"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"

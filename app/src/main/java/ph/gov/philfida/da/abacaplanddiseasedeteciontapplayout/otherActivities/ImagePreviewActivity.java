@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -23,6 +24,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.Set;
 
@@ -47,9 +49,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
     TextView title;
     CardView nextCapture;
     String[] detectedSymptoms;
-    Set<String> symptomNamesToSave;
+    String symptomNamesToSave;
     private static final int REQUEST = 112;
-
+    private static final String TAG = "ImagePreviewActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,11 +77,18 @@ public class ImagePreviewActivity extends AppCompatActivity {
             //title.append(detection + " "+ confidence);
             detectionInfo = detection + " " + confidence + "\n" + location;
             detectedSymptoms = extras.getStringArray("diseaseNameArray");
-            for(String names: detectedSymptoms){
-                symptomNamesToSave.add(names);
-                title.append("Symptoms: ");
-                title.append(names);
-                title.append("\n");
+            Log.d(TAG, "onCreate: detected: " + Arrays.toString(detectedSymptoms));
+            try {
+                StringBuilder sb = new StringBuilder();
+                for(String names: detectedSymptoms){
+                    sb.append(names);
+                    title.append("Symptoms: ");
+                    title.append(names);
+                    title.append("\n");
+                }
+                symptomNamesToSave = String.valueOf(sb);
+            }catch (Exception e){
+                Toast.makeText(this, "eception "+ e, Toast.LENGTH_LONG).show();
             }
         }
         if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
@@ -160,7 +169,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public void setSymptomsArray(){
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
         SharedPreferences.Editor spE = sp.edit();
-        spE.putStringSet(SYMPTOMS_ARRAY,symptomNamesToSave);
+        spE.putString(SYMPTOMS_ARRAY,symptomNamesToSave);
         spE.apply();
     }
     public void incrementFileNumber() {
@@ -184,7 +193,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void captureNextImage(View view) {
-
+        Toast.makeText(this, "Feature Under Development", Toast.LENGTH_SHORT).show();
         finish();
     }
 }

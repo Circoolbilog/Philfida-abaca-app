@@ -217,10 +217,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="@string/disease_index"
+                    android:text="Symptoms (TEMP)"
                     android:textColor="@color/appPrimary"
                     android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:textAlignment="center"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>

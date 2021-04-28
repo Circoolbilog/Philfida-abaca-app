@@ -92,4 +92,16 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         return returnList;
     }
 
+    public boolean clear(SymptomModel symptomModel){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryString = " DELETE FROM " + SYMPTOMS_TABLE + " WHERE " + COLUMN_ID + " = " + symptomModel.getId();
+
+        Cursor cursor = db.rawQuery(queryString,null);
+        if (cursor.isNull(0)){
+            return true;
+        }else {
+            return false;
+        }
+    }
+
 }

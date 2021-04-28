@@ -40,7 +40,7 @@ import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 
-public class Map extends AppCompatActivity {
+public class  Map extends AppCompatActivity {
     private final int REQUEST_PERMISSIONS_REQUEST_CODE = 1;
     private MapView map = null;
 

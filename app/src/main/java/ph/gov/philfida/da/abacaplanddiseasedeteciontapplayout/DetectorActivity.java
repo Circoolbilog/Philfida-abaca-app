@@ -28,6 +28,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.SystemClock;
+import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
@@ -39,6 +40,7 @@ import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,6 +60,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  */
 
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
+    private static final String TAG = "DetectorActivity";
     private static final Logger LOGGER = new Logger();
     // Configuration values for the prepackaged SSD model.
     private static final int TF_OD_API_INPUT_SIZE = 640;
@@ -92,10 +95,10 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
     private BorderedText borderedText;
     RectF passLocation;
-    List<String> detectedSymptomsList = new ArrayList<>();
+    ArrayList<String> detectedSymptomsList = new ArrayList<>();
     List<Float> confidenceList = new ArrayList<>();
     int lastDetection;
-
+    String[] names;
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
         final float textSizePx =
@@ -162,6 +165,11 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     }
 
     @Override
+    public synchronized void onPause() {
+        super.onPause();
+    }
+
+    @Override
     protected void processImage() {
         ++timestamp;
         final long currTimestamp = timestamp;
@@ -211,7 +219,9 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
                         final List<Classifier.Recognition> mappedRecognitions =
                                 new LinkedList<Classifier.Recognition>();
+
                         detectedSymptomsList.clear();
+
                         for (final Classifier.Recognition result : results) {
                             final RectF location = result.getLocation();
                             if (location != null && result.getConfidence() >= minimumConfidence) {
@@ -224,6 +234,8 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                                 mappedRecognitions.add(result);
                             }
                         }
+                        names = detectedSymptomsList.toArray(new String[0]);
+                        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ Arrays.toString(names));
 
                         tracker.trackResults(mappedRecognitions, currTimestamp);
                         trackingOverlay.postInvalidate();
@@ -280,9 +292,9 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         imagePrev.putExtra("diseaseName", getDetectionInfo());
 //        imagePrev.putExtra("confidence", getConfidence());
         imagePrev.putExtra("location", getLocation());
-        String[] names = detectedSymptomsList.toArray(new String[0]);
         imagePrev.putExtra("diseaseNameArray",names);
 
+        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ names);
         lastDetection = confidenceList.size();
         Toast.makeText(this, "arraySize: " + detectedSymptomsList.size(), Toast.LENGTH_SHORT).show();
         startActivity(imagePrev);

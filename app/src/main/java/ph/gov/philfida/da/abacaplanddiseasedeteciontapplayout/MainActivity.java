@@ -29,10 +29,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndConditionsDialog;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Symptom;
@@ -44,7 +46,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ma
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements TermsAndConditionsDialog.EulaListener {
     ActionBarDrawerToggle toggle;
     NavigationView navigationView;
     DrawerLayout drawerLayout;
@@ -80,6 +82,9 @@ public class MainActivity extends AppCompatActivity {
         saveUserData();
         downloadSymptomMap();
         createLocalDB();
+
+        DialogFragment tnc = new TermsAndConditionsDialog();
+        tnc.show(getSupportFragmentManager(), "T&C/EULA");
     }
 
     private void welcomeScreen() {
@@ -330,5 +335,10 @@ public class MainActivity extends AppCompatActivity {
     public void openMap(View view) {
         Intent map = new Intent(this, Map.class);
         startActivity(map);
+    }
+
+    @Override
+    public void onYesClicked() {
+        Toast.makeText(this, "nice", Toast.LENGTH_SHORT).show();
     }
 }

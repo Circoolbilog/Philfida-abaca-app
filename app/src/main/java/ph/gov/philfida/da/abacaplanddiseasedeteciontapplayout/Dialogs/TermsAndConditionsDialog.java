@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+
 public  class TermsAndConditionsDialog extends DialogFragment {
     private EulaListener listener;
 
@@ -19,7 +21,7 @@ public  class TermsAndConditionsDialog extends DialogFragment {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Terms and Conditions")
-                .setMessage("TODO: EULA or something here")
+                .setMessage(getString(R.string.EULAA))
                 .setPositiveButton("Accept & Register", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         listener.onYesClicked();

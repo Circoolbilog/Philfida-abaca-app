@@ -50,6 +50,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     CardView nextCapture;
     String[] detectedSymptoms;
     String symptomNamesToSave;
+    double lat, longt;
     private static final int REQUEST = 112;
     private static final String TAG = "ImagePreviewActivity";
     @Override
@@ -77,6 +78,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
             //title.append(detection + " "+ confidence);
             detectionInfo = detection + " " + confidence + "\n" + location;
             detectedSymptoms = extras.getStringArray("diseaseNameArray");
+            longt = extras.getDouble("longt");
+            lat = extras.getDouble("lat");
             Log.d(TAG, "onCreate: detected: " + Arrays.toString(detectedSymptoms));
             try {
                 StringBuilder sb = new StringBuilder();
@@ -164,7 +167,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
         incrementFileNumber();
         finish();
     }
-
 
     public void setSymptomsArray(){
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);

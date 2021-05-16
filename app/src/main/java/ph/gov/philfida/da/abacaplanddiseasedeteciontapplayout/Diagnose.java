@@ -32,6 +32,9 @@ import java.nio.ByteBuffer;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DiagnoseModeDialog;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
@@ -74,6 +77,7 @@ public abstract class Diagnose extends AppCompatActivity
     //    private SwitchCompat apiSwitchCompat;
     private TextView threadsTextView;
 
+    public FusedLocationProviderClient fusedLocationProviderClient;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
@@ -104,6 +108,8 @@ public abstract class Diagnose extends AppCompatActivity
         }else{
             setDialogText("DEFAULT: " + "Dual Capture Mode");
         }
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
     public void setDialogText(String text){
         detectionModeText.setText(text);

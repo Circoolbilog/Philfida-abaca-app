@@ -16,7 +16,11 @@
 
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -26,7 +30,9 @@ import android.graphics.Paint;
 import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
@@ -35,16 +41,21 @@ import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.CapturedImageDiseasePrediction;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.OverlayView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
@@ -60,6 +71,8 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  */
 
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
+
+
     private static final String TAG = "DetectorActivity";
     private static final Logger LOGGER = new Logger();
     // Configuration values for the prepackaged SSD model.
@@ -74,6 +87,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 480);
     private static final boolean SAVE_PREVIEW_BITMAP = false;
     private static final float TEXT_SIZE_DIP = 10;
+    private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 500;
     OverlayView trackingOverlay;
     private Integer sensorOrientation;
 
@@ -99,6 +113,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     List<Float> confidenceList = new ArrayList<>();
     int lastDetection;
     String[] names;
+    private double lat, longt;
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
         final float textSizePx =
@@ -293,14 +308,68 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 //        imagePrev.putExtra("confidence", getConfidence());
         imagePrev.putExtra("location", getLocation());
         imagePrev.putExtra("diseaseNameArray",names);
+        imagePrev.putExtra("longt",longt);
+        imagePrev.putExtra("lat",lat);
 
         Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ names);
         lastDetection = confidenceList.size();
-        Toast.makeText(this, "arraySize: " + detectedSymptomsList.size(), Toast.LENGTH_SHORT).show();
         startActivity(imagePrev);
+        getGeoLocation();
 
     }
 
+    private void getGeoLocation() {
+        if (ContextCompat.checkSelfPermission(DetectorActivity.this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
+                @Override
+                public void onSuccess(Location location) {
+                    lat = location.getLatitude();
+                    longt=location.getLongitude();
+                    Toast.makeText(DetectorActivity.this, "Location" + lat + " / " + longt, Toast.LENGTH_SHORT).show();
+                }
+            });
+        } else {
+            requestStoragePermission();
+        }
+    }
+
+    private void requestStoragePermission() {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            new AlertDialog.Builder(this)
+                    .setTitle("Permission needed")
+                    .setMessage("This permission is needed because of this and that")
+                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            ActivityCompat.requestPermissions(DetectorActivity.this,
+                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .create().show();
+        } else {
+            ActivityCompat.requestPermissions(this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+        }
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)  {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
     private String getLocation() {
         return passLocation.toString();
     }

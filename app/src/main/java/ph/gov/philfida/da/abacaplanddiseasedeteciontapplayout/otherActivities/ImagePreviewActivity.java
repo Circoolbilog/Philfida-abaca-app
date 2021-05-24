@@ -135,6 +135,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     private void saveImage3(Bitmap bitmap3, String name) throws IOException {
+        //put symptoms to array and open diagnosis activity.(assessment image view) 
         name = "localImage_" + fileNumber;
         OutputStream fos; // file output stream
         File dir = new File(Environment.getExternalStorageDirectory(),"Pictures/Assessment");
@@ -171,6 +172,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public void setSymptomsArray(){
         SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
         SharedPreferences.Editor spE = sp.edit();
+        //string Array?
         spE.putString(SYMPTOMS_ARRAY,symptomNamesToSave);
         spE.apply();
     }
@@ -196,6 +198,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
     public void captureNextImage(View view) {
         Toast.makeText(this, "Feature Under Development", Toast.LENGTH_SHORT).show();
+        //save symptoms to an array
         finish();
+    }
+
+    public void showMoreInfo(View view) {
+        //only display te disease stuff and display more info via dialog when this button is clicked
     }
 }

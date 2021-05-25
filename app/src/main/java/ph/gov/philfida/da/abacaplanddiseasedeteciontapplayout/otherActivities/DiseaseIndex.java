@@ -38,7 +38,7 @@ public class DiseaseIndex extends AppCompatActivity {
 
     private void populateList() {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
+        List<SymptomModel> everSymptom = dataBaseHelper.getSymptomList();
         if (everSymptom != null) {
             for (SymptomModel symptom : everSymptom) {
 //                dataBaseHelper.clear(symptom);
@@ -65,7 +65,7 @@ public class DiseaseIndex extends AppCompatActivity {
 //                open new activity displaying disease info on clicked item
 
                 DataBaseHelper dataBaseHelper = new DataBaseHelper(getApplicationContext());
-                List<SymptomModel> everySymptom = dataBaseHelper.getSymptoms();
+                List<SymptomModel> everySymptom = dataBaseHelper.getSymptomList();
                 String symptomName = everySymptom.get(position).getSymptomName();
                 Intent diseaseInfo = new Intent(DiseaseIndex.this, DiseaseInfo.class);
                 diseaseInfo.putExtra("position", position);

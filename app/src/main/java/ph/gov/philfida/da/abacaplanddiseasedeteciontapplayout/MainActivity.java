@@ -37,7 +37,6 @@ import java.util.List;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndConditionsDialog;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Symptom;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
@@ -97,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
 
     private void downloadSymptomMap() {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
+        List<SymptomModel> everSymptom = dataBaseHelper.getSymptomList();
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference2 = FirebaseDatabase.getInstance().getReference("Symptoms");
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -152,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
             symptomModel = new SymptomModel(0, "NULL", false, false, false, false, false);
         }
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        boolean success = dataBaseHelper.addOne(symptomModel);
+        boolean success = dataBaseHelper.addOneSymptomToList(symptomModel);
 
 //        Toast.makeText(this, "success: "+success, Toast.LENGTH_SHORT).show();
     }

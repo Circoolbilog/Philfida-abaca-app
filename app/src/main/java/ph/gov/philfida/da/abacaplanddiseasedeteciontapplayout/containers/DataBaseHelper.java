@@ -45,7 +45,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-    public boolean addOne(SymptomModel symptomModel){
+    public boolean addOneSymptomToList(SymptomModel symptomModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 
@@ -59,7 +59,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         long insert = db.insert(SYMPTOMS_TABLE, null, cv);
         return insert != -1;
     }
-    public List<SymptomModel> getSymptoms(){
+    public List<SymptomModel> getSymptomList(){
         List<SymptomModel> returnList = new ArrayList<>();
 
         //get data from db

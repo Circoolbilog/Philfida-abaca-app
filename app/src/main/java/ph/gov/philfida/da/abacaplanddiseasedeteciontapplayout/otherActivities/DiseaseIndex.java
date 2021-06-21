@@ -8,6 +8,8 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 
 import android.content.Intent;
@@ -28,28 +30,15 @@ public class DiseaseIndex extends AppCompatActivity {
         setContentView(R.layout.activity_disease_index);
         item = new ArrayList<>();
         populateList();
-       /* item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease0"));
-        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease1"));
-        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease2"));
-        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease3"));
-        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease4"));
-        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index,"Disease5"));*/
     }
 
     private void populateList() {
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
-        if (everSymptom != null) {
-            for (SymptomModel symptom : everSymptom) {
-//                dataBaseHelper.clear(symptom);
-//                   Clear table
-                String symptomName = symptom.getSymptomName();
-                item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, symptomName));
-            }
-            buildRecyclerView();
-        }
-
-
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "Bract Mosaic"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "Bunchy Top"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "CMV"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "Gen Mosaic"));
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "SCMV"));
+        buildRecyclerView();
     }
 
     private void buildRecyclerView() {

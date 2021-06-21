@@ -45,7 +45,8 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
     }
-    public boolean addOne(SymptomModel symptomModel){
+
+    public boolean addOneSymptom(SymptomModel symptomModel){
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
 

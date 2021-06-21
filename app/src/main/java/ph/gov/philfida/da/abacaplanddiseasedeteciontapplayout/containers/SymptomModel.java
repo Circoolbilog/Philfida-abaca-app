@@ -8,7 +8,8 @@ public class SymptomModel {
     public SymptomModel() {
     }
 
-    public SymptomModel(int id, String symptomName, Boolean Bract_Mosaic, Boolean Bunchy_Top, Boolean CMV, Boolean Gen_Mosaic, Boolean SCMV) {
+    public SymptomModel(int id, String symptomName, Boolean Bract_Mosaic, Boolean Bunchy_Top,
+                        Boolean CMV, Boolean Gen_Mosaic, Boolean SCMV) {
         this.symptomName = symptomName;
         this.Bract_Mosaic = Bract_Mosaic;
         this.Bunchy_Top = Bunchy_Top;

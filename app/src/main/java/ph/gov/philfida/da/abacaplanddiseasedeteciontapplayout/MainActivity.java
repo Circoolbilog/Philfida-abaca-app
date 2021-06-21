@@ -99,37 +99,40 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.getChildrenCount() != diseaseDBModels.size()) {
-                    for (int diseaseID = 0; diseaseID<4;diseaseID++){
+                    for (int diseaseID = 0; diseaseID<5;diseaseID++){
                         String diseaseName;
                         switch (diseaseID){
                             case 0:
-                                diseaseName = "Bract_Mosaic";
+                                diseaseName = "No_Allocation";
                                 break;
                             case 1:
-                                diseaseName = "Bunchy_Top";
+                                diseaseName = "Bract_Mosaic";
                                 break;
                             case 2:
-                                diseaseName = "CMV";
+                                diseaseName = "Bunchy_Top";
                                 break;
                             case 3:
-                                diseaseName = "Gen_Mosaic";
+                                diseaseName = "CMV";
                                 break;
                             case 4:
+                                diseaseName = "Gen_Mosaic";
+                                break;
+                            case 5:
                                 diseaseName = "SCMV";
                                 break;
+
                             default:
                                 diseaseName = "NULL";
-
                         }
                         for (DiseaseDBModel disease : diseaseDBModels) {
                             dbHelper.clear(disease,diseaseID);
 //                      Clear table
                         }
                         Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
-                        for(long i=0;i<snapshot.getChildrenCount();i++){
+                        for(long i=0;i<snapshot.child(diseaseName).getChildrenCount();i++){
                             symptomName = snapshot.child(diseaseName).child(String.valueOf(i)).getValue().toString();
+                            addToDiseaseDb(diseaseID);
                         }
-                        addToDiseaseDb(diseaseID);
                     }
 
                 }
@@ -198,17 +201,17 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
     private void addToDiseaseDb(int diseaseID){
         DiseaseDBModel dbModel;
         try {
-            dbModel = new DiseaseDBModel(0,symptomName);
+            dbModel = new DiseaseDBModel(diseaseID,symptomName);
         } catch (Exception e){
-            dbModel = new DiseaseDBModel(0,"NULL");
+            dbModel = new DiseaseDBModel(diseaseID,"NULL");
         }
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
         boolean success = dbHelper.addOneSymptom(dbModel,diseaseID);
-        if (success){
-            Toast.makeText(this, "Disease info added to local database", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
-        }
+//        if (success){
+//            Toast.makeText(this, "Disease info added to local database", Toast.LENGTH_SHORT).show();
+//        } else {
+//            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
+//        }
     }
     private void addToLocalDB() {
         SymptomModel symptomModel;

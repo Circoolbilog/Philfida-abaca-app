@@ -23,6 +23,7 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
     public static final String TABLE_CMV = "CMV";
     public static final String TABLE_SCMV = "SCMV";
     public static final String TABLE_GEN_MOSAIC = "Gen_Mosaic";
+    public static final String TABLE_NO_ALLOCATION = "No_Allocation";
     public static final String COLUMN_ID = "ID";
     private static final String TAG = "DiseaseInfoSymptomsDbHe";
 
@@ -46,21 +47,24 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
     private String tables(int diseaseID) {
         String TABLE_NAME;
         switch (diseaseID){
-            case 0: TABLE_NAME = TABLE_BRACT_MOSAIC;
+            case 0:
+                TABLE_NAME = TABLE_NO_ALLOCATION;
                 break;
-            case 1:
-                TABLE_NAME = TABLE_BUNCHY_TOP;
+            case 1: TABLE_NAME = TABLE_BRACT_MOSAIC;
                 break;
             case 2:
-                TABLE_NAME = TABLE_CMV;
+                TABLE_NAME = TABLE_BUNCHY_TOP;
                 break;
             case 3:
-                TABLE_NAME = TABLE_SCMV;
+                TABLE_NAME = TABLE_CMV;
                 break;
             case 4:
                 TABLE_NAME = TABLE_GEN_MOSAIC;
                 break;
             case 5:
+                TABLE_NAME = TABLE_SCMV;
+                break;
+
             default:
                 throw new IllegalStateException("Unexpected value: " + diseaseID);
         }
@@ -101,10 +105,10 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
         db.close();
         return returnList;
     }
-    public boolean clear(DiseaseDBModel dbModel, int i){
+    public boolean clear(DiseaseDBModel dbModel, int tableID){
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = " DELETE FROM " + tables(i) + " WHERE " + COLUMN_ID + " = " + dbModel.getId();
-        Log.d(TAG, "onCreate: "+ tables(i)+i);
+        String queryString = " DELETE FROM " + tables(tableID) + " WHERE " + COLUMN_ID + " = " + dbModel.getId();
+        Log.d(TAG, "onCreate: "+ tables(tableID)+tableID);
 
         Cursor cursor = db.rawQuery(queryString,null);
         if (cursor.isNull(0)){

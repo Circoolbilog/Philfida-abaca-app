@@ -14,6 +14,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Symptom
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +34,7 @@ public class DiseaseIndex extends AppCompatActivity {
     }
 
     private void populateList() {
+        item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "No Allocation"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "Bract Mosaic"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "Bunchy Top"));
         item.add(new DiseaseIndexItem(R.drawable.ic_m_disease_index, "CMV"));
@@ -52,13 +54,33 @@ public class DiseaseIndex extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
 //                open new activity displaying disease info on clicked item
-
-                DataBaseHelper dataBaseHelper = new DataBaseHelper(getApplicationContext());
-                List<SymptomModel> everySymptom = dataBaseHelper.getSymptoms();
-                String symptomName = everySymptom.get(position).getSymptomName();
+                Toast.makeText(DiseaseIndex.this, "item at pos " + position, Toast.LENGTH_SHORT).show();
+                String diseaseName;
+                switch (position){
+                    case 0:
+                        diseaseName = "0_No_Allocation";
+                        break;
+                    case 1:
+                        diseaseName = "Bract_Mosaic";
+                        break;
+                    case 2:
+                        diseaseName = "Bunchy_Top";
+                        break;
+                    case 3:
+                        diseaseName = "CMV";
+                        break;
+                    case 4:
+                        diseaseName = "Gen_Mosaic";
+                        break;
+                    case 5:
+                        diseaseName = "SCMV";
+                        break;
+                    default:
+                        throw new IllegalStateException("Unexpected value: " + position);
+                }
                 Intent diseaseInfo = new Intent(DiseaseIndex.this, DiseaseInfo.class);
                 diseaseInfo.putExtra("position", position);
-                diseaseInfo.putExtra("symptomName", symptomName);
+                diseaseInfo.putExtra("diseaseName", diseaseName);
                 startActivity(diseaseInfo);
             }
         });

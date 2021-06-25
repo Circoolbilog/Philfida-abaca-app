@@ -28,7 +28,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
     //firstTime db access
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableStatement = "CREATE TABLE " + SYMPTOMS_TABLE +
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + SYMPTOMS_TABLE +
                 " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + COLUMN_SYMPTOM_NAME + " TEXT, " +
                 COLUMN_BRACT_MOSAIC + " BOOL, " +
                 COLUMN_BUNCHY_TOP + " BOOL, " +
@@ -72,7 +72,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(queryString,null);
 
         if (cursor.moveToFirst()){
-            //loop through results, creaet a new symptom object, put it to return list
+            //loop through results, create a new symptom object, put it to return list
             do {
                 int symptomID = cursor.getInt(0);
                 String symptom = cursor.getString(1);
@@ -98,11 +98,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         String queryString = " DELETE FROM " + SYMPTOMS_TABLE + " WHERE " + COLUMN_ID + " = " + symptomModel.getId();
 
         Cursor cursor = db.rawQuery(queryString,null);
-        if (cursor.isNull(0)){
-            return true;
-        }else {
-            return false;
-        }
+        return cursor.isNull(0);
     }
 
 }

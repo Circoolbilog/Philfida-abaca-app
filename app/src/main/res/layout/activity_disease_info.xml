@@ -20,19 +20,6 @@
             android:layout_height="wrap_content"
             android:padding="15dp">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Sample Image Only"
-                android:textSize="30sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toTopOf="@+id/diseaseNameInd"
-                app:layout_constraintEnd_toEndOf="@+id/diseaseImageInd"
-                app:layout_constraintStart_toStartOf="@+id/diseaseImageInd"
-                app:layout_constraintTop_toTopOf="@+id/diseaseImageInd"
-                android:textColor="@color/translucent_bg"/>
-
             <ImageView
                 android:id="@+id/diseaseImageInd"
                 android:layout_width="0dp"
@@ -66,7 +53,23 @@
                 android:textColor="@color/appBGDark"
                 android:textSize="15sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/diseaseNameInd" />
+                app:layout_constraintTop_toBottomOf="@+id/diseaseNameInd"
+                app:layout_constraintVertical_bias="0.05"
+                tools:layout_editor_absoluteX="15dp" />
+            <TextView
+                android:id="@+id/symptomListHeader"
+                android:text="Symptoms:"
+                android:textColor="@android:color/black"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/diseaseDesc"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/symptomList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toBottomOf="@id/symptomListHeader"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

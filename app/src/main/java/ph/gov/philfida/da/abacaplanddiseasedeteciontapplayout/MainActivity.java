@@ -57,9 +57,9 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
     private DatabaseReference reference2;
     private String userID;
     String firstName, lastName, middleName, email, birthday, permAdd, occupation, institution;
-    private String symptomName;
+    private String symptomName, diseaseName;
     private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
-    private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV;
+    private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV, stringVal_No_Allocation;
     ArrayList<SymptomModel> symptomModelArrayList;
     private int symptomID;
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         loadUserData();
         getDBDetails();
         saveUserData();
-        downloadSymptomMap();
+        //downloadSymptomMap();
         downloadDiseaseMap();
 
         DialogFragment tnc = new TermsAndConditionsDialog();
@@ -93,49 +93,65 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
     private void downloadDiseaseMap() {
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
         List<DiseaseDBModel> diseaseDBModels = dbHelper.getDiseases();
+
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference2 = FirebaseDatabase.getInstance().getReference("Diseases");
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists() && snapshot.getChildrenCount() != diseaseDBModels.size()) {
-                    for (int diseaseID = 0; diseaseID<5;diseaseID++){
-                        String diseaseName;
-                        switch (diseaseID){
-                            case 0:
-                                diseaseName = "No_Allocation";
-                                break;
-                            case 1:
-                                diseaseName = "Bract_Mosaic";
-                                break;
-                            case 2:
-                                diseaseName = "Bunchy_Top";
-                                break;
-                            case 3:
-                                diseaseName = "CMV";
-                                break;
-                            case 4:
-                                diseaseName = "Gen_Mosaic";
-                                break;
-                            case 5:
-                                diseaseName = "SCMV";
-                                break;
-
-                            default:
-                                diseaseName = "NULL";
-                        }
                         for (DiseaseDBModel disease : diseaseDBModels) {
-                            dbHelper.clear(disease,diseaseID);
+                            dbHelper.clear(disease);
 //                      Clear table
                         }
+
+                        int largest[] = {((int) snapshot.child("0_No_Allocation").getChildrenCount()), ((int) snapshot.child("Bract_Mosaic").getChildrenCount()),
+                                ((int) snapshot.child("Bunchy_Top").getChildrenCount()), ((int) snapshot.child("CMV").getChildrenCount()),
+                                ((int) snapshot.child("Gen_Mosaic").getChildrenCount()), ((int) snapshot.child("SCMV").getChildrenCount())};
+                        int temp = 0;
+                        for (int number:largest){
+                            if (number>temp){
+                                temp = number;
+                            }
+                        }
                         Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
-                        for(long i=0;i<snapshot.child(diseaseName).getChildrenCount();i++){
-                            symptomName = snapshot.child(diseaseName).child(String.valueOf(i)).getValue().toString();
-                            addToDiseaseDb(diseaseID);
+                        for (int i = 0; i < temp; i++) {
+
+                            if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null){
+                                stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_No_Allocation = "NULL";
+                            }
+                            if (snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Bract_Mosaic = snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_Bract_Mosaic = "NULL";
+                            }
+                            if (snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Bunchy_Top = snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_Bunchy_Top = "NULL";
+                            }
+                            if (snapshot.child("CMV").child(String.valueOf(i)).getValue() != null){
+                                stringVal_CMV = snapshot.child("CMV").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_CMV = "NULL";
+                            }
+                            if (snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Gen_Mosaic = snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_No_Allocation = "NULL";
+                            }
+                            if (snapshot.child("SCMV").child(String.valueOf(i)).getValue() != null){
+                                stringVal_SCMV = snapshot.child("SCMV").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_SCMV = "NULL";
+                            }
+
+                            addToDiseaseDb(i);
                         }
                     }
 
-                }
             }
 
             @Override
@@ -150,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         startActivity(intent);
     }
 
-
     private void downloadSymptomMap() {
         DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
         List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
@@ -159,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                IDK WHY but this part says no parsable data
-//                Symptom symptom = snapshot.getValue(Symptom.class);
 
                 if (snapshot.exists() && snapshot.getChildrenCount() != everSymptom.size()) {
                     for (SymptomModel symptom : everSymptom) {
@@ -168,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
 //                      Clear table
                     }
                     Log.d(TAG, "onDataChange: TABLE is cleared and ready to be repopulated");
-                    for (long i = 0; i < snapshot.getChildrenCount(); i++) {
+                    for (int i = 0; i < snapshot.getChildrenCount(); i++) {
 //                       symptomName = snapshot.child("0").child("SymptomName").getValue().toString();
                         symptomName = snapshot.child(String.valueOf(i)).child("SymptomName").getValue().toString();
                         stringVal_Bract_Mosaic = snapshot.child(String.valueOf(i)).child("Bract_Mosaic").getValue().toString();
@@ -182,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
                         Gen_Mosaic = Boolean.parseBoolean(stringVal_Gen_Mosaic);
                         SCMV = Boolean.parseBoolean(stringVal_SCMV);
                         Log.d(TAG, "onDataChange, Populating db: " + symptomName + " pos: " + i + " out of: " + snapshot.getChildrenCount());
-                        addToLocalDB();
+                        addToLocalDB(i);
                     }
                 } else if (snapshot.exists()) {
                     Log.d(TAG, "onDataChange: db does need to be updated");
@@ -198,25 +211,26 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
     }
 
 
-    private void addToDiseaseDb(int diseaseID){
+    private void addToDiseaseDb(int columnID) {
         DiseaseDBModel dbModel;
         try {
-            dbModel = new DiseaseDBModel(diseaseID,symptomName);
-        } catch (Exception e){
-            dbModel = new DiseaseDBModel(diseaseID,"NULL");
+            dbModel = new DiseaseDBModel(columnID,stringVal_No_Allocation,stringVal_Bract_Mosaic,stringVal_Bunchy_Top,stringVal_CMV,stringVal_Gen_Mosaic,stringVal_SCMV);
+        } catch (Exception e) {
+            dbModel = new DiseaseDBModel(columnID, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL");
         }
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
-        boolean success = dbHelper.addOneSymptom(dbModel,diseaseID);
-//        if (success){
-//            Toast.makeText(this, "Disease info added to local database", Toast.LENGTH_SHORT).show();
-//        } else {
-//            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
-//        }
+        boolean success = dbHelper.addOneSymptom(dbModel);
+        if (success){
+            Toast.makeText(this, "Disease info added to local database", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
+        }
     }
-    private void addToLocalDB() {
+
+    private void addToLocalDB(int collumn) {
         SymptomModel symptomModel;
         try {
-            symptomModel = new SymptomModel(0, symptomName, Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
+            symptomModel = new SymptomModel(collumn, symptomName, Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
 //            Toast.makeText(this, symptomModel.toString(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
 //            Toast.makeText(this, "Error somehow?", Toast.LENGTH_SHORT).show();

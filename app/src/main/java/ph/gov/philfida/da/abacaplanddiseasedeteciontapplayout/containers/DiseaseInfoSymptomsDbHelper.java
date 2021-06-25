@@ -18,58 +18,35 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Di
 public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
 
     public static final String SYMPTOM_NAME = "DiseaseName";
-    public static final String TABLE_BRACT_MOSAIC = "Bract_Mosaic";
-    public static final String TABLE_BUNCHY_TOP = "Bunchy_Top";
-    public static final String TABLE_CMV = "CMV";
-    public static final String TABLE_SCMV = "SCMV";
-    public static final String TABLE_GEN_MOSAIC = "Gen_Mosaic";
-    public static final String TABLE_NO_ALLOCATION = "No_Allocation";
+    public static final String DISEASES_TABLE = "Diseases";
+    public static final String COLUMN_BRACT_MOSAIC = "Bract_Mosaic";
+    public static final String COLUMN_BUNCHY_TOP = "Bunchy_Top";
+    public static final String COLUMN_CMV = "CMV";
+    public static final String COLUMN_SCMV = "SCMV";
+    public static final String COLUMN_GEN_MOSAIC = "Gen_Mosaic";
+    public static final String COLUMN_NO_ALLOCATION = "No_Allocation";
     public static final String COLUMN_ID = "ID";
     private static final String TAG = "DiseaseInfoSymptomsDbHe";
+    public static String TABLE_NAME;
 
     public DiseaseInfoSymptomsDbHelper(@Nullable Context context) {
-        super(context,"DiseaseInfoSymptoms.db", null, 1);
+        super(context, "DiseaseInfoSymptoms.db", null, 1);
     }
 
 
     //firstTime db access
     @Override
     public void onCreate(SQLiteDatabase db) {
-        for (int i=0;i<5;i++){
-            String table = "CREATE TABLE " + tables(i) +
-                    " (" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " + SYMPTOM_NAME + " TEXT, " +
-                    " TEXT )";
-            db.execSQL(table);
-            Log.d(TAG, "onCreate: "+ tables(i)+i);
-        }
-    }
+        String createTableStatement = "CREATE TABLE " + DISEASES_TABLE +
+                " (" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_NO_ALLOCATION + " TEXT, " +
+                COLUMN_BRACT_MOSAIC + " TEXT, " +
+                COLUMN_BUNCHY_TOP + " TEXT, " +
+                COLUMN_CMV + " TEXT, " +
+                COLUMN_GEN_MOSAIC + " TEXT, " +
+                COLUMN_SCMV + " TEXT )";
 
-    private String tables(int diseaseID) {
-        String TABLE_NAME;
-        switch (diseaseID){
-            case 0:
-                TABLE_NAME = TABLE_NO_ALLOCATION;
-                break;
-            case 1: TABLE_NAME = TABLE_BRACT_MOSAIC;
-                break;
-            case 2:
-                TABLE_NAME = TABLE_BUNCHY_TOP;
-                break;
-            case 3:
-                TABLE_NAME = TABLE_CMV;
-                break;
-            case 4:
-                TABLE_NAME = TABLE_GEN_MOSAIC;
-                break;
-            case 5:
-                TABLE_NAME = TABLE_SCMV;
-                break;
-
-            default:
-                throw new IllegalStateException("Unexpected value: " + diseaseID);
-        }
-
-        return TABLE_NAME;
+        db.execSQL(createTableStatement);
     }
 
     //runs when version number changes
@@ -81,23 +58,30 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
 
     public List<DiseaseDBModel> getDiseases() {
         List<DiseaseDBModel> returnList = new ArrayList<>();
+
         //get data from db
 
-        String queryString = "SELECT * FROM " + TABLE_BRACT_MOSAIC;
+        String queryString = "SELECT * FROM " + DISEASES_TABLE;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery(queryString,null);
+        Cursor cursor = db.rawQuery(queryString, null);
 
-        if (cursor.moveToFirst()){
+        if (cursor.moveToFirst()) {
             //loop through results, create a new disease object, put it to return list
             do {
-                int symptomID = cursor.getInt(0);
-                String symptom = cursor.getString(1);
-                DiseaseDBModel newSymptom = new DiseaseDBModel(symptomID,symptom);
-                returnList.add(newSymptom);
-            }while (cursor.moveToNext());
-        }else {
+                int diseaseID = cursor.getInt(0);
+                String noAlloc = cursor.getString(1);
+                String bract = cursor.getString(2);
+                String bunch = cursor.getString(3);
+                String cmv = cursor.getString(4);
+                String genMos = cursor.getString(5);
+                String scmv = cursor.getString(6);
+
+                DiseaseDBModel newDisease = new DiseaseDBModel(diseaseID, noAlloc, bract, bunch, cmv, genMos, scmv);
+                returnList.add(newDisease);
+            } while (cursor.moveToNext());
+        } else {
             //do not add blah blah blah
         }
         //close both cursor and db when done
@@ -105,24 +89,28 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
         db.close();
         return returnList;
     }
-    public boolean clear(DiseaseDBModel dbModel, int tableID){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = " DELETE FROM " + tables(tableID) + " WHERE " + COLUMN_ID + " = " + dbModel.getId();
-        Log.d(TAG, "onCreate: "+ tables(tableID)+tableID);
 
-        Cursor cursor = db.rawQuery(queryString,null);
-        if (cursor.isNull(0)){
-            return true;
-        }else {
-            return false;
-        }
+    public boolean clear(@org.jetbrains.annotations.NotNull DiseaseDBModel dbModel) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryString = " DELETE FROM " + DISEASES_TABLE ;
+
+        Cursor cursor = db.rawQuery(queryString, null);
+        return cursor.isNull(0);
     }
-    public boolean addOneSymptom(DiseaseDBModel dbModel,int i) {
+
+    public boolean addOneSymptom(DiseaseDBModel dbModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID,dbModel.getId());
-        cv.put(SYMPTOM_NAME,dbModel.getSymptomName());
-        long insert = db.insert(tables(i), null, cv);
+        cv.put(COLUMN_ID, dbModel.getId());
+        //cv.put(SYMPTOM_NAME,dbModel.getSymptomName());
+        cv.put(COLUMN_BRACT_MOSAIC, dbModel.getBract_Mosaic());
+        cv.put(COLUMN_BUNCHY_TOP, dbModel.getBunchy_Top());
+        cv.put(COLUMN_CMV, dbModel.getCMV());
+        cv.put(COLUMN_GEN_MOSAIC, dbModel.getGen_Mosaic());
+        cv.put(COLUMN_SCMV, dbModel.getSCMV());
+        cv.put(COLUMN_SCMV, dbModel.getNo_Allocation());
+
+        long insert = db.insert(DISEASES_TABLE, null, cv);
         return insert != -1;
     }
 }

@@ -30,6 +30,8 @@ import java.io.Reader;
 import java.nio.ByteBuffer;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -48,6 +50,7 @@ public abstract class Diagnose extends AppCompatActivity
         DiagnoseModeDialog.DiagModeListener {
     private static final Logger LOGGER = new Logger();
 
+    private static final int MY_READ_PERMISSION_CODE = 101;
     private int mode = 0;
     private static final int PERMISSIONS_REQUEST = 1;
 
@@ -81,6 +84,7 @@ public abstract class Diagnose extends AppCompatActivity
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -99,6 +103,11 @@ public abstract class Diagnose extends AppCompatActivity
         gestureLayout = findViewById(R.id.gesture_layout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
         detectionModeText = findViewById(R.id.detectionModeText);
+        if (ContextCompat.checkSelfPermission(Diagnose.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(Diagnose.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
+        }
         if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()){
             DialogFragment diagnoseMode = new DiagnoseModeDialog();
             diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");

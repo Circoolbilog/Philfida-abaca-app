@@ -14,6 +14,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Symptom
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class DiseaseIndex extends AppCompatActivity {
     DiseaseIndexAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<DiseaseIndexItem> item;
+    private static final String TAG = "DiseaseIndex";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,9 @@ public class DiseaseIndex extends AppCompatActivity {
         setContentView(R.layout.activity_disease_index);
         item = new ArrayList<>();
         populateList();
+        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
+        Log.d(TAG, "populateList: " + dbModelList.toString());
     }
 
     private void populateList() {

@@ -55,12 +55,15 @@ public class DiseaseInfo extends AppCompatActivity {
     private void populateList() {
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
-        Log.d(TAG, "populateList: " + dbModelList.toString());
+        Log.d(TAG, "populateList: " + dbModelList.size());
 //        ArrayAdapter symptomsArrayAdapter = new ArrayAdapter<DiseaseDBModel>(this, android.R.layout.simple_list_item_1, dbModelList);
         item = new ArrayList<SymptomItem>();
         for (DiseaseDBModel symptom:dbModelList){
+
+            Log.d(TAG, "populateList: "+symptom.getNo_Allocation());
             switch (mDiseaseName){
                 case "0_No_Allocation":
+                    if (symptom.getNo_Allocation() == null)break;
                     if(symptom.getNo_Allocation().equals("NULL")|symptom.getNo_Allocation().equals(""))break;
                     item.add(new SymptomItem(symptom.getNo_Allocation()));
                     break;
@@ -86,7 +89,7 @@ public class DiseaseInfo extends AppCompatActivity {
                     break;
             }
 
-        }
+        };
         buildRecyclerView();
     }
     private void buildRecyclerView() {
@@ -103,10 +106,10 @@ public class DiseaseInfo extends AppCompatActivity {
 //                DataBaseHelper dataBaseHelper = new DataBaseHelper(getApplicationContext());
 //                List<SymptomModel> everySymptom = dataBaseHelper.getSymptoms();
 //                String symptomName = everySymptom.get(position).getSymptomName();
-//                Intent diseaseInfo = new Intent(DiseaseInfo.this, DiseaseInfo.class);
-//                diseaseInfo.putExtra("position", position);
-//                diseaseInfo.putExtra("symptomName", symptomName);
-//                startActivity(diseaseInfo);
+                Intent symptomInfo = new Intent(DiseaseInfo.this, SymptomInfo.class);
+                symptomInfo.putExtra("position", position);
+                symptomInfo.putExtra("symptomName", item.get(position).getDiseaseName());
+                startActivity(symptomInfo);
                 Toast.makeText(DiseaseInfo.this, "item at pos: " + position, Toast.LENGTH_SHORT).show();
             }
         });

@@ -32,6 +32,7 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
@@ -58,6 +59,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.Overlay
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.ImagePreviewActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.TFLiteObjectDetectionAPIModel;
@@ -69,7 +71,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  */
 
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
-
 
     private static final String TAG = "DetectorActivity";
     private static final Logger LOGGER = new Logger();
@@ -177,6 +178,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
     }
 
+
     @Override
     public synchronized void onPause() {
         super.onPause();
@@ -249,7 +251,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                             }
                         }
                         names = detectedSymptomsList.toArray(new String[0]);
-                        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ Arrays.toString(names));
+//                        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ Arrays.toString(names));
 
                         tracker.trackResults(mappedRecognitions, currTimestamp);
                         trackingOverlay.postInvalidate();
@@ -297,23 +299,28 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     public void CaptureImage(View v) {
         super.CaptureImage(v);
         float confidence;
+
+//        super.onPause();
         ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
         rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
-        //croppedBitmap.compress(Bitmap.CompressFormat.PNG,100,bs);
-        //cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs);
-        Intent imagePrev = new Intent(this, ImagePreviewActivity.class);
+//        croppedBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs);
+//        cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs2);
+        Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
+        String name = getDetectionInfo();
         imagePrev.putExtra("byteArray", bs.toByteArray());
-        imagePrev.putExtra("diseaseName", getDetectionInfo());
-//        imagePrev.putExtra("confidence", getConfidence());
-        imagePrev.putExtra("location", getLocation());
-        imagePrev.putExtra("diseaseNameArray",names);
-        imagePrev.putExtra("longt",longt);
-        imagePrev.putExtra("lat",lat);
+        imagePrev.putExtra("imageWithBox", bs2.toByteArray());
+        imagePrev.putExtra("diseaseName", name);
+//        imagePrev.putExtra("confidence", "00.00");
+//        imagePrev.putExtra("location", getLocation());
+//        imagePrev.putExtra("diseaseNameArray",names);
+//        imagePrev.putExtra("longt",longt);
+//        imagePrev.putExtra("lat",lat);
 
         Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ names);
         lastDetection = confidenceList.size();
+//        getGeoLocation();
         startActivity(imagePrev);
-        getGeoLocation();
 
     }
 
@@ -378,7 +385,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         if (lastDetection < detectedSymptomsList.size()) {
             predictionName = detectedSymptomsList.get(detectedSymptomsList.size() - 1);
         } else {
-            predictionName = "";
+            predictionName = " ";
         }
         return predictionName;
     }

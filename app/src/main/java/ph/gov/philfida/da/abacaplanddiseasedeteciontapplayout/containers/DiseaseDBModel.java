@@ -87,14 +87,14 @@ public class DiseaseDBModel {
         No_Allocation = no_Allocation;
     }
 
-    public DiseaseDBModel(int id,String no_Allocation, String bract_Mosaic, String bunchy_Top, String CMV, String gen_Mosaic, String SCMV) {
+    public DiseaseDBModel(int id,String No_Allocation, String bract_Mosaic, String bunchy_Top, String CMV, String gen_Mosaic, String SCMV) {
         this.id = id;
         Bract_Mosaic = bract_Mosaic;
         Bunchy_Top = bunchy_Top;
         this.CMV = CMV;
         Gen_Mosaic = gen_Mosaic;
         this.SCMV = SCMV;
-        No_Allocation = no_Allocation;
+        this.No_Allocation = No_Allocation;
     }
 
     private String No_Allocation;

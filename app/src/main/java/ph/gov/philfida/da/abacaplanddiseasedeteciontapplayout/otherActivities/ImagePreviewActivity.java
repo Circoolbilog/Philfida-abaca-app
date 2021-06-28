@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -58,47 +59,64 @@ public class ImagePreviewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
         prev = findViewById(R.id.imageView);
-        Bundle extras = getIntent().getExtras();
+
         title = findViewById(R.id.diseasePredicion);
         nextCapture = findViewById(R.id.captureNextImage);
+        importExtras();
+        //make sure that there are no duplicate names
+        loadFileNumber();
+    }
 
+    private void importExtras() {
+        Bundle extras = getIntent().getExtras();
         //import image passed from previous activity
         if (extras != null) {
-            bitmap = BitmapFactory.decodeByteArray(
-                    getIntent().getByteArrayExtra("byteArray"), 0, getIntent().getByteArrayExtra("byteArray").length);
-            float degrees = 90;
-            Matrix matrix = new Matrix();
-            matrix.setRotate(degrees);
-            bitmap2 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
-            prev.setImageBitmap(bitmap2);
-            detection  = extras.getString("diseaseName");
-  //          confidence = extras.getString("confidence");
-            location = extras.getString("location");
-            title.setText("");
-            //title.append(detection + " "+ confidence);
-            detectionInfo = detection + " " + confidence + "\n" + location;
-            detectedSymptoms = extras.getStringArray("diseaseNameArray");
-            longt = extras.getDouble("longt");
-            lat = extras.getDouble("lat");
-            Log.d(TAG, "onCreate: detected: " + Arrays.toString(detectedSymptoms));
-            try {
-                StringBuilder sb = new StringBuilder();
-                for(String names: detectedSymptoms){
-                    sb.append(names);
-                    title.append("Symptoms: ");
-                    title.append(names);
-                    title.append("\n");
-                }
-                symptomNamesToSave = String.valueOf(sb);
-            }catch (Exception e){
-                Toast.makeText(this, "eception "+ e, Toast.LENGTH_LONG).show();
-            }
+            loadImage(extras);
+            //get detected symptoms and disease name
+//            loadDetectionInfo(extras);
         }
         if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
             nextCapture.setVisibility(View.VISIBLE);
         }
-        //make sure that there are no duplicate names
-        loadFileNumber();
+    }
+
+    private void loadDetectionInfo(Bundle extras) {
+        detection  = extras.getString("diseaseName");
+        //          confidence = extras.getString("confidence");
+        location = extras.getString("location");
+        title.setText("");
+        detectionInfo = detection + " " + confidence + "\n" + location;
+        detectedSymptoms = extras.getStringArray("diseaseNameArray");
+        if (detectedSymptoms!=null)title.append(detectedSymptoms + " ");
+        if (confidence!=null)title.append(confidence);
+        longt = extras.getDouble("longt");
+        lat = extras.getDouble("lat");
+        Log.d(TAG, "onCreate: detected: " + Arrays.toString(detectedSymptoms));
+        try {
+            StringBuilder sb = new StringBuilder();
+            for(String names: detectedSymptoms){
+                sb.append(names);
+                title.append("Symptoms: ");
+                title.append(names);
+                title.append("\n");
+            }
+            symptomNamesToSave = String.valueOf(sb);
+        }catch (Exception e){
+            Toast.makeText(this, "eception "+ e, Toast.LENGTH_LONG).show();
+            Log.d(TAG, "importExtras: eception \"+ e");
+        }
+    }
+
+    private void loadImage(Bundle extras) {
+        //load image from camera
+        byte[] bs = extras.getByteArray("byteArray");
+        byte[] bs2 = extras.getByteArray("imageWithBox");
+        bitmap = BitmapFactory.decodeByteArray(bs,0,bs.length);
+        float degrees = 90;
+        Matrix matrix = new Matrix();
+        matrix.setRotate(degrees);
+        bitmap2 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
+        prev.setImageBitmap(bitmap2);
     }
 
     public void requestPerms(View view){

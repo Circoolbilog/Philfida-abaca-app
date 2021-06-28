@@ -108,7 +108,7 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
         cv.put(COLUMN_CMV, dbModel.getCMV());
         cv.put(COLUMN_GEN_MOSAIC, dbModel.getGen_Mosaic());
         cv.put(COLUMN_SCMV, dbModel.getSCMV());
-        cv.put(COLUMN_SCMV, dbModel.getNo_Allocation());
+        cv.put(COLUMN_NO_ALLOCATION, dbModel.getNo_Allocation());
 
         long insert = db.insert(DISEASES_TABLE, null, cv);
         return insert != -1;

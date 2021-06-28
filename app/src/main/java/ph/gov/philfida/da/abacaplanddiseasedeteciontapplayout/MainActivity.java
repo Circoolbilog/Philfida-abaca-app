@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
     public static final String INSTITUTION = "INSTITUTION";
     SQLiteDatabase symptomDB;
     private static final String TAG = "MainActivity";
+    private final int currentDbSize=39;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -99,13 +100,9 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists() && snapshot.getChildrenCount() != diseaseDBModels.size()) {
-                        for (DiseaseDBModel disease : diseaseDBModels) {
-                            dbHelper.clear(disease);
-//                      Clear table
-                        }
-
-                        int largest[] = {((int) snapshot.child("0_No_Allocation").getChildrenCount()), ((int) snapshot.child("Bract_Mosaic").getChildrenCount()),
+                List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
+                int dbSize = dbModelList.size();
+                int largest[] = {((int) snapshot.child("0_No_Allocation").getChildrenCount()), ((int) snapshot.child("Bract_Mosaic").getChildrenCount()),
                                 ((int) snapshot.child("Bunchy_Top").getChildrenCount()), ((int) snapshot.child("CMV").getChildrenCount()),
                                 ((int) snapshot.child("Gen_Mosaic").getChildrenCount()), ((int) snapshot.child("SCMV").getChildrenCount())};
                         int temp = 0;
@@ -114,8 +111,16 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
                                 temp = number;
                             }
                         }
+                if (snapshot.exists() && temp != currentDbSize) {
+                    Log.d(TAG, "onDataChange: " +diseaseDBModels.size() + "/" + snapshot.getChildrenCount());
+                        for (DiseaseDBModel disease : diseaseDBModels) {
+                            dbHelper.clear(disease);
+//                      Clear table
+                        }
+
+
                         Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
-                        for (int i = 0; i < temp; i++) {
+                        for (int i = 0; i != currentDbSize; i++) {
 
                             if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null){
                                 stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
@@ -140,14 +145,14 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
                             if (snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue() != null){
                                 stringVal_Gen_Mosaic = snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue().toString();
                             } else {
-                                stringVal_No_Allocation = "NULL";
+                                stringVal_Gen_Mosaic = "NULL";
                             }
                             if (snapshot.child("SCMV").child(String.valueOf(i)).getValue() != null){
                                 stringVal_SCMV = snapshot.child("SCMV").child(String.valueOf(i)).getValue().toString();
                             } else {
                                 stringVal_SCMV = "NULL";
                             }
-
+                            Log.d(TAG, "onDataChange: " + stringVal_No_Allocation);
                             addToDiseaseDb(i);
                         }
                     }
@@ -215,16 +220,13 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         DiseaseDBModel dbModel;
         try {
             dbModel = new DiseaseDBModel(columnID,stringVal_No_Allocation,stringVal_Bract_Mosaic,stringVal_Bunchy_Top,stringVal_CMV,stringVal_Gen_Mosaic,stringVal_SCMV);
+            Log.d(TAG, "addToDiseaseDb: "+dbModel.getNo_Allocation());
         } catch (Exception e) {
             dbModel = new DiseaseDBModel(columnID, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL");
         }
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
         boolean success = dbHelper.addOneSymptom(dbModel);
-        if (success){
-            Toast.makeText(this, "Disease info added to local database", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
-        }
+        if (!success)Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
     }
 
     private void addToLocalDB(int collumn) {

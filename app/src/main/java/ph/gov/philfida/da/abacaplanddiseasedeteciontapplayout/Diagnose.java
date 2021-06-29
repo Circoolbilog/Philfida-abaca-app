@@ -102,20 +102,10 @@ public abstract class Diagnose extends AppCompatActivity
         bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
         gestureLayout = findViewById(R.id.gesture_layout);
         bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        detectionModeText = findViewById(R.id.detectionModeText);
         if (ContextCompat.checkSelfPermission(Diagnose.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(Diagnose.this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
-        }
-        if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()){
-            DialogFragment diagnoseMode = new DiagnoseModeDialog();
-            diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
-        }
-        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0){
-            setDialogText("DEFAULT: " + "Single Capture Mode");
-        }else{
-            setDialogText("DEFAULT: " + "Dual Capture Mode");
         }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);

@@ -32,18 +32,19 @@ import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.media.ImageReader.OnImageAvailableListener;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -51,15 +52,15 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DiagnoseModeDialog;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.OverlayView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.ImagePreviewActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.Classifier;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tflite.TFLiteObjectDetectionAPIModel;
@@ -72,6 +73,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
 
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
 
+    private boolean initialized = false;
     private static final String TAG = "DetectorActivity";
     private static final Logger LOGGER = new Logger();
     // Configuration values for the prepackaged SSD model.
@@ -257,9 +259,34 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         trackingOverlay.postInvalidate();
 
                         computingDetection = false;
+                        if (!initialized) {
+                            try {
+                                initialize();
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                Log.d(TAG, "run: " + e.getMessage());
+                            }
+                            initialized = true;
+                        }
+
 
                     }
                 });
+    }
+
+    private void initialize() {
+        detectionModeText = findViewById(R.id.detectionModeText);
+        RelativeLayout layout= findViewById(R.id.loading);
+        layout.setVisibility(View.GONE);
+        if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()){
+            DialogFragment diagnoseMode = new DiagnoseModeDialog();
+            diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
+        }
+        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0){
+            setDialogText("DEFAULT: " + "Single Capture Mode");
+        }else{
+            setDialogText("DEFAULT: " + "Dual Capture Mode");
+        }
     }
 
     @Override
@@ -305,12 +332,12 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
         rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
 //        croppedBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs);
-//        cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs2);
+        cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs2);
         Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
-        String name = getDetectionInfo();
+//        String name = getDetectionInfo();
         imagePrev.putExtra("byteArray", bs.toByteArray());
-        imagePrev.putExtra("imageWithBox", bs2.toByteArray());
-        imagePrev.putExtra("diseaseName", name);
+//        imagePrev.putExtra("imageWithBox", bs2.toByteArray());
+//        imagePrev.putExtra("diseaseName", name);
 //        imagePrev.putExtra("confidence", "00.00");
 //        imagePrev.putExtra("location", getLocation());
 //        imagePrev.putExtra("diseaseNameArray",names);

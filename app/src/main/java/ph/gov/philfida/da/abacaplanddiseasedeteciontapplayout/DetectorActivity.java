@@ -18,6 +18,7 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -31,20 +32,23 @@ import android.graphics.Paint.Style;
 import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.media.ImageReader.OnImageAvailableListener;
+import android.os.Build;
+import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.CompoundButton;
-import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 
@@ -55,8 +59,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DiagnoseModeDialog;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.customview.OverlayView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.BorderedText;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
@@ -71,6 +73,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  * objects.
  */
 
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
 
     private boolean initialized = false;
@@ -115,6 +118,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     int lastDetection;
     String[] names;
     private double lat, longt;
+
     @Override
     public void onPreviewSizeChosen(final Size size, final int rotation) {
         final float textSizePx =
@@ -219,7 +223,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         final long startTime = SystemClock.uptimeMillis();
                         final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
                         lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-
                         cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                         final Canvas canvas = new Canvas(cropCopyBitmap);
                         final Paint paint = new Paint();
@@ -247,25 +250,22 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                                 detectedSymptomsList.add(result.getTitle());
                                 confidenceList.add(result.getConfidence());
                                 passLocation = location;
-                                Log.d(TAG, "run: "+ detectedSymptomsList.toString());
+                                Log.d(TAG, "run: " + detectedSymptomsList.toString());
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
                             }
                         }
-                        names = detectedSymptomsList.toArray(new String[0]);
-//                        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ Arrays.toString(names));
-
+                        try {
+                            names = detectedSymptomsList.toArray(new String[0]);
+                        } catch (Exception e) {
+                            Log.d(TAG, "run: " + e.getMessage());
+                        }
                         tracker.trackResults(mappedRecognitions, currTimestamp);
                         trackingOverlay.postInvalidate();
 
                         computingDetection = false;
                         if (!initialized) {
-                            try {
-                                initialize();
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                                Log.d(TAG, "run: " + e.getMessage());
-                            }
+                            initialize();
                             initialized = true;
                         }
 
@@ -276,17 +276,15 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
     private void initialize() {
         detectionModeText = findViewById(R.id.detectionModeText);
-        RelativeLayout layout= findViewById(R.id.loading);
-        layout.setVisibility(View.GONE);
-        if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()){
-            DialogFragment diagnoseMode = new DiagnoseModeDialog();
-            diagnoseMode.show(getSupportFragmentManager(),"Choose Diagnose Mode");
-        }
-        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0){
-            setDialogText("DEFAULT: " + "Single Capture Mode");
-        }else{
-            setDialogText("DEFAULT: " + "Dual Capture Mode");
-        }
+
+        uiHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                captureButton.setEnabled(true);
+                createDialog();
+
+            }
+        });
     }
 
     @Override
@@ -326,46 +324,73 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     public void CaptureImage(View v) {
         super.CaptureImage(v);
         float confidence;
-
-//        super.onPause();
-        ByteArrayOutputStream bs = new ByteArrayOutputStream();
-        ByteArrayOutputStream bs2 = new ByteArrayOutputStream();
-        rgbFrameBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bs);
-//        croppedBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs);
-        cropCopyBitmap.compress(Bitmap.CompressFormat.JPEG,100,bs2);
+        getGeoLocation();
         Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
+        runInBackground(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Bitmap copyOfFrame;
+                    float degrees = 90;
+                    Matrix matrix = new Matrix();
+                    matrix.setRotate(degrees);
+                    copyOfFrame = Bitmap.createBitmap(rgbFrameBitmap, 0, 0, rgbFrameBitmap.getWidth(), rgbFrameBitmap.getHeight(), matrix, true);
+                    imagePrev.putExtra("byteArray", bitmapToArray(copyOfFrame));
+                    imagePrev.putExtra("backUpImage", bitmapToArray(cropCopyBitmap));
+                    imagePrev.putExtra("symptomsDetected", detectedSymptomsList);
+                    imagePrev.putExtra("longt", longt);
+                    imagePrev.putExtra("lat", lat);
+                    startActivity(imagePrev);
+                } catch (Exception e) {
+                    Log.d(TAG, "CaptureImage: " + e.getMessage());
+                }
+
+            }
+        });
+
 //        String name = getDetectionInfo();
-        imagePrev.putExtra("byteArray", bs.toByteArray());
-//        imagePrev.putExtra("imageWithBox", bs2.toByteArray());
-//        imagePrev.putExtra("diseaseName", name);
-//        imagePrev.putExtra("confidence", "00.00");
-//        imagePrev.putExtra("location", getLocation());
-//        imagePrev.putExtra("diseaseNameArray",names);
-//        imagePrev.putExtra("longt",longt);
-//        imagePrev.putExtra("lat",lat);
 
-        Log.d(TAG, "CaptureImage: diseaseNameArray" + detectedSymptomsList.toString() +" / "+ names);
         lastDetection = confidenceList.size();
-//        getGeoLocation();
-        startActivity(imagePrev);
 
+    }
+
+    private byte[] bitmapToArray(Bitmap bitmap) {
+        ByteArrayOutputStream bs = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 80, bs);
+        return bs.toByteArray();
     }
 
     private void getGeoLocation() {
-        if (ContextCompat.checkSelfPermission(DetectorActivity.this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            fusedLocationProviderClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    lat = location.getLatitude();
-                    longt=location.getLongitude();
-                    Toast.makeText(DetectorActivity.this, "Location" + lat + " / " + longt, Toast.LENGTH_SHORT).show();
-                }
-            });
-        } else {
-            requestStoragePermission();
+
+        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+            return;
         }
+        Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        longt = location.getLongitude();
+        lat = location.getLatitude();
+         final LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+                longt = location.getLongitude();
+                lat = location.getLatitude();
+            }
+        };
+        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
+        ////////////
+
     }
+
+
+
 
     private void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
@@ -377,7 +402,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             ActivityCompat.requestPermissions(DetectorActivity.this,
-                                    new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
                         }
                     })
@@ -390,12 +415,13 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                     .create().show();
         } else {
             ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)  {
+        if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
             } else {
@@ -403,19 +429,11 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             }
         }
     }
+
     private String getLocation() {
         return passLocation.toString();
     }
 
-    private String getDetectionInfo() {
-        String predictionName;
-        if (lastDetection < detectedSymptomsList.size()) {
-            predictionName = detectedSymptomsList.get(detectedSymptomsList.size() - 1);
-        } else {
-            predictionName = " ";
-        }
-        return predictionName;
-    }
 
     private String getConfidence() {
         String formatted;
@@ -427,7 +445,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             DecimalFormat df = new DecimalFormat("##.##");
             formatted = df.format(confidence);
             return formatted + "%";
-        }else{
+        } else {
             formatted = "";
             return formatted;
         }

@@ -1,8 +1,10 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.hardware.Camera;
 import android.hardware.camera2.CameraAccessException;
@@ -23,6 +25,7 @@ import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,12 +53,18 @@ public abstract class Diagnose extends AppCompatActivity
         DiagnoseModeDialog.DiagModeListener {
     private static final Logger LOGGER = new Logger();
 
+    RelativeLayout layout;
     private static final int MY_READ_PERMISSION_CODE = 101;
+    private static final int MY_WRITE_PERMISSION_CODE = 102;
     private int mode = 0;
     private static final int PERMISSIONS_REQUEST = 1;
+    public Handler uiHandler = new Handler();
+    DialogFragment diagnoseMode ;
+    ImageView captureButton, galleryButton;
 
     public Image image;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
+    private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     protected int previewWidth = 0;
     protected int previewHeight = 0;
     private boolean debug = false;
@@ -84,33 +93,50 @@ public abstract class Diagnose extends AppCompatActivity
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
-
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_diagnose);
-
-        if (hasPermission()) {
-            setFragment();
-        } else {
+        assigdnIDs();
+        layout= findViewById(R.id.loading);
+        if (!hasPermission()) {
             requestPermission();
+        }else {
+            setFragment();
         }
 
-        threadsTextView = findViewById(R.id.threads);
-        plusImageView = findViewById(R.id.plus);
-        minusImageView = findViewById(R.id.minus);
-        bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
-        gestureLayout = findViewById(R.id.gesture_layout);
-        bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-        if (ContextCompat.checkSelfPermission(Diagnose.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(Diagnose.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_READ_PERMISSION_CODE);
-        }
+
+
+//        threadsTextView = findViewById(R.id.threads);
+//        plusImageView = findViewById(R.id.plus);
+//        minusImageView = findViewById(R.id.minus);
+//        bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
+//        gestureLayout = findViewById(R.id.gesture_layout);
+//        bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
+//
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
-    public void setDialogText(String text){
+
+    private void assigdnIDs() {
+        diagnoseMode = new DiagnoseModeDialog();
+        captureButton = findViewById(R.id.capture);
+        captureButton.setEnabled(false);
+    }
+
+    public void createDialog() {
+        if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()) {
+            diagnoseMode.show(getSupportFragmentManager(), "Choose Diagnose Mode");
+        }
+        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0) {
+            setDialogText("DEFAULT: " + "Single Capture Mode");
+        } else {
+            setDialogText("DEFAULT: " + "Dual Capture Mode");
+        }
+        layout.setVisibility(View.GONE);
+    }
+
+    public void setDialogText(String text) {
         detectionModeText.setText(text);
     }
 
@@ -312,9 +338,18 @@ public abstract class Diagnose extends AppCompatActivity
     public void onRequestPermissionsResult(
             final int requestCode, final String[] permissions, final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == PERMISSIONS_REQUEST) {
+        if (requestCode == PERMISSIONS_REQUEST ) {
             if (allPermissionsGranted(grantResults)) {
                 setFragment();
+                Toast.makeText(this, "PERMISSIONS GRANTED", Toast.LENGTH_SHORT).show();
+            } else {
+                requestPermission();
+            }
+        }
+        if (requestCode == MY_WRITE_PERMISSION_CODE){
+            if (allPermissionsGranted(grantResults)){
+                setFragment();
+                Toast.makeText(this, "PERMISSIONS GRANTED", Toast.LENGTH_SHORT).show();
             } else {
                 requestPermission();
             }
@@ -332,7 +367,8 @@ public abstract class Diagnose extends AppCompatActivity
 
     private boolean hasPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED;
+            return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED
+                    && checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         } else {
             return true;
         }
@@ -347,7 +383,7 @@ public abstract class Diagnose extends AppCompatActivity
                         Toast.LENGTH_LONG)
                         .show();
             }
-            requestPermissions(new String[]{PERMISSION_CAMERA}, PERMISSIONS_REQUEST);
+            requestPermissions(new String[]{PERMISSION_CAMERA,WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
         }
     }
 
@@ -462,14 +498,15 @@ public abstract class Diagnose extends AppCompatActivity
                 return 0;
         }
     }
-/*
-    @Override
-    public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        setUseNNAPI(isChecked);
-        if (isChecked) apiSwitchCompat.setText("NNAPI");
-        else apiSwitchCompat.setText("TFLITE");
-    }
-*/
+
+    /*
+        @Override
+        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+            setUseNNAPI(isChecked);
+            if (isChecked) apiSwitchCompat.setText("NNAPI");
+            else apiSwitchCompat.setText("TFLITE");
+        }
+    */
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.plus) {

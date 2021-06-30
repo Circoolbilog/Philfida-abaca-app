@@ -48,7 +48,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ma
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen;
 
-public class MainActivity extends AppCompatActivity implements TermsAndConditionsDialog.EulaListener {
+public class MainActivity extends AppCompatActivity  {
     ActionBarDrawerToggle toggle;
     NavigationView navigationView;
     DrawerLayout drawerLayout;
@@ -87,8 +87,6 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         //downloadSymptomMap();
         downloadDiseaseMap();
 
-        DialogFragment tnc = new TermsAndConditionsDialog();
-        tnc.show(getSupportFragmentManager(), "T&C/EULA");
     }
 
     private void downloadDiseaseMap() {
@@ -111,51 +109,51 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
                                 temp = number;
                             }
                         }
-//                if (snapshot.exists() && temp != currentDbSize) {
-//                    Log.d(TAG, "onDataChange: " +diseaseDBModels.size() + "/" + snapshot.getChildrenCount());
-//                        for (DiseaseDBModel disease : diseaseDBModels) {
-//                            dbHelper.clear(disease);
-////                      Clear table
-//                        }
-//
-//
-//                        Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
-//                        for (int i = 0; i != currentDbSize; i++) {
-//
-//                            if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_No_Allocation = "NULL";
-//                            }
-//                            if (snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_Bract_Mosaic = snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_Bract_Mosaic = "NULL";
-//                            }
-//                            if (snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_Bunchy_Top = snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_Bunchy_Top = "NULL";
-//                            }
-//                            if (snapshot.child("CMV").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_CMV = snapshot.child("CMV").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_CMV = "NULL";
-//                            }
-//                            if (snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_Gen_Mosaic = snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_Gen_Mosaic = "NULL";
-//                            }
-//                            if (snapshot.child("SCMV").child(String.valueOf(i)).getValue() != null){
-//                                stringVal_SCMV = snapshot.child("SCMV").child(String.valueOf(i)).getValue().toString();
-//                            } else {
-//                                stringVal_SCMV = "NULL";
-//                            }
-//                            Log.d(TAG, "onDataChange: " + stringVal_No_Allocation);
-//                            addToDiseaseDb(i);
-//                        }
-//                    }
+                if (snapshot.exists() && temp != dbSize) {
+                    Log.d(TAG, "onDataChange: " +diseaseDBModels.size() + "/" + snapshot.getChildrenCount());
+                        for (DiseaseDBModel disease : diseaseDBModels) {
+                            dbHelper.clear(disease);
+//                      Clear table
+                        }
+
+
+                        Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
+                        for (int i = 0; i != currentDbSize; i++) {
+
+                            if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null){
+                                stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_No_Allocation = "NULL";
+                            }
+                            if (snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Bract_Mosaic = snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_Bract_Mosaic = "NULL";
+                            }
+                            if (snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Bunchy_Top = snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_Bunchy_Top = "NULL";
+                            }
+                            if (snapshot.child("CMV").child(String.valueOf(i)).getValue() != null){
+                                stringVal_CMV = snapshot.child("CMV").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_CMV = "NULL";
+                            }
+                            if (snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue() != null){
+                                stringVal_Gen_Mosaic = snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_Gen_Mosaic = "NULL";
+                            }
+                            if (snapshot.child("SCMV").child(String.valueOf(i)).getValue() != null){
+                                stringVal_SCMV = snapshot.child("SCMV").child(String.valueOf(i)).getValue().toString();
+                            } else {
+                                stringVal_SCMV = "NULL";
+                            }
+                            Log.d(TAG, "onDataChange: " + stringVal_No_Allocation);
+                            addToDiseaseDb(i);
+                        }
+                    }
 
             }
 
@@ -423,8 +421,4 @@ public class MainActivity extends AppCompatActivity implements TermsAndCondition
         startActivity(map);
     }
 
-    @Override
-    public void onYesClicked() {
-        Toast.makeText(this, "nice", Toast.LENGTH_SHORT).show();
-    }
 }

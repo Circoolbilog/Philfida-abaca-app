@@ -64,9 +64,6 @@ public class  Map extends AppCompatActivity {
         //get Current Location
 
         map = (MapView) findViewById(R.id.map);
-        map.setTileSource(TileSourceFactory.MAPNIK);
-        map.getController().setZoom(10.0);
-        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.setMultiTouchControls(true);
 
         requestPermissionsIfNecessary(new String[]{
@@ -76,6 +73,7 @@ public class  Map extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
         addOverlays(ctx);
+
     }
 
 
@@ -90,8 +88,6 @@ public class  Map extends AppCompatActivity {
     }
 
     private void addOverlays(Context ctx) {
-        //Location Overlay
-
         MyLocationNewOverlay mLocationOverlay = new MyLocationNewOverlay(new GpsMyLocationProvider(ctx), map);
         mLocationOverlay.enableMyLocation();
         mLocationOverlay.enableFollowLocation();
@@ -103,15 +99,14 @@ public class  Map extends AppCompatActivity {
         //Start Location.
         GeoPoint myLocation = mLocationOverlay.getMyLocation();
         map.postInvalidate();
-        if (myLocation != null) {
-            map.getController().setCenter(mLocationOverlay.getMyLocation());
-            return;
-        }
-        Toast.makeText(ctx, "Location is null", Toast.LENGTH_SHORT).show();
-        GeoPoint point = new GeoPoint(0.0, 0.0);
+        GeoPoint point = new GeoPoint(0.0,0.0);
+        map.setTileSource(TileSourceFactory.MAPNIK);
+        map.getController().setZoom(10.0);
+        map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
         map.getController().setCenter(point);
         map.getOverlays().add(mLocationOverlay);
         map.getOverlays().add(mCompassOverlay);
+        map.getController().setCenter(mLocationOverlay.getMyLocation());
     }
 
     @Override
@@ -162,6 +157,15 @@ public class  Map extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+    private class MapRunnable implements Runnable{
+        Context ctx;
+        MapRunnable(Context ctx){
+            this.ctx = ctx;
+        };
+        @Override
+        public void run() {
         }
     }
 }

@@ -27,7 +27,10 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".otherActivities.SymptomInfo"></activity>
+        <activity android:name=".otherActivities.MoreInfo"
+            android:theme="@style/NoActionBar"/>
+        <activity android:name=".otherActivities.SymptomInfo"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".otherActivities.BasicInstructions"
             android:theme="@style/NoActionBar" />

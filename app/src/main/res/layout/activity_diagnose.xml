@@ -46,6 +46,16 @@
                 android:layout_centerInParent="true"
                 android:layout_centerHorizontal="true"
                 app:srcCompat="@drawable/text_bg" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:text="if loading takes longer than 10s, \n restart the app"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:textAlignment="center"/>
         </RelativeLayout>
 
 

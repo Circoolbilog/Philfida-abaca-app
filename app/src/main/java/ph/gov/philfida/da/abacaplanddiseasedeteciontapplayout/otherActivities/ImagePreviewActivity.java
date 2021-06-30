@@ -1,8 +1,11 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -17,6 +20,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +29,10 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
@@ -34,7 +41,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SymptomItem;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
 public class ImagePreviewActivity extends AppCompatActivity {
@@ -42,112 +53,163 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public static final String fileNum = "fileNumber";
     public static final String SYMPTOMS_ARRAY = "symptomsArray";
     public int fileNumber = 0;
-    String filename, location, detection, confidence,detectionInfo;
+    int noAllocationScore = 0, bractScore = 0, bunchyScore = 0, cmvScore = 0, genMosaicScore = 0, scmvScore = 0;
+    ArrayList<String> no_allocation_list, bract_list, bunchy_list, cmv_list, gen_mosaic_list, scmv_list;
+
+    byte[] bs2;
+    ArrayList<String> symptomsDetected;
+    String filename, location, detection, confidence, detectionInfo;
     Image image;
     ImageView prev;
-    Bitmap bitmap,bitmap2;
+    Bitmap bitmap;
     OutputStream outputStream;
     TextView title;
     CardView nextCapture;
     String[] detectedSymptoms;
     String symptomNamesToSave;
+    RelativeLayout loading;
     double lat, longt;
     private static final int REQUEST = 112;
     private static final String TAG = "ImagePreviewActivity";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
-        prev = findViewById(R.id.imageView);
-
-        title = findViewById(R.id.diseasePredicion);
-        nextCapture = findViewById(R.id.captureNextImage);
+        assignIDs();
+        loadDB();
         importExtras();
         //make sure that there are no duplicate names
         loadFileNumber();
+    }
+
+    private void assignIDs() {
+        prev = findViewById(R.id.imageView);
+        loading = findViewById(R.id.loading);
+        title = findViewById(R.id.diseasePredicion);
+        nextCapture = findViewById(R.id.captureNextImage);
+
+    }
+
+    private void loadDB() {
+        no_allocation_list = new ArrayList<>();
+        bract_list = new ArrayList<>();
+        bunchy_list = new ArrayList<>();
+        cmv_list = new ArrayList<>();
+        gen_mosaic_list = new ArrayList<>();
+        scmv_list = new ArrayList<>();
+        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
+        for (DiseaseDBModel dbModel : dbModelList) {
+            if (!dbModel.getNo_Allocation().equals("NULL") | !dbModel.getNo_Allocation().equals(""))
+                no_allocation_list.add(dbModel.getNo_Allocation());
+            if (!dbModel.getBract_Mosaic().equals("NULL") | !dbModel.getBract_Mosaic().equals(""))
+                bract_list.add(dbModel.getBract_Mosaic());
+            if (!dbModel.getBunchy_Top().equals("NULL") | !dbModel.getBunchy_Top().equals(""))
+                bunchy_list.add(dbModel.getBunchy_Top());
+            if (!dbModel.getCMV().equals("NULL") | !dbModel.getCMV().equals(""))
+                cmv_list.add(dbModel.getCMV());
+            if (!dbModel.getGen_Mosaic().equals("NULL") | !dbModel.getGen_Mosaic().equals(""))
+                gen_mosaic_list.add(dbModel.getGen_Mosaic());
+            if (!dbModel.getSCMV().equals("NULL") | !dbModel.getSCMV().equals(""))
+                scmv_list.add(dbModel.getSCMV());
+        }
     }
 
     private void importExtras() {
         Bundle extras = getIntent().getExtras();
         //import image passed from previous activity
         if (extras != null) {
-            loadImage(extras);
+            try {
+                loadImage(extras);
+            } catch (Exception e) {
+                Log.d(TAG, "importExtras: " + e.getMessage());
+            }
             //get detected symptoms and disease name
-//            loadDetectionInfo(extras);
+            loadDetectionInfo(extras);
         }
-        if( ((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0){
+        if (((SettingsContainer) this.getApplication()).getDiagnoseMode() != 0) {
             nextCapture.setVisibility(View.VISIBLE);
         }
     }
 
     private void loadDetectionInfo(Bundle extras) {
-        detection  = extras.getString("diseaseName");
-        //          confidence = extras.getString("confidence");
-        location = extras.getString("location");
-        title.setText("");
-        detectionInfo = detection + " " + confidence + "\n" + location;
-        detectedSymptoms = extras.getStringArray("diseaseNameArray");
-        if (detectedSymptoms!=null)title.append(detectedSymptoms + " ");
-        if (confidence!=null)title.append(confidence);
-        longt = extras.getDouble("longt");
+        symptomsDetected = extras.getStringArrayList("symptomsDetected");
         lat = extras.getDouble("lat");
-        Log.d(TAG, "onCreate: detected: " + Arrays.toString(detectedSymptoms));
-        try {
-            StringBuilder sb = new StringBuilder();
-            for(String names: detectedSymptoms){
-                sb.append(names);
-                title.append("Symptoms: ");
-                title.append(names);
-                title.append("\n");
-            }
-            symptomNamesToSave = String.valueOf(sb);
-        }catch (Exception e){
-            Toast.makeText(this, "eception "+ e, Toast.LENGTH_LONG).show();
-            Log.d(TAG, "importExtras: eception \"+ e");
+        longt = extras.getDouble("longt");
+        title.setText("");
+        categorize(symptomsDetected);
+        //          confidence = extras.getString("confidence");
+    }
+
+    private void categorize(ArrayList<String> symptoms) {
+        for (String symptom : no_allocation_list) {
+            if (symptoms.contains(symptom)) noAllocationScore++;
         }
+        for (String symptom : bract_list) {
+            if (symptoms.contains(symptom)) bractScore++;
+        }
+        for (String symptom : bunchy_list) {
+            if (symptoms.contains(symptom)) bunchyScore++;
+        }
+        for (String symptom : cmv_list) {
+            if (symptoms.contains(symptom)) cmvScore++;
+        }
+        for (String symptom : gen_mosaic_list) {
+            if (symptoms.contains(symptom)) genMosaicScore++;
+        }
+        for (String symptom : scmv_list) {
+            if (symptoms.contains(symptom)) scmvScore++;
+        }
+        title.append("(No Allocation) score: " + noAllocationScore + "\n");
+        title.append("Bract Mosaic score: " + bractScore + "\n");
+        title.append("Bunchy Top score: " + bunchyScore + "\n");
+        title.append("CMV score: " + cmvScore + "\n");
+        title.append("General Mosaic score: " + genMosaicScore + "\n");
+        title.append("SCMV score: " + scmvScore + "\n");
+        detectionInfo = title.getText().toString() + "\n" + getSymptoms() + "Lognitude: " + longt + "\n"+ "Latitude: "+lat;
     }
 
     private void loadImage(Bundle extras) {
         //load image from camera
         byte[] bs = extras.getByteArray("byteArray");
-        byte[] bs2 = extras.getByteArray("imageWithBox");
-        bitmap = BitmapFactory.decodeByteArray(bs,0,bs.length);
-        float degrees = 90;
-        Matrix matrix = new Matrix();
-        matrix.setRotate(degrees);
-        bitmap2 = Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);
-        prev.setImageBitmap(bitmap2);
+        bs2 = extras.getByteArray("backUpImage");
+        bitmap = BitmapFactory.decodeByteArray(bs, 0, bs.length);
+        prev.setImageBitmap(bitmap);
+        loading.setVisibility(View.GONE);
     }
 
-    public void requestPerms(View view){
+    public void requestPerms(View view) {
         if (ContextCompat.checkSelfPermission(ImagePreviewActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ImagePreviewActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},REQUEST);
-        }
-        else{
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST);
+        } else {
             //saveImage2();
             try {
-                saveImage3(bitmap2,filename);
+                saveImage3(bitmap, filename);
             } catch (IOException e) {
                 e.printStackTrace();
+                Log.d(TAG, "requestPerms: " + e.getMessage());
             }
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST){
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                Toast.makeText(this,"WRITE EXTERNAL STORAGE PERMISSION GRANTED",Toast.LENGTH_SHORT).show();
+        if (requestCode == REQUEST) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "WRITE EXTERNAL STORAGE PERMISSION GRANTED", Toast.LENGTH_SHORT).show();
                 //saveImage2();
                 try {
-                    saveImage3(bitmap2,filename);
+                    saveImage3(bitmap, filename);
                 } catch (IOException e) {
                     e.printStackTrace();
+                    Log.d(TAG, "onRequestPermissionsResult: " + e.getMessage());
                 }
-            }else{
-                Toast.makeText(this,"WRITE EXTERNAL STORAGE PERMISSION DENIED",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "WRITE EXTERNAL STORAGE PERMISSION DENIED", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -156,44 +218,45 @@ public class ImagePreviewActivity extends AppCompatActivity {
         //put symptoms to array and open diagnosis activity.(assessment image view) 
         name = "localImage_" + fileNumber;
         OutputStream fos; // file output stream
-        File dir = new File(Environment.getExternalStorageDirectory(),"Pictures/Assessment");
-        if (!dir.exists()){
+        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
+        if (!dir.exists()) {
             boolean success = dir.mkdir();
-            if (success){
-                Toast.makeText(this,"Created Directory",Toast.LENGTH_LONG).show();
+            if (success) {
+                Toast.makeText(this, "Created Directory", Toast.LENGTH_LONG).show();
             }
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q){
-            ContentResolver resolver =getContentResolver();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            ContentResolver resolver = getContentResolver();
             ContentValues contentValues = new ContentValues();
             contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
             contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH,Environment.DIRECTORY_PICTURES+"/Assessment");
+            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
             Uri uri;
             uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Uri imageUri = resolver.insert(uri,contentValues);
+            Uri imageUri = resolver.insert(uri, contentValues);
             fos = resolver.openOutputStream(Objects.requireNonNull(imageUri));
-        }else{
+        } else {
             //below android Q
-            File imageFile =  new File(dir,name + "jpg");
+            File imageFile = new File(dir, name + "jpg");
             fos = new FileOutputStream(imageFile);
         }
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fos);
         Objects.requireNonNull(fos).close();
         File textFile = new File(dir, name + ".txt");
-        fos=new FileOutputStream(textFile);
+        fos = new FileOutputStream(textFile);
         fos.write(detectionInfo.getBytes());
         incrementFileNumber();
         finish();
     }
 
-    public void setSymptomsArray(){
-        SharedPreferences sp = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
+    public void setSymptomsArray() {
+        SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor spE = sp.edit();
         //string Array?
-        spE.putString(SYMPTOMS_ARRAY,symptomNamesToSave);
+        spE.putString(SYMPTOMS_ARRAY, symptomNamesToSave);
         spE.apply();
     }
+
     public void incrementFileNumber() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -208,8 +271,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
 
-
-
     public void discardImage(View view) {
         finish();
     }
@@ -221,6 +282,22 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void showMoreInfo(View view) {
-        //only display te disease stuff and display more info via dialog when this button is clicked
+        Intent intent = new Intent(ImagePreviewActivity.this,MoreInfo.class);
+        intent.putExtra("Symptoms",getSymptoms());
+        intent.putExtra("lat",lat);
+        intent.putExtra("longt" , longt);
+        intent.putExtra("imageWithBox",bs2);
+        startActivity(intent);
     }
+
+    public String getSymptoms() {
+        String s = "Symptoms: \n";
+        if (symptomsDetected == null) return s;
+        for (String symptom: symptomsDetected){
+            s = s+ symptom + "\n";
+        }
+        return s;
+
+    }
+
 }

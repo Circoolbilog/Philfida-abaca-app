@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/abaca_plant_bg"
-            android:alpha="0.4"/>
+            android:alpha="0.3"/>
 
 
         <ImageView

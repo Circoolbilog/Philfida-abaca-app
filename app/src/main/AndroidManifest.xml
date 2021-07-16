@@ -36,7 +36,8 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".otherActivities.WelcomeScreen"
-            android:theme="@style/NoActionBar" />
+            android:theme="@style/NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity android:name=".otherActivities.AboutApp" />
         <activity
             android:name=".otherActivities.Map"
@@ -64,10 +65,12 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".Login"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/NoActionBar"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -82,7 +85,8 @@
         <activity
             android:name=".Register"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="adjustPan" />
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -248,9 +248,9 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                                 canvas.drawRect(location, paint);
                                 cropToFrameTransform.mapRect(location);
                                 detectedSymptomsList.add(result.getTitle());
-                                confidenceList.add(result.getConfidence());
-                                passLocation = location;
-                                Log.d(TAG, "run: " + detectedSymptomsList.toString());
+//                                confidenceList.add(result.getConfidence());
+//                                passLocation = location;
+//                                Log.d(TAG, "run: " + detectedSymptomsList.toString());
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
                             }

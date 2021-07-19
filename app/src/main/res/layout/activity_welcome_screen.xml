@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/welcome_card_bg"
+    android:background="@mipmap/welcome_card_bg"
     tools:context=".otherActivities.WelcomeScreen">
 
     <androidx.viewpager.widget.ViewPager

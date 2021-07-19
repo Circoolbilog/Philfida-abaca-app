@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:adjustViewBounds="true"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/caret"
+        app:srcCompat="@mipmap/caret"
         tools:layout_editor_absoluteX="15dp" />
 
     <TextView

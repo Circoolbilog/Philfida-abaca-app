@@ -361,7 +361,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     }
 
     private void getGeoLocation() {
-
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
@@ -376,8 +375,10 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             return;
         }
         Location location = lm.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        longt = location.getLongitude();
-        lat = location.getLatitude();
+        if (location != null) {
+            longt = location.getLongitude();
+            lat = location.getLatitude();
+        }
          final LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
                 longt = location.getLongitude();

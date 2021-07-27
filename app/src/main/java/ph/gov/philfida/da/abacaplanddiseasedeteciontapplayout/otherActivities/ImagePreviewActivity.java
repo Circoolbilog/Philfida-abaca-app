@@ -1,16 +1,13 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.Manifest;
-import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.ContentValues;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
@@ -24,17 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -43,7 +36,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SymptomItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
@@ -187,7 +179,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         } else {
             //saveImage2();
             try {
-                saveImage3(bitmap, filename);
+                saveImage(bitmap, filename);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "requestPerms: " + e.getMessage());
@@ -203,7 +195,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Toast.makeText(this, "WRITE EXTERNAL STORAGE PERMISSION GRANTED", Toast.LENGTH_SHORT).show();
                 //saveImage2();
                 try {
-                    saveImage3(bitmap, filename);
+                    saveImage(bitmap, filename);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d(TAG, "onRequestPermissionsResult: " + e.getMessage());
@@ -214,10 +206,10 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImage3(Bitmap bitmap3, String name) throws IOException {
-        //put symptoms to array and open diagnosis activity.(assessment image view) 
+    private void saveImage(Bitmap bitmap3, String name) throws IOException {
         name = "localImage_" + fileNumber;
-        OutputStream fos; // file output stream
+        OutputStream fosOne; // image file 1 output stream
+        OutputStream textFos;
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
         if (!dir.exists()) {
             boolean success = dir.mkdir();
@@ -225,37 +217,46 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Toast.makeText(this, "Created Directory", Toast.LENGTH_LONG).show();
             }
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ContentResolver resolver = getContentResolver();
-            ContentValues contentValues = new ContentValues();
-            contentValues.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
-            contentValues.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-            contentValues.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
-            Uri uri;
-            uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Uri imageUri = resolver.insert(uri, contentValues);
-            fos = resolver.openOutputStream(Objects.requireNonNull(imageUri));
-        } else {
-            //below android Q
-            File imageFile = new File(dir, name + "jpg");
-            fos = new FileOutputStream(imageFile);
+        if (isBuildVersionQ()){
+            //Save Image File
+            ContentResolver imageOneResolver = getContentResolver();
+            ContentValues imageOneCV = new ContentValues();
+            imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
+            imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
+            Uri imageOneUri;
+            imageOneUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri imageUri = imageOneResolver.insert(imageOneUri, imageOneCV);
+            fosOne = imageOneResolver.openOutputStream(Objects.requireNonNull(imageUri));
+            //Save Text file
+            ContentResolver textContentResolver = getContentResolver();
+            ContentValues textCV = new ContentValues();
+            textCV.put(MediaStore.Files.FileColumns.DISPLAY_NAME, name + "_info.txt");
+            textCV.put(MediaStore.Files.FileColumns.MIME_TYPE, "document/txt");
+            textCV.put(MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assesment");
+
         }
-        bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fos);
-        Objects.requireNonNull(fos).close();
-        File textFile = new File(dir, name + ".txt");
-        fos = new FileOutputStream(textFile);
-        fos.write(detectionInfo.getBytes());
+        else {
+            //below android Q
+            //Save Image File
+            File imageFileOne = new File(dir, name + "jpg");
+            fosOne = new FileOutputStream(imageFileOne);
+            //Save Text file
+            File textFile = new File(dir, name + "_info.txt");
+            textFos = new FileOutputStream(textFile);
+            textFos.write(detectionInfo.getBytes());
+        }
+        bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
+        Objects.requireNonNull(fosOne).close();
+
         incrementFileNumber();
         finish();
     }
 
-    public void setSymptomsArray() {
-        SharedPreferences sp = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor spE = sp.edit();
-        //string Array?
-        spE.putString(SYMPTOMS_ARRAY, symptomNamesToSave);
-        spE.apply();
+    private boolean isBuildVersionQ() {
+        return Build.VERSION.SDK_INT>Build.VERSION_CODES.Q;
     }
+
 
     public void incrementFileNumber() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

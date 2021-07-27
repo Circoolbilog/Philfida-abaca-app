@@ -99,27 +99,38 @@
             android:adjustViewBounds="true"
             android:background="@drawable/ic_info" />
 
-        <ImageView
-            android:id="@+id/capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/container"
-            android:layout_centerHorizontal="true"
-            android:layout_marginEnd="289dp"
-            android:layout_marginBottom="30dp"
-            android:adjustViewBounds="true"
-            android:onClick="CaptureImage"
-            android:src="@drawable/ic_capture" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
 
-        <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_alignTop="@+id/capture"
-            android:layout_alignBottom="@+id/capture"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="21dp"
-            android:layout_marginBottom="21dp"
-            android:src="@drawable/ic_m_assessment" />
+            <ImageView
+                android:id="@+id/capture"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                android:layout_marginBottom="10dp"
+                android:adjustViewBounds="true"
+                android:onClick="CaptureImage"
+                android:src="@drawable/ic_capture"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.25" />
+
+            <ImageView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_m_assessment"
+                app:layout_constraintBottom_toBottomOf="@+id/capture"
+                app:layout_constraintEnd_toStartOf="@+id/capture"
+                app:layout_constraintTop_toTopOf="@+id/capture"
+                android:layout_margin="30dp"
+                app:layout_constraintWidth_default="percent"
+                app:layout_constraintWidth_percent="0.2"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
     </RelativeLayout>
     <!--

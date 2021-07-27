@@ -33,10 +33,10 @@ public class AssessedImageViewer extends AppCompatActivity {
             String fileName = extras.getString("file");
             selectedImage = BitmapFactory.decodeFile(fileName);
             assessedImage.setImageBitmap(selectedImage);
-            fileName = fileName.replace(".jpg",".txt");
+            String textFile = fileName.replace(".jpg","_info.txt");
 
             FileReader fr = null;
-            File diseaseInfoFile  = new File(fileName);
+            File diseaseInfoFile  = new File(textFile);
             StringBuilder stringBuilder = new StringBuilder();
             try {
                 fr = new FileReader(diseaseInfoFile);

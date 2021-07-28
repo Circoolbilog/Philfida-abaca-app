@@ -191,7 +191,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST);
         } else {
             try {
-                saveImage(bitmap, filename);
+                saveImage(bitmap);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "requestPerms: " + e.getMessage());
@@ -207,7 +207,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Toast.makeText(this, "WRITE EXTERNAL STORAGE PERMISSION GRANTED", Toast.LENGTH_SHORT).show();
                 //saveImage2();
                 try {
-                    saveImage(bitmap, filename);
+                    saveImage(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d(TAG, "onRequestPermissionsResult: " + e.getMessage());
@@ -218,8 +218,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
     }
 
-    private void saveImage(Bitmap bitmap3, String name) throws IOException {
-        name = "localImage_" + fileNumber;
+    private void saveImage(Bitmap bitmap3) throws IOException {
+        String name = "localImage_" + fileNumber;
         OutputStream fosOne; // image file 1 output stream
         OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
@@ -319,11 +319,12 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public String getSymptoms() {
         String s = "Symptoms: \n";
         if (symptomsDetected == null) return s;
+        StringBuilder sBuilder = new StringBuilder("Symptoms: \n");
         for (String symptom: symptomsDetected){
-            s = s+ symptom + "\n";
+            sBuilder.append(symptom).append("\n");
         }
+        s = sBuilder.toString();
         return s;
-
     }
 
 }

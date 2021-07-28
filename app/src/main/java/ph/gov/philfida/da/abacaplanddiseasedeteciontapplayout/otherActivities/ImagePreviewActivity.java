@@ -154,25 +154,25 @@ public class ImagePreviewActivity extends AppCompatActivity {
             if (symptoms.contains(symptom)) scmvScore++;
         }
 
-        if (noAllocationScore !=0 ){
+        if (noAllocationScore != 0) {
             title.append("(No Allocation) score: " + noAllocationScore + "\n");
         }
-        if (bractScore !=0 ){
+        if (bractScore != 0) {
             title.append("Bract Mosaic score: " + bractScore + "\n");
         }
-        if (bunchyScore !=0 ){
+        if (bunchyScore != 0) {
             title.append("Bunchy Top score: " + bunchyScore + "\n");
         }
-        if (cmvScore !=0 ){
+        if (cmvScore != 0) {
             title.append("CMV score: " + cmvScore + "\n");
         }
-        if (genMosaicScore !=0 ){
+        if (genMosaicScore != 0) {
             title.append("General Mosaic score: " + genMosaicScore + "\n");
         }
-        if (scmvScore !=0 ){
+        if (scmvScore != 0) {
             title.append("SCMV score: " + scmvScore + "\n");
         }
-        detectionInfo = title.getText().toString() + "\n" + getSymptoms() + "Lognitude: " + longt + "\n"+ "Latitude: "+lat;
+        detectionInfo = title.getText().toString() + "\n" + getSymptoms() + "Lognitude: " + longt + "\n" + "Latitude: " + lat;
     }
 
     private void loadImage(Bundle extras) {
@@ -229,9 +229,10 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Toast.makeText(this, "Created Directory", Toast.LENGTH_LONG).show();
             }
         }
-        if (isBuildVersionQ()){
+        if (isBuildVersionQ()) {
             //Save Image File
             Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri textPathUri = MediaStore.Files.getContentUri("external");
 
             ContentResolver imageOneResolver = getContentResolver();
             ContentValues imageOneCV = new ContentValues();
@@ -248,19 +249,14 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
             textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
             textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
-            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/");
+            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/Assessment/");
 
-            try {
-                Uri textUri = imageOneResolver.insert(imagePathUri,textCV);
-            } catch (Exception e) {
-                e.printStackTrace();
-                Log.d(TAG, "saveImage: " + e.getMessage());
-            }
-            fosText = textContentResolver.openOutputStream(imageUri);
+            Uri textUri = imageOneResolver.insert(textPathUri, textCV);
+
+            fosText = textContentResolver.openOutputStream(textUri);
             fosText.write(detectionInfo.getBytes());
             fosText.close();
-        }
-        else {
+        } else {
             //below android Q
             //Save Image File
             File imageFileOne = new File(dir, name + "jpg");
@@ -279,7 +275,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     private boolean isBuildVersionQ() {
-        return Build.VERSION.SDK_INT>Build.VERSION_CODES.Q;
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
 
 
@@ -308,11 +304,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void showMoreInfo(View view) {
-        Intent intent = new Intent(ImagePreviewActivity.this,MoreInfo.class);
-        intent.putExtra("Symptoms",getSymptoms());
-        intent.putExtra("lat",lat);
-        intent.putExtra("longt" , longt);
-        intent.putExtra("imageWithBox",bs2);
+        Intent intent = new Intent(ImagePreviewActivity.this, MoreInfo.class);
+        intent.putExtra("Symptoms", getSymptoms());
+        intent.putExtra("lat", lat);
+        intent.putExtra("longt", longt);
+        intent.putExtra("imageWithBox", bs2);
         startActivity(intent);
     }
 
@@ -320,7 +316,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         String s = "Symptoms: \n";
         if (symptomsDetected == null) return s;
         StringBuilder sBuilder = new StringBuilder("Symptoms: \n");
-        for (String symptom: symptomsDetected){
+        for (String symptom : symptomsDetected) {
             sBuilder.append(symptom).append("\n");
         }
         s = sBuilder.toString();

@@ -153,12 +153,25 @@ public class ImagePreviewActivity extends AppCompatActivity {
         for (String symptom : scmv_list) {
             if (symptoms.contains(symptom)) scmvScore++;
         }
-        title.append("(No Allocation) score: " + noAllocationScore + "\n");
-        title.append("Bract Mosaic score: " + bractScore + "\n");
-        title.append("Bunchy Top score: " + bunchyScore + "\n");
-        title.append("CMV score: " + cmvScore + "\n");
-        title.append("General Mosaic score: " + genMosaicScore + "\n");
-        title.append("SCMV score: " + scmvScore + "\n");
+
+        if (noAllocationScore !=0 ){
+            title.append("(No Allocation) score: " + noAllocationScore + "\n");
+        }
+        if (bractScore !=0 ){
+            title.append("Bract Mosaic score: " + bractScore + "\n");
+        }
+        if (bunchyScore !=0 ){
+            title.append("Bunchy Top score: " + bunchyScore + "\n");
+        }
+        if (cmvScore !=0 ){
+            title.append("CMV score: " + cmvScore + "\n");
+        }
+        if (genMosaicScore !=0 ){
+            title.append("General Mosaic score: " + genMosaicScore + "\n");
+        }
+        if (scmvScore !=0 ){
+            title.append("SCMV score: " + scmvScore + "\n");
+        }
         detectionInfo = title.getText().toString() + "\n" + getSymptoms() + "Lognitude: " + longt + "\n"+ "Latitude: "+lat;
     }
 
@@ -177,7 +190,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(ImagePreviewActivity.this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST);
         } else {
-            //saveImage2();
             try {
                 saveImage(bitmap, filename);
             } catch (IOException e) {
@@ -209,7 +221,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     private void saveImage(Bitmap bitmap3, String name) throws IOException {
         name = "localImage_" + fileNumber;
         OutputStream fosOne; // image file 1 output stream
-        OutputStream textFos;
+        OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
         if (!dir.exists()) {
             boolean success = dir.mkdir();
@@ -219,22 +231,34 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
         if (isBuildVersionQ()){
             //Save Image File
+            Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+
             ContentResolver imageOneResolver = getContentResolver();
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
             imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
             imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
-            Uri imageOneUri;
-            imageOneUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Uri imageUri = imageOneResolver.insert(imageOneUri, imageOneCV);
+
+            Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
             fosOne = imageOneResolver.openOutputStream(Objects.requireNonNull(imageUri));
+
             //Save Text file
             ContentResolver textContentResolver = getContentResolver();
             ContentValues textCV = new ContentValues();
-            textCV.put(MediaStore.Files.FileColumns.DISPLAY_NAME, name + "_info.txt");
-            textCV.put(MediaStore.Files.FileColumns.MIME_TYPE, "document/txt");
-            textCV.put(MediaStore.Files.FileColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assesment");
 
+            textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
+            textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/");
+
+            try {
+                Uri textUri = imageOneResolver.insert(imagePathUri,textCV);
+            } catch (Exception e) {
+                e.printStackTrace();
+                Log.d(TAG, "saveImage: " + e.getMessage());
+            }
+            fosText = textContentResolver.openOutputStream(imageUri);
+            fosText.write(detectionInfo.getBytes());
+            fosText.close();
         }
         else {
             //below android Q
@@ -243,8 +267,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
             fosOne = new FileOutputStream(imageFileOne);
             //Save Text file
             File textFile = new File(dir, name + "_info.txt");
-            textFos = new FileOutputStream(textFile);
-            textFos.write(detectionInfo.getBytes());
+            fosText = new FileOutputStream(textFile);
+            fosText.write(detectionInfo.getBytes());
+            fosText.close();
         }
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
         Objects.requireNonNull(fosOne).close();

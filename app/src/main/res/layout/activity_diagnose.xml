@@ -127,7 +127,7 @@
                 app:layout_constraintTop_toTopOf="@+id/capture"
                 android:layout_margin="30dp"
                 app:layout_constraintWidth_default="percent"
-                app:layout_constraintWidth_percent="0.2"/>
+                app:layout_constraintWidth_percent="0.15"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
 

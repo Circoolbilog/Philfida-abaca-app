@@ -3,10 +3,15 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 import androidx.appcompat.app.AppCompatActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
+import android.content.ContentUris;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +21,8 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 public class AssessedImageViewer extends AppCompatActivity {
 
@@ -34,28 +41,84 @@ public class AssessedImageViewer extends AppCompatActivity {
             selectedImage = BitmapFactory.decodeFile(fileName);
             assessedImage.setImageBitmap(selectedImage);
             String textFile = fileName.replace(".jpg","_info.txt");
+            if (isBuildVersionQ()){
+                File file = new File(textFile);
+                diseaseInfo.setText(viewinfo(file.getName()));
+            }else {
+                FileReader fr;
+                File diseaseInfoFile  = new File(textFile);
+                StringBuilder stringBuilder = new StringBuilder();
+                try {
+                    fr = new FileReader(diseaseInfoFile);
+                    BufferedReader br = new BufferedReader(fr);
+                    String line = br.readLine();
+                    while (line != null){
+                        stringBuilder.append(line).append("\n");
+                        line = br.readLine();
+                    }
 
-            FileReader fr = null;
-            File diseaseInfoFile  = new File(textFile);
-            StringBuilder stringBuilder = new StringBuilder();
-            try {
-                fr = new FileReader(diseaseInfoFile);
-                BufferedReader br = new BufferedReader(fr);
-                String line = br.readLine();
-                while (line != null){
-                    stringBuilder.append(line).append("\n");
-                    line = br.readLine();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    String fileContents = stringBuilder.toString();
+                    fileContents = fileContents.replace(")","");
+                    fileContents = fileContents.replace("RectF(","Location(Coordinates): ");
+                    diseaseInfo.append(fileContents);
                 }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                String fileContents = stringBuilder.toString();
-                fileContents = fileContents.replace(")","");
-                fileContents = fileContents.replace("RectF(","Location(Coordinates): ");
-                diseaseInfo.append(fileContents);
             }
 
         }
+    }
+    private boolean isBuildVersionQ() {
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
+    }
+    private String viewinfo(String selected){
+        Uri textContentUri = MediaStore.Files.getContentUri("external");
+
+        String selection = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
+        }
+        String[] selectionArgs = new String[]{Environment.DIRECTORY_DOCUMENTS + "/Assessment/"};
+        Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
+
+        Uri uri = null;
+
+        if (cursor.getCount() == 0){
+            Toast.makeText(this, "No Info File Found in \""+Environment.DIRECTORY_DOCUMENTS+"/Assessment/\"", Toast.LENGTH_SHORT).show();
+        }else {
+            while (cursor.moveToNext()) {
+                String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
+                if (fileName.equals(selected)){
+                    long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+
+                    uri = ContentUris.withAppendedId(textContentUri,id);
+                    break;
+                }
+            }
+            cursor.close();
+            if (uri == null) {
+                Toast.makeText(this, selected + " not found", Toast.LENGTH_LONG).show();
+            }else {
+                try {
+                    InputStream inputStream = getContentResolver().openInputStream(uri);
+
+                    int size = inputStream.available();
+
+                    byte[] bytes = new byte[size];
+
+                    inputStream.read(bytes);
+
+                    inputStream.close();
+
+                    return new String(bytes, StandardCharsets.UTF_8);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    return e.getMessage();
+                }
+            }
+        }
+        return "no info found";
     }
 }

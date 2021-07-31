@@ -254,8 +254,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
             Uri textUri = imageOneResolver.insert(textPathUri, textCV);
 
             fosText = textContentResolver.openOutputStream(textUri);
-            fosText.write(detectionInfo.getBytes());
-            fosText.close();
         } else {
             //below android Q
             //Save Image File
@@ -264,9 +262,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
             //Save Text file
             File textFile = new File(dir, name + "_info.txt");
             fosText = new FileOutputStream(textFile);
-            fosText.write(detectionInfo.getBytes());
-            fosText.close();
         }
+        fosText.write(detectionInfo.getBytes());
+        fosText.close();
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
         Objects.requireNonNull(fosOne).close();
 

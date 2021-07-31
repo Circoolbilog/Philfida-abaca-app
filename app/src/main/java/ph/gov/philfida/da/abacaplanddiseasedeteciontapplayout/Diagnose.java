@@ -69,7 +69,9 @@ public abstract class Diagnose extends AppCompatActivity
     protected int previewHeight = 0;
     private boolean debug = false;
     private Handler handler;
+    private Handler handler2;
     private HandlerThread handlerThread;
+    private HandlerThread handlerThread2;
     private boolean useCamera2API;
     private boolean isProcessingFrame = false;
     private byte[][] yuvBytes = new byte[3][];
@@ -297,7 +299,10 @@ public abstract class Diagnose extends AppCompatActivity
 
         handlerThread = new HandlerThread("inference");
         handlerThread.start();
+        handlerThread2 = new HandlerThread("inference");
+        handlerThread2.start();
         handler = new Handler(handlerThread.getLooper());
+        handler2 = new Handler(handlerThread2.getLooper());
     }
 
     @Override
@@ -305,10 +310,14 @@ public abstract class Diagnose extends AppCompatActivity
         LOGGER.d("onPause " + this);
 
         handlerThread.quitSafely();
+        handlerThread2.quitSafely();
         try {
             handlerThread.join();
             handlerThread = null;
+            handlerThread2.join();
+            handlerThread2 = null;
             handler = null;
+            handler2 = null;
         } catch (final InterruptedException e) {
             LOGGER.e(e, "Exception!");
         }
@@ -331,6 +340,11 @@ public abstract class Diagnose extends AppCompatActivity
     protected synchronized void runInBackground(final Runnable r) {
         if (handler != null) {
             handler.post(r);
+        }
+    }
+    protected synchronized void runInBackground2(final Runnable r) {
+        if (handler2 != null) {
+            handler2.post(r);
         }
     }
 

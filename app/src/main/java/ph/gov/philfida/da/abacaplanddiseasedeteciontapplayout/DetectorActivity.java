@@ -247,10 +247,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                             if (location != null && result.getConfidence() >= minimumConfidence) {
                                 canvas.drawRect(location, paint);
                                 cropToFrameTransform.mapRect(location);
-                                detectedSymptomsList.add(result.getTitle());
-//                                confidenceList.add(result.getConfidence());
-//                                passLocation = location;
-//                                Log.d(TAG, "run: " + detectedSymptomsList.toString());
+                                detectedSymptomsList.add(result.getTitle());;
                                 result.setLocation(location);
                                 mappedRecognitions.add(result);
                             }
@@ -323,10 +320,9 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     @Override
     public void CaptureImage(View v) {
         super.CaptureImage(v);
-        float confidence;
         getGeoLocation();
         Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
-        runInBackground(new Runnable() {
+        runInBackground2(new Runnable() {
             @Override
             public void run() {
                 try {
@@ -348,10 +344,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             }
         });
 
-//        String name = getDetectionInfo();
-
         lastDetection = confidenceList.size();
-
     }
 
     private byte[] bitmapToArray(Bitmap bitmap) {
@@ -449,6 +442,13 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         } else {
             formatted = "";
             return formatted;
+        }
+    }
+    class CaptureRunnable implements Runnable{
+
+        @Override
+        public void run() {
+
         }
     }
 }

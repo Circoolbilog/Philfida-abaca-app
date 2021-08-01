@@ -120,7 +120,33 @@ public class DiseaseInfo extends AppCompatActivity {
         String diseaseName = display.getString("diseaseName");
         this.diseaseName.append(" "+position);
         this.diseaseName.setText(diseaseName);
+        this.diseaseDesc.setText(getmDiseaseDesc(diseaseName));
         populateList();
+    }
+
+    private String getmDiseaseDesc(String mDiseaseName){
+        String diseaseDesc = "";
+        switch (mDiseaseName){
+            case "0_No_Allocation":
+                diseaseDesc = "Sypmtoms on this list has not been attributed to any disease in the database";
+                break;
+            case "Bract_Mosaic":
+                diseaseDesc = "(Placeholder) The virus is said to be a significant pathogen of the abaca, along with the Abaca bunchy top virus.[1] There is not much known about this virus: as of January 2021, only five results are returned on Google Scholar for the query \"Abaca bract mosaic virus\" OR \"Abacá bract mosaic virus\". ";
+                break;
+            case "Bunchy_Top":
+                diseaseDesc = "(Placeholder)  ABTV has been isolated from both abacá (Musa textilis) and banana (Musa sp.).[1] ABTV has many similarities to banana bunchy top virus (BBTV) but is both genetically and serologically distinct in that it lacks two open reading frames found in BBTV's genome. ATBV's genome contains six circular components, each of which are 1,000-1,500 base pairs in length.";
+                break;
+            case "CMV":
+                diseaseDesc = "Description pending";
+                break;
+            case "Gen_Mosaic":
+                diseaseDesc = "(Placeholder) Abacá mosaic virus (AbaMV) is related to members of the sugarcane mosaic virus subgroup of the genus Potyvirus. The ~2 kb 3′ terminal region of the viral genome was sequenced and, in all areas analysed, found to be most similar to Sugarcane mosaic virus (SCMV) and distinct from Johnsongrass mosaic virus (JGMV), Maize dwarf mosaic virus (MDMV) and Sorghum mosaic virus (SrMV). ";
+                break;
+            case "SCMV":
+                diseaseDesc = "Description pending ";
+                break;
+        }
+        return  diseaseDesc;
     }
 
 }

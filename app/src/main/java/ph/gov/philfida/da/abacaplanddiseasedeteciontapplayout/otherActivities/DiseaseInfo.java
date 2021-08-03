@@ -15,21 +15,29 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseInfo extends AppCompatActivity {
-    TextView diseaseName,diseaseDesc;
+    TextView diseaseName, diseaseDesc;
     RecyclerView recyclerView;
     SymptomAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
     ArrayList<SymptomItem> item;
+    ImageView diseasePic;
     int position;
     String mDiseaseName = "", mDiseaseDesc;
     private static final String TAG = "DiseaseInfo";
@@ -45,6 +53,7 @@ public class DiseaseInfo extends AppCompatActivity {
     private void assignIds() {
         diseaseDesc = findViewById(R.id.diseaseDesc);
         diseaseName = findViewById(R.id.diseaseNameInd);
+        diseasePic = findViewById(R.id.diseaseImageInd);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             mDiseaseName = extras.getString("diseaseName");
@@ -52,46 +61,53 @@ public class DiseaseInfo extends AppCompatActivity {
         }
         diseaseName.setText(mDiseaseName);
     }
+
     private void populateList() {
         DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         Log.d(TAG, "populateList: " + dbModelList.size());
 //        ArrayAdapter symptomsArrayAdapter = new ArrayAdapter<DiseaseDBModel>(this, android.R.layout.simple_list_item_1, dbModelList);
         item = new ArrayList<SymptomItem>();
-        for (DiseaseDBModel symptom:dbModelList){
+        for (DiseaseDBModel symptom : dbModelList) {
 
-            Log.d(TAG, "populateList: "+symptom.getNo_Allocation());
-            switch (mDiseaseName){
+            Log.d(TAG, "populateList: " + symptom.getNo_Allocation());
+            switch (mDiseaseName) {
                 case "0_No_Allocation":
-                    if (symptom.getNo_Allocation() == null)break;
-                    if(symptom.getNo_Allocation().equals("NULL")|symptom.getNo_Allocation().equals(""))break;
+                    if (symptom.getNo_Allocation() == null) break;
+                    if (symptom.getNo_Allocation().equals("NULL") | symptom.getNo_Allocation().equals(""))
+                        break;
                     item.add(new SymptomItem(symptom.getNo_Allocation()));
                     break;
                 case "Bract_Mosaic":
-                    if(symptom.getBract_Mosaic().equals("NULL")|symptom.getBract_Mosaic().equals(""))break;
+                    if (symptom.getBract_Mosaic().equals("NULL") | symptom.getBract_Mosaic().equals(""))
+                        break;
                     item.add(new SymptomItem(symptom.getBract_Mosaic()));
                     break;
                 case "Bunchy_Top":
-                    if(symptom.getBunchy_Top().equals("NULL")|symptom.getBunchy_Top().equals(""))break;
+                    if (symptom.getBunchy_Top().equals("NULL") | symptom.getBunchy_Top().equals(""))
+                        break;
                     item.add(new SymptomItem(symptom.getBunchy_Top()));
                     break;
                 case "CMV":
-                    if(symptom.getCMV().equals("NULL")|symptom.getCMV().equals(""))break;
+                    if (symptom.getCMV().equals("NULL") | symptom.getCMV().equals("")) break;
                     item.add(new SymptomItem(symptom.getCMV()));
                     break;
-                case  "Gen_Mosaic":
-                    if(symptom.getGen_Mosaic().equals("NULL")|symptom.getGen_Mosaic().equals(""))break;
+                case "Gen_Mosaic":
+                    if (symptom.getGen_Mosaic().equals("NULL") | symptom.getGen_Mosaic().equals(""))
+                        break;
                     item.add(new SymptomItem(symptom.getGen_Mosaic()));
                     break;
                 case "SCMV":
-                    if(symptom.getSCMV().equals("NULL")|symptom.getSCMV().equals(""))break;
+                    if (symptom.getSCMV().equals("NULL") | symptom.getSCMV().equals("")) break;
                     item.add(new SymptomItem(symptom.getSCMV()));
                     break;
             }
 
-        };
+        }
+        ;
         buildRecyclerView();
     }
+
     private void buildRecyclerView() {
         recyclerView = findViewById(R.id.symptomList);
         recyclerView.setHasFixedSize(true);
@@ -114,19 +130,21 @@ public class DiseaseInfo extends AppCompatActivity {
             }
         });
     }
+
     private void loadDiseaseInfo() {
         Bundle display = getIntent().getExtras();
         int position = display.getInt("position");
         String diseaseName = display.getString("diseaseName");
-        this.diseaseName.append(" "+position);
+        this.diseaseName.append(" " + position);
         this.diseaseName.setText(diseaseName);
         this.diseaseDesc.setText(getmDiseaseDesc(diseaseName));
         populateList();
+        getDiseaseImage(diseaseName);
     }
 
-    private String getmDiseaseDesc(String mDiseaseName){
+    private String getmDiseaseDesc(String mDiseaseName) {
         String diseaseDesc = "";
-        switch (mDiseaseName){
+        switch (mDiseaseName) {
             case "0_No_Allocation":
                 diseaseDesc = "Sypmtoms on this list has not been attributed to any disease in the database";
                 break;
@@ -146,7 +164,21 @@ public class DiseaseInfo extends AppCompatActivity {
                 diseaseDesc = "Description pending ";
                 break;
         }
-        return  diseaseDesc;
+        return diseaseDesc;
     }
+
+    private void getDiseaseImage(String mDiseaseName) {
+        StorageReference reference = FirebaseStorage.getInstance().getReference().child("Diseases").child(mDiseaseName+".png");
+        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                Glide.with(DiseaseInfo.this)
+                        .load(uri)
+                        .into(diseasePic);
+            }
+        });
+
+    }
+
 
 }

@@ -13,8 +13,8 @@ import java.util.ArrayList;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
-public class SymptomAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.DiseaseIndexViewHolder> {
-    private ArrayList<SymptomItem> symptomItems;
+public class SimpleArrayAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.DiseaseIndexViewHolder> {
+    private ArrayList<SimpleItem> simpleItems;
     private DiseaseIndexAdapter.OnItemClickListener listener;
 
     public interface OnItemClickListener{
@@ -26,20 +26,20 @@ public class SymptomAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.Dis
     @NonNull
     @Override
     public DiseaseIndexAdapter.DiseaseIndexViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.symptom_index_item,parent,false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_index_item,parent,false);
         DiseaseIndexAdapter.DiseaseIndexViewHolder viewHolder = new DiseaseIndexAdapter.DiseaseIndexViewHolder(view , listener);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull DiseaseIndexAdapter.DiseaseIndexViewHolder holder, int position) {
-        SymptomItem currentItem = symptomItems.get(position);
-        holder.textView.setText(currentItem.getDiseaseName());
+        SimpleItem currentItem = simpleItems.get(position);
+        holder.textView.setText(currentItem.getItemName());
     }
 
     @Override
     public int getItemCount() {
-        return symptomItems.size();
+        return simpleItems.size();
     }
 
     public static class DiseaseIndexViewHolder extends RecyclerView.ViewHolder{
@@ -63,7 +63,7 @@ public class SymptomAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.Dis
         }
 
     }
-    public SymptomAdapter(ArrayList<SymptomItem> symptomItemArrayList){
-        symptomItems = symptomItemArrayList;
+    public SimpleArrayAdapter(ArrayList<SimpleItem> simpleItemArrayList){
+        simpleItems = simpleItemArrayList;
     }
 }

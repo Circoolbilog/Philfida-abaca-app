@@ -14,7 +14,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 public class DiseaseIndexAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.DiseaseIndexViewHolder> {
     private ArrayList<DiseaseIndexItem> diseaseIndexItems;
-    private ArrayList<SymptomItem> symptomItems;
+    private ArrayList<SimpleItem> simpleItems;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener{

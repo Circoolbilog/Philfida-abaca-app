@@ -16,7 +16,7 @@
         android:textSize="20sp"
         android:textStyle="bold"
         android:textAlignment="center"
-        android:padding="15dp"
+        android:padding="10dp"
         android:background="@color/translucent_bg"/>
 
     <androidx.recyclerview.widget.RecyclerView

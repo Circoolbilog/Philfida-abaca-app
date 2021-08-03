@@ -6,19 +6,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexItem;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SymptomAdapter;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SymptomItem;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -34,9 +30,9 @@ import java.util.List;
 public class DiseaseInfo extends AppCompatActivity {
     TextView diseaseName, diseaseDesc;
     RecyclerView recyclerView;
-    SymptomAdapter adapter;
+    SimpleArrayAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
-    ArrayList<SymptomItem> item;
+    ArrayList<SimpleItem> item;
     ImageView diseasePic;
     int position;
     String mDiseaseName = "", mDiseaseDesc;
@@ -67,7 +63,7 @@ public class DiseaseInfo extends AppCompatActivity {
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         Log.d(TAG, "populateList: " + dbModelList.size());
 //        ArrayAdapter symptomsArrayAdapter = new ArrayAdapter<DiseaseDBModel>(this, android.R.layout.simple_list_item_1, dbModelList);
-        item = new ArrayList<SymptomItem>();
+        item = new ArrayList<SimpleItem>();
         for (DiseaseDBModel symptom : dbModelList) {
 
             Log.d(TAG, "populateList: " + symptom.getNo_Allocation());
@@ -76,35 +72,34 @@ public class DiseaseInfo extends AppCompatActivity {
                     if (symptom.getNo_Allocation() == null) break;
                     if (symptom.getNo_Allocation().equals("NULL") | symptom.getNo_Allocation().equals(""))
                         break;
-                    item.add(new SymptomItem(symptom.getNo_Allocation()));
+                    item.add(new SimpleItem(symptom.getNo_Allocation()));
                     break;
                 case "Bract_Mosaic":
                     if (symptom.getBract_Mosaic().equals("NULL") | symptom.getBract_Mosaic().equals(""))
                         break;
-                    item.add(new SymptomItem(symptom.getBract_Mosaic()));
+                    item.add(new SimpleItem(symptom.getBract_Mosaic()));
                     break;
                 case "Bunchy_Top":
                     if (symptom.getBunchy_Top().equals("NULL") | symptom.getBunchy_Top().equals(""))
                         break;
-                    item.add(new SymptomItem(symptom.getBunchy_Top()));
+                    item.add(new SimpleItem(symptom.getBunchy_Top()));
                     break;
                 case "CMV":
                     if (symptom.getCMV().equals("NULL") | symptom.getCMV().equals("")) break;
-                    item.add(new SymptomItem(symptom.getCMV()));
+                    item.add(new SimpleItem(symptom.getCMV()));
                     break;
                 case "Gen_Mosaic":
                     if (symptom.getGen_Mosaic().equals("NULL") | symptom.getGen_Mosaic().equals(""))
                         break;
-                    item.add(new SymptomItem(symptom.getGen_Mosaic()));
+                    item.add(new SimpleItem(symptom.getGen_Mosaic()));
                     break;
                 case "SCMV":
                     if (symptom.getSCMV().equals("NULL") | symptom.getSCMV().equals("")) break;
-                    item.add(new SymptomItem(symptom.getSCMV()));
+                    item.add(new SimpleItem(symptom.getSCMV()));
                     break;
             }
 
         }
-        ;
         buildRecyclerView();
     }
 
@@ -112,7 +107,7 @@ public class DiseaseInfo extends AppCompatActivity {
         recyclerView = findViewById(R.id.symptomList);
         recyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(this);
-        adapter = new SymptomAdapter(item);
+        adapter = new SimpleArrayAdapter(item);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
         adapter.setOnItemClickListener(new DiseaseIndexAdapter.OnItemClickListener() {
@@ -124,7 +119,7 @@ public class DiseaseInfo extends AppCompatActivity {
 //                String symptomName = everySymptom.get(position).getSymptomName();
                 Intent symptomInfo = new Intent(DiseaseInfo.this, SymptomInfo.class);
                 symptomInfo.putExtra("position", position);
-                symptomInfo.putExtra("symptomName", item.get(position).getDiseaseName());
+                symptomInfo.putExtra("symptomName", item.get(position).getItemName());
                 startActivity(symptomInfo);
                 Toast.makeText(DiseaseInfo.this, "item at pos: " + position, Toast.LENGTH_SHORT).show();
             }

@@ -38,7 +38,8 @@
             android:name=".otherActivities.WelcomeScreen"
             android:theme="@style/NoActionBar"
             android:screenOrientation="portrait"/>
-        <activity android:name=".otherActivities.AboutApp" />
+        <activity android:name=".otherActivities.AboutApp"
+            android:theme="@style/NoActionBar"/>
         <activity
             android:name=".otherActivities.Map"
             android:theme="@style/NoActionBar" />
@@ -46,7 +47,8 @@
             android:name=".otherActivities.DiseaseInfo"
             android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.ForgotPasswordActivity" />
-        <activity android:name=".otherActivities.SettingsActivity" />
+        <activity android:name=".otherActivities.SettingsActivity"
+            android:theme="@style/NoActionBar"/>
         <activity android:name=".otherActivities.DiseaseIndex" />
         <activity
             android:name=".otherActivities.AssessedImageViewer"

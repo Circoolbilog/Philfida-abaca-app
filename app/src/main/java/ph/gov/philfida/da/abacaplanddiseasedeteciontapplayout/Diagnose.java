@@ -107,16 +107,6 @@ public abstract class Diagnose extends AppCompatActivity
             setFragment();
         }
 
-
-
-//        threadsTextView = findViewById(R.id.threads);
-//        plusImageView = findViewById(R.id.plus);
-//        minusImageView = findViewById(R.id.minus);
-//        bottomSheetLayout = findViewById(R.id.bottom_sheet_layout);
-//        gestureLayout = findViewById(R.id.gesture_layout);
-//        bottomSheetArrowImageView = findViewById(R.id.bottom_sheet_arrow);
-//
-
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
@@ -368,6 +358,7 @@ public abstract class Diagnose extends AppCompatActivity
                 requestPermission();
             }
         }
+        super.onRestart();
     }
 
     private static boolean allPermissionsGranted(final int[] grantResults) {
@@ -541,20 +532,6 @@ public abstract class Diagnose extends AppCompatActivity
             setNumThreads(numThreads);
         }
     }
-/*
-    protected void showFrameInfo(String frameInfo) {
-        frameValueTextView.setText(frameInfo);
-    }
-
-    protected void showCropInfo(String cropInfo) {
-        cropValueTextView.setText(cropInfo);
-    }
-
-    protected void showInference(String inferenceTime) {
-        inferenceTimeTextView.setText(inferenceTime);
-    }
-
- */
 
     protected abstract void processImage();
 

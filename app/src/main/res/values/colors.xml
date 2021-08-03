@@ -13,6 +13,7 @@
     <color name="appAvatarBG">#f5dfbb</color>
     <color name="appBg">#e4e4e4</color>
     <color name="translucent_bg">#500e9594</color>
+    <color name="translucent_bg_secondary">#500e5295</color>
 
     <color name="tfe_color_primary">#ffa800</color>
     <color name="tfe_color_primary_dark">#ff6f00</color>

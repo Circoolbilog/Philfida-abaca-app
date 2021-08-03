@@ -13,8 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 public class DiseaseIndexAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.DiseaseIndexViewHolder> {
-    private ArrayList<DiseaseIndexItem> diseaseIndexItems;
-    private ArrayList<SimpleItem> simpleItems;
+    private final ArrayList<DiseaseIndexItem> diseaseIndexItems;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener{
@@ -27,8 +26,7 @@ public class DiseaseIndexAdapter extends RecyclerView.Adapter<DiseaseIndexAdapte
     @Override
     public DiseaseIndexViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.disease_index_item,parent,false);
-        DiseaseIndexViewHolder viewHolder = new DiseaseIndexViewHolder(view , listener);
-        return viewHolder;
+        return new DiseaseIndexViewHolder(view , listener);
     }
 
     @Override
@@ -50,14 +48,11 @@ public class DiseaseIndexAdapter extends RecyclerView.Adapter<DiseaseIndexAdapte
             super(itemView);
             imageView = itemView.findViewById(R.id.diseaseImage);
             textView = itemView.findViewById(R.id.diseaseName);
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (itemClickListener !=null){
-                        int position = getAdapterPosition();
-                        if (position!= RecyclerView.NO_POSITION){
-                            itemClickListener.onItemClick(position);
-                        }
+            itemView.setOnClickListener(v -> {
+                if (itemClickListener !=null){
+                    int position = getAdapterPosition();
+                    if (position!= RecyclerView.NO_POSITION){
+                        itemClickListener.onItemClick(position);
                     }
                 }
             });

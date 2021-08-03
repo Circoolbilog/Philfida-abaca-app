@@ -36,7 +36,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.Build;
-import android.os.Bundle;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
@@ -48,9 +47,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
-import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

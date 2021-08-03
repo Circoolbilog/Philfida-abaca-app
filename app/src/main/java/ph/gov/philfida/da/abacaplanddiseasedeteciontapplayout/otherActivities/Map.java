@@ -94,19 +94,19 @@ public class  Map extends AppCompatActivity {
         //Compass Overlay
         CompassOverlay mCompassOverlay = new CompassOverlay(ctx, new InternalCompassOrientationProvider(ctx), map);
         mCompassOverlay.enableCompass();
-        //scaleBarOverlay
-        addScale();
         //Start Location.
         GeoPoint myLocation = mLocationOverlay.getMyLocation();
-        map.postInvalidate();
         GeoPoint point = new GeoPoint(0.0,0.0);
+        map.getController().setCenter(point);
         map.setTileSource(TileSourceFactory.MAPNIK);
         map.getController().setZoom(10.0);
         map.getZoomController().setVisibility(CustomZoomButtonsController.Visibility.ALWAYS);
-        map.getController().setCenter(point);
         map.getOverlays().add(mLocationOverlay);
         map.getOverlays().add(mCompassOverlay);
-        map.getController().setCenter(mLocationOverlay.getMyLocation());
+        //scaleBarOverlay
+        addScale();
+        map.postInvalidate();
+        map.getController().setCenter(myLocation);
     }
 
     @Override
@@ -157,15 +157,6 @@ public class  Map extends AppCompatActivity {
                     this,
                     permissionsToRequest.toArray(new String[0]),
                     REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-    private class MapRunnable implements Runnable{
-        Context ctx;
-        MapRunnable(Context ctx){
-            this.ctx = ctx;
-        };
-        @Override
-        public void run() {
         }
     }
 }

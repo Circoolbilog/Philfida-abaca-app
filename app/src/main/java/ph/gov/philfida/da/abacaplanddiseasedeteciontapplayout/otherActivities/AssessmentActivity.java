@@ -1,6 +1,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -61,19 +62,17 @@ public class AssessmentActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     @RequiresApi(api = Build.VERSION_CODES.Q)
     private void loadImages() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
         images = ImagesGallery.listOfImages(this);
-        galleryAdapter = new GalleryAdapter(this, images, new GalleryAdapter.PhotoListener() {
-            @Override
-            public void onPhotoClick(String path) {
-                Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
-                intent.putExtra("file", path);
-                startActivity(intent);
-                //open photo
-            }
+        galleryAdapter = new GalleryAdapter(this, images, path -> {
+            Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
+            intent.putExtra("file", path);
+            startActivity(intent);
+            //open photo
         });
         recyclerView.setAdapter(galleryAdapter);
         gallery_number.setText("Photos (" + images.size() + ")");

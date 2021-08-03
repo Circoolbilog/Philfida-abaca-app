@@ -5,13 +5,10 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 
 import android.os.Bundle;
-import android.widget.Adapter;
-import android.widget.ArrayAdapter;
 
 import java.util.ArrayList;
 
@@ -39,7 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void setupSettingsItems() {
-        item = new ArrayList<SimpleItem>();
+        item = new ArrayList<>();
         item.add(new SimpleItem("Capture Mode"));
         item.add(new SimpleItem("User Account"));
         item.add(new SimpleItem("Location Settings"));
@@ -53,11 +50,8 @@ public class SettingsActivity extends AppCompatActivity {
         adapter = new SimpleArrayAdapter(item);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new DiseaseIndexAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
+        adapter.setOnItemClickListener(position -> {
 
-            }
         });
 
     }

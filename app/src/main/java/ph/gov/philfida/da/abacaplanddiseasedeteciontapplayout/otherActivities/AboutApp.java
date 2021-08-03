@@ -5,17 +5,19 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 public class AboutApp extends AppCompatActivity {
+    private static final String TAG = "AboutApp";
     RecyclerView recyclerView;
     SimpleArrayAdapter adapter;
     RecyclerView.LayoutManager layoutManager;
@@ -31,7 +33,7 @@ public class AboutApp extends AppCompatActivity {
     }
 
     private void setupSettingsItems() {
-        item = new ArrayList<SimpleItem>();
+        item = new ArrayList<>();
         item.add(new SimpleItem("App version : " + getAppVersion()));
         item.add(new SimpleItem("Developer"));
         item.add(new SimpleItem("Report Bug"));
@@ -56,11 +58,9 @@ public class AboutApp extends AppCompatActivity {
         adapter = new SimpleArrayAdapter(item);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new DiseaseIndexAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
-
-            }
+        adapter.setOnItemClickListener(position -> {
+            Toast.makeText(AboutApp.this, "item", Toast.LENGTH_SHORT).show();
+            Log.d(TAG, "onItemClick: asdasd");
         });
 
     }

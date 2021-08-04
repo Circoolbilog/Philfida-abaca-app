@@ -44,9 +44,8 @@ public class AssessedImageViewer extends AppCompatActivity {
             if (isBuildVersionQ()){
                 File file = new File(textFile);
                 diseaseInfo.setText(viewInfoQ(file.getName()));
-            }else {
-                viewInfo(textFile);
             }
+            viewInfo(textFile);
 
         }
     }
@@ -72,6 +71,7 @@ public class AssessedImageViewer extends AppCompatActivity {
             fileContents = fileContents.replace("RectF(","Location(Coordinates): ");
             diseaseInfo.append(fileContents);
         }
+
     }
 
     private boolean isBuildVersionQ() {
@@ -86,10 +86,11 @@ public class AssessedImageViewer extends AppCompatActivity {
             String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
 
             String[] selectionArgs = new String[]{Environment.DIRECTORY_DOCUMENTS + "/Assessment/"};
+
             Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
             Uri uri = null;
             if (cursor.getCount() == 0){
-                Toast.makeText(this, "No Info File Found in \""+Environment.DIRECTORY_DOCUMENTS+"/Assessment\"" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No Info File Found in \""+Environment.DIRECTORY_DOCUMENTS+"/Assessment/\"" , Toast.LENGTH_SHORT).show();
             }else {
                 while (cursor.moveToNext()) {
                     String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));

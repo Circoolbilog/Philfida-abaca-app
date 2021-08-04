@@ -90,10 +90,11 @@ public class AssessedImageViewer extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
             Uri uri = null;
             if (cursor.getCount() == 0){
-                Toast.makeText(this, "No Info File Found in \""+Environment.DIRECTORY_DOCUMENTS+"/Assessment/\"" , Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "No Info File Found in \""+Environment.DIRECTORY_DOCUMENTS+"/Assessment/\" " + "DIRECTORY" , Toast.LENGTH_SHORT).show();
             }else {
                 while (cursor.moveToNext()) {
                     String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
+
                     if (fileName.equals(selected)){
                         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
 

@@ -316,7 +316,12 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     @Override
     public void CaptureImage(View v) {
         super.CaptureImage(v);
-        getGeoLocation();
+
+        try {
+            getGeoLocation();
+        } catch (Exception e) {
+            Log.d(TAG, "CaptureImage: " + e.getMessage());
+        }
         Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
         runInBackground2(new Runnable() {
             @Override

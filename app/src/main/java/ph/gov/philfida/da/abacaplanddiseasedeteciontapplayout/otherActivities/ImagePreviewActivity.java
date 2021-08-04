@@ -50,15 +50,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
     byte[] bs2;
     ArrayList<String> symptomsDetected;
-    String filename, location, detection, confidence, detectionInfo;
-    Image image;
+    String detectionInfo;
     ImageView prev;
     Bitmap bitmap;
-    OutputStream outputStream;
     TextView title;
     CardView nextCapture;
-    String[] detectedSymptoms;
-    String symptomNamesToSave;
     RelativeLayout loading;
     double lat, longt;
     private static final int REQUEST = 112;
@@ -260,7 +256,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
             File imageFileOne = new File(dir, name + "jpg");
             fosOne = new FileOutputStream(imageFileOne);
             //Save Text file
-            File textFile = new File(dir, name + "_info.txt");
+            File dir2 = new File(Environment.getExternalStorageDirectory(), "documents/Assessment");
+            File textFile = new File(dir2, name + "_info.txt");
             fosText = new FileOutputStream(textFile);
         }
         fosText.write(detectionInfo.getBytes());

@@ -26,8 +26,8 @@ public class SliderAdapter extends PagerAdapter {
 
     //  Arrays
     public int[] slide_images = {
-            R.drawable.place_holder_image,
-            R.drawable.place
+            R.drawable.abaca_welcome_1,
+            R.drawable.under_maintenance
     };
     public String[] headings = {
             "Welcome",

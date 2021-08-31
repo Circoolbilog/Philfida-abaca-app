@@ -1,7 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
@@ -29,21 +28,19 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.Reader;
-import java.nio.ByteBuffer;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 
+import java.nio.ByteBuffer;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.DiagnoseModeDialog;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.ImageUtils;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.env.Logger;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 
 public abstract class Diagnose extends AppCompatActivity
         implements ImageReader.OnImageAvailableListener,
@@ -108,6 +105,10 @@ public abstract class Diagnose extends AppCompatActivity
         }
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+    public void openAssessmentActivity(View view) {
+        Intent assessment = new Intent(this, AssessmentActivity.class);
+        startActivity(assessment);
     }
 
     private void assigdnIDs() {

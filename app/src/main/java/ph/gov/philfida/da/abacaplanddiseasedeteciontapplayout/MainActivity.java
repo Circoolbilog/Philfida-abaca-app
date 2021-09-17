@@ -39,6 +39,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndCo
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
@@ -79,7 +80,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        welcomeScreen();
+
+
+        if  (((SettingsContainer) this.getApplication()).getShowWelcome() == null){
+            ((SettingsContainer) this.getApplication()).setShowWelcome(true);
+        }
+        if (((SettingsContainer) this.getApplication()).getShowWelcome()){
+            welcomeScreen();
+        }
     }
 
     @Override
@@ -306,7 +314,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void openSettings() {
-        Intent intent = new Intent(this, SettingsActivity.class);
+        Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
         startActivity(intent);
     }
 

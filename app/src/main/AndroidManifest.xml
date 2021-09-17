@@ -26,19 +26,21 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:targetApi="m">
-        <activity android:name=".otherActivities.MoreInfo"
-            android:theme="@style/NoActionBar"/>
-        <activity android:name=".otherActivities.SymptomInfo"
-            android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".otherActivities.MoreInfo"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".otherActivities.SymptomInfo"
+            android:theme="@style/NoActionBar" />
         <activity
             android:name=".otherActivities.BasicInstructions"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".otherActivities.WelcomeScreen"
-            android:theme="@style/NoActionBar"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".otherActivities.AboutApp"
-            android:theme="@style/NoActionBar"/>
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar" />
+        <activity
+            android:name=".otherActivities.AboutApp" />
         <activity
             android:name=".otherActivities.Map"
             android:theme="@style/NoActionBar" />
@@ -46,8 +48,8 @@
             android:name=".otherActivities.DiseaseInfo"
             android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.ForgotPasswordActivity" />
-        <activity android:name=".otherActivities.SettingsActivity"
-            android:theme="@style/NoActionBar"/>
+        <activity
+            android:name=".otherActivities.SettingsActivity" />
         <activity android:name=".otherActivities.DiseaseIndex" />
         <activity
             android:name=".otherActivities.AssessedImageViewer"
@@ -66,12 +68,12 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".Login"
-            android:theme="@style/NoActionBar"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:theme="@style/NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -85,9 +87,9 @@
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".Register"
+            android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"
-            android:windowSoftInputMode="adjustPan"
-            android:screenOrientation="portrait"/>
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

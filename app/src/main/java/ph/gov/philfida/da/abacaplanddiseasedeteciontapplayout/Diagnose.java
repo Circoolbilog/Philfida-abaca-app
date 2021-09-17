@@ -146,7 +146,6 @@ public abstract class Diagnose extends AppCompatActivity
         ((SettingsContainer) this.getApplication()).setDiagnoseMode(1);
         ((SettingsContainer) this.getApplication()).setDiagDialogRemember(isRemember);
         setDialogText("Dual Capture Mode");
-        //TODO: Shared prefs on what mode was selected
     }
 
     protected int[] getRgbBytes() {

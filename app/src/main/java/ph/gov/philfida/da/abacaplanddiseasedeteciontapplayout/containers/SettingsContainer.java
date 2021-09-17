@@ -13,6 +13,19 @@ public class SettingsContainer extends Application {
     int diagnoseMode;
     Boolean diagDialogRemember;
 
+    public Boolean getShowWelcome() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        showWelcome = sharedPreferences.getBoolean("SHOW_WELCOME", false);
+        return showWelcome;
+    }
+
+    public void setShowWelcome(Boolean showWelcome) {
+        this.showWelcome = showWelcome;
+        saveBooleanToSharedPrefs("SHOW_WELCOME",showWelcome);
+    }
+
+    Boolean showWelcome;
+
     public void setDiagDialogRemember(Boolean diagDialogRemember) {
         this.diagDialogRemember = diagDialogRemember;
         saveBooleanToSharedPrefs(DIAG_DIALOG_REMEMBER,diagDialogRemember);

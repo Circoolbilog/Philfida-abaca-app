@@ -27,6 +27,7 @@ public class AboutApp extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_app);
         setupSettingsItems();
+        getSupportActionBar().setTitle("About App");
         //TODO: App version
         //TODO: other info
         

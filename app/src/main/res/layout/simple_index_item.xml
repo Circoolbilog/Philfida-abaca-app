@@ -9,7 +9,7 @@
         android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="15dp"
+        android:padding="10dp"
         android:background="@color/translucent_bg_secondary">
 
         <TextView
@@ -17,12 +17,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
-            android:layout_marginStart="12dp"
-            android:layout_marginTop="6dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="2dp"
             android:gravity="center"
             android:text="@string/diseaseName"
-            android:textColor="@color/appBGDark"
-            android:textSize="15sp"
+            android:textSize="12sp"
             android:textStyle="bold" />
     </RelativeLayout>
 

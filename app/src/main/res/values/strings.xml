@@ -61,4 +61,7 @@
     <string name="confidence_threshold">Confidence Threshold</string>
     <string name="show_welcome_screen_on_app_start">Show Welcome Screen</string>
     <string name="language">Language</string>
+    <string name="app_version">App Version</string>
+    <string name="developer">Developer</string>
+    <string name="tutorial">Tutorial</string>
 </resources>

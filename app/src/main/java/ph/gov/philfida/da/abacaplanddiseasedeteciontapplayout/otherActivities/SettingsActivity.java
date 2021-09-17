@@ -103,7 +103,7 @@ public class SettingsActivity extends AppCompatActivity {
     private void getUserAccount() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
         sUserAccount = sharedPreferences.getString(FIRST_NAME, "")
-                + sharedPreferences.getString(LAST_NAME, "");
+                + " " +sharedPreferences.getString(LAST_NAME, "");
         userAccountVal.setText(sUserAccount);
     }
 

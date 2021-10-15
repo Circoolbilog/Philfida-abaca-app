@@ -15,7 +15,7 @@ import java.util.List;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseInfo;
 
-public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
+public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
 
     public static final String SYMPTOM_NAME = "DiseaseName";
     public static final String DISEASES_TABLE = "Diseases";
@@ -29,7 +29,7 @@ public class DiseaseInfoSymptomsDbHelper extends SQLiteOpenHelper {
     private static final String TAG = "DiseaseInfoSymptomsDbHe";
     public static String TABLE_NAME;
 
-    public DiseaseInfoSymptomsDbHelper(@Nullable Context context) {
+    public DiseaseSymptomsDbHelper(@Nullable Context context) {
         super(context, "DiseaseInfoSymptoms.db", null, 1);
     }
 

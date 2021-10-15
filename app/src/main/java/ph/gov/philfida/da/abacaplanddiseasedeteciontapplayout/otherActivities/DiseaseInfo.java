@@ -9,7 +9,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIn
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -59,7 +59,7 @@ public class DiseaseInfo extends AppCompatActivity {
     }
 
     private void populateList() {
-        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         Log.d(TAG, "populateList: " + dbModelList.size());
 //        ArrayAdapter symptomsArrayAdapter = new ArrayAdapter<DiseaseDBModel>(this, android.R.layout.simple_list_item_1, dbModelList);

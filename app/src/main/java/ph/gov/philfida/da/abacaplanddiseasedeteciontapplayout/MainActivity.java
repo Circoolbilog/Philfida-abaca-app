@@ -3,7 +3,6 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
@@ -30,17 +28,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.DialogFragment;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.TermsAndConditionsDialog;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
@@ -58,10 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseReference reference2;
     private String userID;
     String firstName, lastName, middleName, email, birthday, permAdd, occupation, institution;
-    private String symptomName, diseaseName;
     private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
     private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV, stringVal_No_Allocation;
-    ArrayList<SymptomModel> symptomModelArrayList;
     private int symptomID;
 
     public static final String SHARED_PREFS = "USER_DATA";
@@ -93,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getDBDetails();
+        getUserDBDetails();
         loadUserData();
         saveUserData();
         //downloadSymptomMap();
@@ -101,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void downloadDiseaseMap() {
-        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> diseaseDBModels = dbHelper.getDiseases();
 
         user = FirebaseAuth.getInstance().getCurrentUser();
@@ -180,49 +171,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void downloadSymptomMap() {
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        List<SymptomModel> everSymptom = dataBaseHelper.getSymptoms();
-        user = FirebaseAuth.getInstance().getCurrentUser();
-        reference2 = FirebaseDatabase.getInstance().getReference("Symptoms");
-        reference2.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                if (snapshot.exists() && snapshot.getChildrenCount() != everSymptom.size()) {
-                    for (SymptomModel symptom : everSymptom) {
-                        dataBaseHelper.clear(symptom);
-//                      Clear table
-                    }
-                    Log.d(TAG, "onDataChange: TABLE is cleared and ready to be repopulated");
-                    for (int i = 0; i < snapshot.getChildrenCount(); i++) {
-//                       symptomName = snapshot.child("0").child("SymptomName").getValue().toString();
-                        symptomName = snapshot.child(String.valueOf(i)).child("SymptomName").getValue().toString();
-                        stringVal_Bract_Mosaic = snapshot.child(String.valueOf(i)).child("Bract_Mosaic").getValue().toString();
-                        stringVal_Bunchy_Top = snapshot.child(String.valueOf(i)).child("Bunchy_Top").getValue().toString();
-                        stringVal_CMV = snapshot.child(String.valueOf(i)).child("CMV").getValue().toString();
-                        stringVal_Gen_Mosaic = snapshot.child(String.valueOf(i)).child("Gen_Mosaic").getValue().toString();
-                        stringVal_SCMV = snapshot.child(String.valueOf(i)).child("SCMV").getValue().toString();
-                        Bract_Mosaic = Boolean.parseBoolean(stringVal_Bract_Mosaic);
-                        Bunchy_Top = Boolean.parseBoolean(stringVal_Bunchy_Top);
-                        CMV = Boolean.parseBoolean(stringVal_CMV);
-                        Gen_Mosaic = Boolean.parseBoolean(stringVal_Gen_Mosaic);
-                        SCMV = Boolean.parseBoolean(stringVal_SCMV);
-                        Log.d(TAG, "onDataChange, Populating db: " + symptomName + " pos: " + i + " out of: " + snapshot.getChildrenCount());
-                        addToLocalDB(i);
-                    }
-                } else if (snapshot.exists()) {
-                    Log.d(TAG, "onDataChange: db does need to be updated");
-                }
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }
 
 
     private void addToDiseaseDb(int columnID) {
@@ -233,24 +181,10 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             dbModel = new DiseaseDBModel(columnID, "NULL", "NULL", "NULL", "NULL", "NULL", "NULL");
         }
-        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         boolean success = dbHelper.addOneSymptom(dbModel);
         if (!success)
             Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
-    }
-
-    private void addToLocalDB(int collumn) {
-        SymptomModel symptomModel;
-        try {
-            symptomModel = new SymptomModel(collumn, symptomName, Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV);
-//            Toast.makeText(this, symptomModel.toString(), Toast.LENGTH_SHORT).show();
-        } catch (Exception e) {
-//            Toast.makeText(this, "Error somehow?", Toast.LENGTH_SHORT).show();
-            symptomModel = new SymptomModel(0, "NULL", false, false, false, false, false);
-        }
-        DataBaseHelper dataBaseHelper = new DataBaseHelper(this);
-        boolean success = dataBaseHelper.addOneSymptom(symptomModel);
-
     }
 
     //Load user data from Shared Preference(locally stored)
@@ -348,7 +282,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Download user data from Firebase Database
 
-    private void getDBDetails() {
+    private void getUserDBDetails() {
         user = FirebaseAuth.getInstance().getCurrentUser();
         reference = FirebaseDatabase.getInstance().getReference("Users");
         userID = user.getUid();

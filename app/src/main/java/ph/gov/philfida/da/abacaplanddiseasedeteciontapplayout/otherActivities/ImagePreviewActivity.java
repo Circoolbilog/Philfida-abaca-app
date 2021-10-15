@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.Image;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -37,7 +36,7 @@ import androidx.core.content.ContextCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
 public class ImagePreviewActivity extends AppCompatActivity {
@@ -86,7 +85,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         cmv_list = new ArrayList<>();
         gen_mosaic_list = new ArrayList<>();
         scmv_list = new ArrayList<>();
-        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         for (DiseaseDBModel dbModel : dbModelList) {
             if (!dbModel.getNo_Allocation().equals("NULL") | !dbModel.getNo_Allocation().equals(""))

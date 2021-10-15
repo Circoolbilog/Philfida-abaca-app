@@ -7,10 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexItem;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DataBaseHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoSymptomsDbHelper;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SymptomModel;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +31,7 @@ public class DiseaseIndex extends AppCompatActivity {
         setContentView(R.layout.activity_disease_index);
         item = new ArrayList<>();
         populateList();
-        DiseaseInfoSymptomsDbHelper dbHelper = new DiseaseInfoSymptomsDbHelper(this);
+        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         Log.d(TAG, "populateList: " + dbModelList.toString());
     }

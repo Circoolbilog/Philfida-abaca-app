@@ -101,9 +101,12 @@ public class  Map extends AppCompatActivity {
                 })
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     public void onClick(final DialogInterface dialog, final int id) {
+                        finish();
                         dialog.cancel();
                     }
-                });
+                })
+                .setCancelable(false);
+
         final AlertDialog alert = builder.create();
         alert.show();
     }

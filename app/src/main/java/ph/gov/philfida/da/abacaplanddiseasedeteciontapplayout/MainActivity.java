@@ -29,15 +29,20 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseInfo;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Map;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen;
@@ -91,11 +96,52 @@ public class MainActivity extends AppCompatActivity {
         downloadDiseaseMap();
     }
 
+    private void downloadDiseaseInfo(){
+        DiseaseInfoDBHelper infoDBHelper = new DiseaseInfoDBHelper(this);
+        List<DiseaseInfoDBModel> diseaseInfoDBModel = infoDBHelper.getDiseasesInfo();
+
+        reference2 = FirebaseDatabase.getInstance().getReference("Disease_Info");
+        reference2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
+                List<DiseaseInfoDBModel> dbModelList = infoDBHelper.getDiseasesInfo();
+                DiseaseInfoDBModel infoDBModel;
+
+                if (snapshot.exists() &&(dbModelList.size()==0)){
+                    infoDBHelper.clear();
+//                      Clear table
+//                    get info from firebase
+                    if (snapshot.child("0_No_Allocation") != null) {
+                        stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
+                    } else {
+                        stringVal_No_Allocation = "NULL";
+                    }
+//                    save info to local db
+                    try {
+                        infoDBModel = new DiseaseDBModel();
+                        Log.d(TAG, "addToDiseaseDb: " + infoDBModel.getNo_Allocation());
+                    } catch (Exception e) {
+                        infoDBModel = new DiseaseDBModel();
+                    }
+                    DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(getApplicationContext());
+                    boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
+                    if (!success)
+                        Toast.makeText(getApplicationContext(), "Failed to update local database", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull @NotNull DatabaseError error) {
+
+            }
+        });
+
+    }
     private void downloadDiseaseMap() {
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> diseaseDBModels = dbHelper.getDiseases();
 
-        user = FirebaseAuth.getInstance().getCurrentUser();
         reference2 = FirebaseDatabase.getInstance().getReference("Diseases");
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

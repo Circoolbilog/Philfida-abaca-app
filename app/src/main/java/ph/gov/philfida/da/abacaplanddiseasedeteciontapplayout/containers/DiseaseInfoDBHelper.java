@@ -10,33 +10,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
-    public static final String DISEASE_NAME = "DiseaseName";
-    public static final String DISEASES_INFO_TABLE = "DiseasesInfo";
-    public static final String COLUMN_BRACT_MOSAIC = "Bract_Mosaic";
-    public static final String COLUMN_BUNCHY_TOP = "Bunchy_Top";
-    public static final String COLUMN_CMV = "CMV";
-    public static final String COLUMN_SCMV = "SCMV";
-    public static final String COLUMN_GEN_MOSAIC = "Gen_Mosaic";
-    public static final String COLUMN_NO_ALLOCATION = "No_Allocation";
+    public static final String DISEASES_INFO_TABLE = "DISEASES_INFO";
+    public static final String COLUMN_DISEASE_NAME = "DiseaseName";
+    public static final String COLUMN_DISEASE_DESC = "DiseaseDesc";
+    public static final String COLUMN_PICTURE = "Picture";
+    public static final String COLUMN_TREATMENT = "Treatment";
     public static final String COLUMN_ID = "ID";
-    private static final String TAG = "DiseaseInfoSymptomsDbHe";
-    public static String TABLE_NAME;
 
     public DiseaseInfoDBHelper(Context context) {
-        super(context, "DiseaseInfoSymptoms.db", null, 1);
+        super(context, "DiseaseInfo.db", null, 1);
     }
 
     //firstTime db access
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableStatement = "CREATE TABLE " + DISEASES_INFO_TABLE +
-                " (" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
-                COLUMN_NO_ALLOCATION + " TEXT, " +
-                COLUMN_BRACT_MOSAIC + " TEXT, " +
-                COLUMN_BUNCHY_TOP + " TEXT, " +
-                COLUMN_CMV + " TEXT, " +
-                COLUMN_GEN_MOSAIC + " TEXT, " +
-                COLUMN_SCMV + " TEXT )";
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                COLUMN_DISEASE_NAME + " TEXT, " +
+                COLUMN_DISEASE_DESC + " TEXT, " +
+                COLUMN_PICTURE + " TEXT, " +
+                COLUMN_TREATMENT +  " TEXT )";
 
         db.execSQL(createTableStatement);
     }
@@ -46,11 +39,11 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public boolean clear() {
+    public boolean clear(DiseaseInfoDBModel dbModel) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = " DELETE FROM " + DISEASES_INFO_TABLE ;
+        String queryString = " DELETE FROM " + DISEASES_INFO_TABLE + " WHERE " + COLUMN_ID + " = " + dbModel.getId();
 
-        Cursor cursor = db.rawQuery(queryString, null);
+        Cursor cursor = db.rawQuery(queryString,null);
         return cursor.isNull(0);
     }
     public boolean addOneDiseaseInfo(DiseaseInfoDBModel dbModel) {
@@ -58,11 +51,11 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_ID, dbModel.getId());
         //cv.put(SYMPTOM_NAME,dbModel.getSymptomName());
-        cv.put(COLUMN_BRACT_MOSAIC, dbModel.getDiseaseName());
-        cv.put(COLUMN_BUNCHY_TOP, dbModel.getDiseaseDesc());
-        cv.put(COLUMN_CMV, dbModel.getPicture());
-        cv.put(COLUMN_GEN_MOSAIC, dbModel.getTreatment());
-        cv.put(COLUMN_SCMV, dbModel.getId());
+        cv.put(COLUMN_DISEASE_NAME, dbModel.getDiseaseName());
+        cv.put(COLUMN_DISEASE_DESC, dbModel.getDiseaseDesc());
+        cv.put(COLUMN_PICTURE, dbModel.getPicture());
+        cv.put(COLUMN_TREATMENT, dbModel.getTreatment());
+        cv.put(COLUMN_ID, dbModel.getId());
 
         long insert = db.insert(DISEASES_INFO_TABLE, null, cv);
         return insert != -1;

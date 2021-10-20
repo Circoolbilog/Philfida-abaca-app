@@ -17,7 +17,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Di
 
 public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
 
-    public static final String SYMPTOM_NAME = "DiseaseName";
     public static final String DISEASES_TABLE = "Diseases";
     public static final String COLUMN_BRACT_MOSAIC = "Bract_Mosaic";
     public static final String COLUMN_BUNCHY_TOP = "Bunchy_Top";
@@ -26,8 +25,6 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_GEN_MOSAIC = "Gen_Mosaic";
     public static final String COLUMN_NO_ALLOCATION = "No_Allocation";
     public static final String COLUMN_ID = "ID";
-    private static final String TAG = "DiseaseInfoSymptomsDbHe";
-    public static String TABLE_NAME;
 
     public DiseaseSymptomsDbHelper(@Nullable Context context) {
         super(context, "DiseaseInfoSymptoms.db", null, 1);
@@ -38,7 +35,7 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableStatement = "CREATE TABLE " + DISEASES_TABLE +
-                " (" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
                 COLUMN_NO_ALLOCATION + " TEXT, " +
                 COLUMN_BRACT_MOSAIC + " TEXT, " +
                 COLUMN_BUNCHY_TOP + " TEXT, " +

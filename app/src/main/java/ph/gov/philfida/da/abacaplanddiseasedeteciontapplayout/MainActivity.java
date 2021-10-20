@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
     String firstName, lastName, middleName, email, birthday, permAdd, occupation, institution;
     private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
     private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV, stringVal_No_Allocation;
+    private String DIName, DIDesc, DIPicture, DITreatment;
     private int symptomID;
 
     public static final String SHARED_PREFS = "USER_DATA";
@@ -78,10 +79,10 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
 
-        if  (((SettingsContainer) this.getApplication()).getShowWelcome() == null){
+        if (((SettingsContainer) this.getApplication()).getShowWelcome() == null) {
             ((SettingsContainer) this.getApplication()).setShowWelcome(true);
         }
-        if (((SettingsContainer) this.getApplication()).getShowWelcome()){
+        if (((SettingsContainer) this.getApplication()).getShowWelcome()) {
             welcomeScreen();
         }
     }
@@ -92,42 +93,49 @@ public class MainActivity extends AppCompatActivity {
         getUserDBDetails();
         loadUserData();
         saveUserData();
-        //downloadSymptomMap();
+        downloadDiseaseInfo();
         downloadDiseaseMap();
     }
 
-    private void downloadDiseaseInfo(){
-        DiseaseInfoDBHelper infoDBHelper = new DiseaseInfoDBHelper(this);
-        List<DiseaseInfoDBModel> diseaseInfoDBModel = infoDBHelper.getDiseasesInfo();
+    private void downloadDiseaseInfo() {
+        DiseaseInfoDBHelper infoDBHelper = new DiseaseInfoDBHelper(MainActivity.this);
+        List<DiseaseInfoDBModel> dbModelList = infoDBHelper.getDiseasesInfo();
 
         reference2 = FirebaseDatabase.getInstance().getReference("Disease_Info");
         reference2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull @NotNull DataSnapshot snapshot) {
-                List<DiseaseInfoDBModel> dbModelList = infoDBHelper.getDiseasesInfo();
                 DiseaseInfoDBModel infoDBModel;
 
-                if (snapshot.exists() &&(dbModelList.size()==0)){
-                    infoDBHelper.clear();
+                if (snapshot.exists()) {
 //                      Clear table
 //                    get info from firebase
-                    if (snapshot.child("0_No_Allocation") != null) {
-                        stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
-                    } else {
-                        stringVal_No_Allocation = "NULL";
+                    for (DataSnapshot child : snapshot.getChildren()) {
+                        DIName = child.getKey();
+                        DIDesc = child.child("desc").getValue().toString();
+                        DIPicture = child.child("picture").getValue().toString();
+                        DITreatment = child.child("treatment").getValue().toString();
+                        Log.d(TAG, "onDataChange: " + DIName + DIDesc + DIPicture + DITreatment);
+
+                        //                    save info to local db
+                        int id = 0;
+
+                        try {
+                            infoDBModel = new DiseaseInfoDBModel(id, DIName, DIDesc, DIPicture, DITreatment);
+                            boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
+                            if (!success)
+                                Toast.makeText(getApplicationContext(), "Failed to update local database", Toast.LENGTH_SHORT).show();
+                            Log.d(TAG, "addToDiseaseDb: " + infoDBModel.getDiseaseName());
+                        } catch (Exception e) {
+                            infoDBModel = new DiseaseInfoDBModel(90,"DIName", "DIDesc", "DIPicture", "DITreatment");
+                            boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
+                            if (!success)
+                                Toast.makeText(getApplicationContext(), "Failed to update local database", Toast.LENGTH_SHORT).show();
+                        }
+                        id = id+1;
                     }
-//                    save info to local db
-                    try {
-                        infoDBModel = new DiseaseDBModel();
-                        Log.d(TAG, "addToDiseaseDb: " + infoDBModel.getNo_Allocation());
-                    } catch (Exception e) {
-                        infoDBModel = new DiseaseDBModel();
-                    }
-                    DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(getApplicationContext());
-                    boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
-                    if (!success)
-                        Toast.makeText(getApplicationContext(), "Failed to update local database", Toast.LENGTH_SHORT).show();
                 }
+
 
             }
 
@@ -138,6 +146,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
     private void downloadDiseaseMap() {
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> diseaseDBModels = dbHelper.getDiseases();
@@ -216,7 +225,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, WelcomeScreen.class);
         startActivity(intent);
     }
-
 
 
     private void addToDiseaseDb(int columnID) {

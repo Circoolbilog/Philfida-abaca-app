@@ -18,10 +18,10 @@
     <application
         android:name=".containers.SettingsContainer"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_m_logo"
+        android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
-        android:roundIcon="@mipmap/ic_m_logo"
+        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"

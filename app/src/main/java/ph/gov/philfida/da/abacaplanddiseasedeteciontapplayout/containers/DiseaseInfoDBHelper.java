@@ -25,7 +25,7 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableStatement = "CREATE TABLE " + DISEASES_INFO_TABLE +
-                "(" + COLUMN_ID + " INTEGER PRIMARY KEY, " +
+                "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DISEASE_NAME + " TEXT, " +
                 COLUMN_DISEASE_DESC + " TEXT, " +
                 COLUMN_PICTURE + " TEXT, " +
@@ -36,6 +36,12 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
+    }
+    public void deleteTable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String queryString = "DROP TABLE IF EXISTS " + DISEASES_INFO_TABLE;
+        db.execSQL("DROP TABLE IF EXISTS "+DISEASES_INFO_TABLE);
 
     }
 
@@ -49,13 +55,11 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     public boolean addOneDiseaseInfo(DiseaseInfoDBModel dbModel) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, dbModel.getId());
-        //cv.put(SYMPTOM_NAME,dbModel.getSymptomName());
         cv.put(COLUMN_DISEASE_NAME, dbModel.getDiseaseName());
         cv.put(COLUMN_DISEASE_DESC, dbModel.getDiseaseDesc());
         cv.put(COLUMN_PICTURE, dbModel.getPicture());
-        cv.put(COLUMN_TREATMENT, dbModel.getTreatment());
-        cv.put(COLUMN_ID, dbModel.getId());
+        cv.put(COLUMN_TREATMENT, dbModel.getTreatment());;
+
 
         long insert = db.insert(DISEASES_INFO_TABLE, null, cv);
         return insert != -1;

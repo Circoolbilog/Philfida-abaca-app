@@ -39,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:adjustViewBounds="true"
-            android:src="@mipmap/ic_m_logo"
+            android:src="@mipmap/ic_launcher_round_legacy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"

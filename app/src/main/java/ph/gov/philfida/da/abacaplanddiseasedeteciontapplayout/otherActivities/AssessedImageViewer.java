@@ -19,9 +19,11 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 
 public class AssessedImageViewer extends AppCompatActivity {
@@ -40,45 +42,23 @@ public class AssessedImageViewer extends AppCompatActivity {
             String fileName = extras.getString("file");
             selectedImage = BitmapFactory.decodeFile(fileName);
             assessedImage.setImageBitmap(selectedImage);
-            String textFile = fileName.replace(".jpg","_info.txt");
+            String textFile = fileName.replace("jpg","_info.txt");
             if (isBuildVersionQ()){
                 File file = new File(textFile);
                 diseaseInfo.setText(viewInfoQ(file.getName()));
+            }else{
+                viewInfo(textFile);
             }
-            viewInfo(textFile);
 
         }
     }
 
-    private void viewInfo(String textFile) {
-        FileReader fr;
-        File diseaseInfoFile  = new File(textFile);
-        StringBuilder stringBuilder = new StringBuilder();
-        try {
-            fr = new FileReader(diseaseInfoFile);
-            BufferedReader br = new BufferedReader(fr);
-            String line = br.readLine();
-            while (line != null){
-                stringBuilder.append(line).append("\n");
-                line = br.readLine();
-            }
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            String fileContents = stringBuilder.toString();
-            fileContents = fileContents.replace(")","");
-            fileContents = fileContents.replace("RectF(","Location(Coordinates): ");
-            diseaseInfo.append(fileContents);
-        }
-
-    }
 
     private boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     private String viewInfoQ(String selected){
         if (isBuildVersionQ()){
             Uri textContentUri = MediaStore.Files.getContentUri("external");
@@ -128,5 +108,30 @@ public class AssessedImageViewer extends AppCompatActivity {
         }
 
         return "no info found";
+    }
+    private void viewInfo(String textFile) {
+        FileReader fr;
+        String newFile = textFile.replace("Pictures","Documents");
+        String extractedFile = newFile.replace("/storage/emulated/0/Documents/Assessment/", "");
+        StringBuilder stringBuilder = new StringBuilder();
+        try {
+            fr = new FileReader(newFile);
+            BufferedReader br = new BufferedReader(fr);
+            String line = br.readLine();
+            while (line != null){
+                stringBuilder.append(line).append("\n");
+                line = br.readLine();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
+        } finally {
+            String fileContents = stringBuilder.toString();
+            fileContents = fileContents.replace(")","");
+            fileContents = fileContents.replace("RectF(","Location(Coordinates): ");
+            diseaseInfo.append(fileContents);
+        }
+
     }
 }

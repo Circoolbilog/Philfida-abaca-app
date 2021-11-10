@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +24,16 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
     String option1;
     String option2;
     String option3;
+    int customDialogLayout;
+
+    public int getCustomDialogLayout() {
+        return customDialogLayout;
+    }
+
+    public void setCustomDialogLayout(int customDialogLayout) {
+        this.customDialogLayout = customDialogLayout;
+    }
+
     Context context;
 
     public String getOption3() {
@@ -85,6 +96,15 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
     public Dialog onCreateDialog(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         CharSequence[] items = getResources().getStringArray(R.array.colors_array);
+        if (customDialogLayout!=0){
+            // Get the layout inflater
+            LayoutInflater inflater = requireActivity().getLayoutInflater();
+
+            // Inflate and set the layout for the dialog
+            // Pass null as the parent view because its going in the dialog layout
+            builder.setView(inflater.inflate(R.layout.custom_confidence_threshold_dialog, null));
+
+        }
         builder.setTitle(dialogTitle)
                 .setMessage(dialogMessage)
                 .setCancelable(false)

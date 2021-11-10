@@ -218,11 +218,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
         OutputStream fosOne; // image file 1 output stream
         OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
-        if (!dir.exists()) {
-            boolean success = dir.mkdir();
-            if (success) {
-                Toast.makeText(this, "Created Directory", Toast.LENGTH_LONG).show();
-            }
+        File textDir = new File(Environment.getExternalStorageDirectory(), "Documents/Assessment");
+        if (!dir.exists() || !textDir.exists()) {
+            if (dir.mkdirs()) Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
+            if (textDir.mkdirs()) Toast.makeText(this, "Info/Documents Directory Created", Toast.LENGTH_SHORT).show();
+
         }
         if (isBuildVersionQ()) {
             //Save Image File
@@ -255,8 +255,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             File imageFileOne = new File(dir, name + "jpg");
             fosOne = new FileOutputStream(imageFileOne);
             //Save Text file
-            File dir2 = new File(Environment.getExternalStorageDirectory(), "documents/Assessment");
-            File textFile = new File(dir2, name + "_info.txt");
+            File textFile = new File(textDir, name + "_info.txt");
             fosText = new FileOutputStream(textFile);
         }
         fosText.write(detectionInfo.getBytes());

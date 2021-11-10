@@ -16,6 +16,7 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
+        android:configChanges="locale|orientation"
         android:name=".containers.SettingsContainer"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

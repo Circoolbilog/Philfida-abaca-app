@@ -1,8 +1,10 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -27,6 +29,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.jetbrains.annotations.NotNull;
@@ -73,18 +77,30 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     private final int currentDbSize = 39;
 
+    int ALL_PERMISSIONS = 101;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
+        
         if (((SettingsContainer) this.getApplication()).getShowWelcome() == null) {
             ((SettingsContainer) this.getApplication()).setShowWelcome(true);
         }
         if (((SettingsContainer) this.getApplication()).getShowWelcome()) {
             welcomeScreen();
         }
+        askPermissions();
+    }
+
+    private void askPermissions() {
+
+        final String[] permissions = new String[]{Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.ACCESS_FINE_LOCATION};
+
+        ActivityCompat.requestPermissions(this, permissions, ALL_PERMISSIONS);
     }
 
     @Override

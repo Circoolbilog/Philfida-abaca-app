@@ -15,7 +15,7 @@ public class SettingsContainer extends Application {
 
     public Boolean getShowWelcome() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        showWelcome = sharedPreferences.getBoolean("SHOW_WELCOME", false);
+        showWelcome = sharedPreferences.getBoolean("SHOW_WELCOME", true);
         return showWelcome;
     }
 

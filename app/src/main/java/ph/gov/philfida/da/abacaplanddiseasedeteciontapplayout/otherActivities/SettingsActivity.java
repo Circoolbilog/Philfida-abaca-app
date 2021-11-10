@@ -52,7 +52,8 @@ public class SettingsActivity extends AppCompatActivity {
                         "Select preferred Detection Method: ",
                         "Always Ask First",
                         "Single Capture Mode",
-                        "Multi-Capture Mode");
+                        "Multi-Capture Mode",
+                        0);
             }
         });
         userAccount.setOnClickListener(new View.OnClickListener() {
@@ -82,7 +83,8 @@ public class SettingsActivity extends AppCompatActivity {
                         "Show welcome screen at start of app? ",
                         "Yes",
                         "No",
-                        null);
+                        null,
+                        0);
             }
         });
         about.setOnClickListener(new View.OnClickListener() {
@@ -108,8 +110,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void openDialog(String title, String message, String option1,
-                            String option2, String option3) {
+                            String option2, String option3, int customLayout) {
         SettingsDialog1 dialog1 = new SettingsDialog1();
+        dialog1.setCustomDialogLayout(customLayout);
         dialog1.setContext(SettingsActivity.this);
         dialog1.setDialogTitle(title);
         dialog1.setDialogMessage(message);

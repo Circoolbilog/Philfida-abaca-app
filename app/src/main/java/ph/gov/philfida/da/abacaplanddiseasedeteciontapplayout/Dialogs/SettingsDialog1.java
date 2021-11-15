@@ -6,6 +6,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -90,19 +93,25 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
         this.context = context;
     }
 
+    EditText confidenceVal;
+    LayoutInflater inflater;
+    View view;
+    private SettingsDialogListener listener;
+
     @NonNull
     @NotNull
     @Override
     public Dialog onCreateDialog(@Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         CharSequence[] items = getResources().getStringArray(R.array.colors_array);
-        if (customDialogLayout!=0){
+        if (customDialogLayout != 0) {
             // Get the layout inflater
-            LayoutInflater inflater = requireActivity().getLayoutInflater();
-
+            inflater = requireActivity().getLayoutInflater();
+            view = inflater.inflate(R.layout.custom_confidence_threshold_dialog, null);
             // Inflate and set the layout for the dialog
             // Pass null as the parent view because its going in the dialog layout
-            builder.setView(inflater.inflate(R.layout.custom_confidence_threshold_dialog, null));
+            builder.setView(view);
+            confidenceVal = view.findViewById(R.id.customThreshold);
 
         }
         builder.setTitle(dialogTitle)
@@ -111,7 +120,12 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
                 .setPositiveButton(option1, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                       call(1);
+                        if (customDialogLayout == R.layout.custom_confidence_threshold_dialog) {
+                            int confidence = Integer.parseInt(confidenceVal.getText().toString().trim());
+                            listener.applyConfidence(confidence);
+                        } else {
+                            call(1);
+                        }
                     }
                 })
                 .setNegativeButton(option2, new DialogInterface.OnClickListener() {
@@ -133,15 +147,29 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
 
     private void call(int i) {
         SettingsContainer settingsContainer = new SettingsContainer();
-        switch (dialogTitle){
+        switch (dialogTitle) {
             case "Capture Mode":
                 ((SettingsActivity) this.getActivity()).setCaptureMode(i);
                 break;
             case "Show Welcome Screen":
                 ((SettingsActivity) this.getActivity()).setWelcomeScreen(i);
                 break;
-
+            case "Enter Confidence Threshold":
+                ((SettingsActivity) this.getActivity()).setConfidenceThreshold(i);
+                break;
         }
+    }
+    public interface SettingsDialogListener{
+        void applyConfidence(int confidence);
+    }
 
+    @Override
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
+        try {
+            listener = (SettingsDialogListener)context;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(context.toString() + "must implement SettingsDialogListener");
+        }
     }
 }

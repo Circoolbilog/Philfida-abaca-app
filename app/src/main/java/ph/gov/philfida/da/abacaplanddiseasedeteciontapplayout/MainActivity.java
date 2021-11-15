@@ -436,4 +436,13 @@ public class MainActivity extends AppCompatActivity {
         startActivity(map);
     }
 
+    public void openSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
+        startActivity(intent);
+    }
+
+    public void openAboutApp(View view) {
+        Intent intent = new Intent(this, AboutApp.class);
+        startActivity(intent);
+    }
 }

@@ -1,17 +1,11 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.DialogFragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.SettingsDialog1;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
-import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,12 +13,8 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
-import java.util.ArrayList;
-import java.util.Set;
-
-public class SettingsActivity extends AppCompatActivity {
+public class SettingsActivity extends AppCompatActivity implements SettingsDialog1.SettingsDialogListener {
     public static final String LAST_NAME = "LAST_NAME";
     public static final String FIRST_NAME = "FIRST_NAME";
     LinearLayout captureMode, userAccount, locationSettings, confidenceThreshold, showWelcome,
@@ -73,7 +63,12 @@ public class SettingsActivity extends AppCompatActivity {
         confidenceThreshold.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                openDialog("Enter Confidence Threshold",
+                        "Enter desired value for minimum confidence(cancel if you don't know what this does)",
+                        "Okay",
+                        "Cancel",
+                        null,
+                        R.layout.custom_confidence_threshold_dialog);
             }
         });
         showWelcome.setOnClickListener(new View.OnClickListener() {
@@ -174,8 +169,8 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
 
-    public void setWelcomeScreen(int Selection) {
-        switch (Selection) {
+    public void setWelcomeScreen(int selection) {
+        switch (selection) {
             case 1:
                 ((SettingsContainer) this.getApplication()).setShowWelcome(true);
                 break;
@@ -184,5 +179,16 @@ public class SettingsActivity extends AppCompatActivity {
                 break;
         }
         loadSharedPrefs();
+    }
+    public void setConfidenceThreshold(int confidenceThreshold){
+        float f=confidenceThreshold;
+        Toast.makeText(this, "confidence: " + f, Toast.LENGTH_SHORT).show();
+    }
+
+
+    @Override
+    public void applyConfidence(int confidence) {
+        float fConfidence = confidence/100f;
+        Toast.makeText(this, "confidence: "+ fConfidence*100 + "%", Toast.LENGTH_SHORT).show();
     }
 }

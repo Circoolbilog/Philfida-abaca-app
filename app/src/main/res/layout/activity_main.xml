@@ -13,58 +13,6 @@
         android:layout_height="match_parent">
 
 
-        <androidx.cardview.widget.CardView
-            android:id="@+id/weather"
-            android:layout_width="0dp"
-            android:layout_height="130dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            app:cardBackgroundColor="@color/appSecondary"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/monitorText"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:alpha="0.85">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/weather"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
-
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/updates"
-            android:layout_width="0dp"
-            android:layout_height="130dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            app:cardBackgroundColor="@color/appPrimary"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/monitorText"
-            app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:alpha="0.85">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="10dp"
-                android:text="@string/updates"
-                android:textColor="@android:color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-        </androidx.cardview.widget.CardView>
 
         <TextView
             android:id="@+id/monitorText"
@@ -84,7 +32,7 @@
             android:id="@+id/diagnose"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:clickable="true"
             android:elevation="20dp"
             android:focusable="true"
@@ -92,7 +40,7 @@
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toStartOf="@+id/assessment"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/weather"
+            app:layout_constraintTop_toBottomOf="@+id/monitorText"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.4">
             <ImageView
@@ -102,7 +50,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -133,12 +81,12 @@
             android:id="@+id/assessment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:elevation="20dp"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/diagnose"
-            app:layout_constraintTop_toBottomOf="@id/updates"
+            app:layout_constraintTop_toBottomOf="@+id/monitorText"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.4"
             android:onClick="openAssessmentActivity"
@@ -151,7 +99,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -181,7 +129,7 @@
             android:id="@+id/diseaseIndex"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:elevation="20dp"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toStartOf="@+id/map"
@@ -199,7 +147,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -230,7 +178,7 @@
             android:id="@+id/map"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="15dp"
+            android:layout_margin="10dp"
             android:elevation="20dp"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -248,7 +196,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="15dp"
+                android:layout_margin="10dp"
                 android:orientation="vertical">
 
                 <ImageButton
@@ -273,7 +221,102 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/settingsCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="20dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toStartOf="@+id/aboutAppCard"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/diseaseIndex"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4"
+            android:onClick="openSettings"
+            android:clickable="true"
+            android:focusable="true">
+            <ImageView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
 
+                <ImageButton
+                    android:id="@+id/settingsButton"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_baseline_settings_applications"
+                    android:adjustViewBounds="true"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="openSettings" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="Settings"
+                    android:textAlignment="center"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
+        <androidx.cardview.widget.CardView
+            android:id="@+id/aboutAppCard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:elevation="20dp"
+            app:cardCornerRadius="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/settingsCard"
+            app:layout_constraintTop_toBottomOf="@id/map"
+            app:layout_constraintWidth_default="percent"
+            app:layout_constraintWidth_percent="0.4"
+            android:clickable="true"
+            android:focusable="true"
+            android:onClick="openAboutApp">
+            <ImageView
+                android:layout_width="160dp"
+                android:layout_height="match_parent"
+                android:background="@drawable/card_clickable"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/aboutAppButton"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:background="@drawable/ic_baseline_perm_device_information"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:onClick="openAboutApp"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:text="AboutApp"
+                    android:textColor="@color/appPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+        </androidx.cardview.widget.CardView>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

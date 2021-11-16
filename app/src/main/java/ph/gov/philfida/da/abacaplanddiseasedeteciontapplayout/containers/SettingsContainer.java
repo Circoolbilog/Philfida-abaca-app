@@ -12,6 +12,18 @@ public class SettingsContainer extends Application {
 
     int diagnoseMode;
     Boolean diagDialogRemember;
+    float confidence;
+
+    public float getConfidence() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        confidence = sharedPreferences.getFloat("CONFIDENCE", 50);
+        return confidence;
+    }
+
+    public void setConfidence(float confidence) {
+        this.confidence = confidence;
+        saveFloatToSharedPrefs("CONFIDENCE",confidence);
+    }
 
     public Boolean getShowWelcome() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

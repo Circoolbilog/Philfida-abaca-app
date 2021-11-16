@@ -89,9 +89,11 @@ public abstract class Diagnose extends AppCompatActivity
     private TextView threadsTextView;
 
     public FusedLocationProviderClient fusedLocationProviderClient;
-
+    static float savedConfidence;
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
+        savedConfidence = ((SettingsContainer) this.getApplication()).getConfidence();
+        Toast.makeText(this, "savedConfidence: " +savedConfidence, Toast.LENGTH_SHORT).show();
         LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);

@@ -189,6 +189,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
     @Override
     public void applyConfidence(int confidence) {
         float fConfidence = confidence/100f;
-        Toast.makeText(this, "confidence: "+ fConfidence*100 + "%", Toast.LENGTH_SHORT).show();
+        ((SettingsContainer) this.getApplication()).setConfidence(fConfidence);
+        Toast.makeText(this, "confidence set to: "+ fConfidence*100 + "%", Toast.LENGTH_SHORT).show();
     }
 }

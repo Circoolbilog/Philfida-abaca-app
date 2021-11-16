@@ -226,10 +226,10 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         paint.setStyle(Style.STROKE);
                         paint.setStrokeWidth(2.0f);
 
-                        float minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+                        float minimumConfidence = savedConfidence;
                         switch (MODE) {
                             case TF_OD_API:
-                                minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
+                                minimumConfidence = savedConfidence;
                                 break;
                         }
 

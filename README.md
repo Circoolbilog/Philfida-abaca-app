@@ -1,2 +1,3 @@
-ll# Philfida-abaca-app
-(add description here lol)
+# Philfida-abaca-app
+Android Application designed to help Abaca Farmers/ Farm Owners easily identify Viral diseases affecting their Abaca Plant
+

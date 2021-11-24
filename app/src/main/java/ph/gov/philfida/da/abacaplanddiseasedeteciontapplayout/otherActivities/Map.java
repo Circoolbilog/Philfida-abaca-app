@@ -51,7 +51,7 @@ public class  Map extends AppCompatActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        statusCheck();
+
         //handle permissions first, before map is created. not depicted here
         //load/initialize the osmdroid configuration, this can be done
         Context ctx = getApplicationContext();
@@ -146,6 +146,7 @@ public class  Map extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        statusCheck();
         //this will refresh the osmdroid configuration on resuming.
         //if you make changes to the configuration, use
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);

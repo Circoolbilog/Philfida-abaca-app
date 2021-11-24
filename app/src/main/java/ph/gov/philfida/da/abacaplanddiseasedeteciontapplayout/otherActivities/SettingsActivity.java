@@ -6,6 +6,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.SettingsDi
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -133,6 +134,8 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         }
         showWelcomeVal.setText(((SettingsContainer) this.getApplication()).getShowWelcome().toString());
         captureModeVal.setText(sCaptureMode);
+        String conValThresh = String.valueOf(((SettingsContainer) this.getApplication()).getConfidence());
+        confidenceThresholdVal.setText(conValThresh + "%");
     }
 
     private void setupIDs() {
@@ -144,6 +147,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         userAccount = findViewById(R.id.userAccSet);
         locationSettings = findViewById(R.id.LocationSet);
         confidenceThreshold = findViewById(R.id.ConfidenceThreshSet);
+        confidenceThresholdVal = findViewById(R.id.ConfidenceThreshVal);
         showWelcome = findViewById(R.id.ShowWelcomeScreen);
         language = findViewById(R.id.languageSet);
         about = findViewById(R.id.aboutApp);
@@ -190,6 +194,5 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
     public void applyConfidence(int confidence) {
         float fConfidence = confidence/100f;
         ((SettingsContainer) this.getApplication()).setConfidence(fConfidence);
-        Toast.makeText(this, "confidence set to: "+ fConfidence*100 + "%", Toast.LENGTH_SHORT).show();
     }
 }

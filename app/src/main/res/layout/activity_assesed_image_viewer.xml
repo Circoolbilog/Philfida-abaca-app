@@ -25,7 +25,8 @@
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/assessedImage"
-        android:padding="10dp">
+        android:padding="10dp"
+        android:showDividers="middle">
 
         <TextView
             android:id="@+id/diseaseInfo"

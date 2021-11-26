@@ -74,7 +74,7 @@ public class AssessedImageViewer extends AppCompatActivity {
             }else {
                 while (cursor.moveToNext()) {
                     String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
-
+                    selected = selected.replace("._info", "_info");
                     if (fileName.equals(selected)){
                         long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
 
@@ -112,7 +112,6 @@ public class AssessedImageViewer extends AppCompatActivity {
     private void viewInfo(String textFile) {
         FileReader fr;
         String newFile = textFile.replace("Pictures","Documents");
-        String extractedFile = newFile.replace("/storage/emulated/0/Documents/Assessment/", "");
         StringBuilder stringBuilder = new StringBuilder();
         try {
             fr = new FileReader(newFile);

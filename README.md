@@ -1,6 +1,6 @@
 # Android Based Abaca Disease Detection App
 Android Application designed to help Abaca Farmers/ Farm Owners easily identify Viral diseases affecting their Abaca Plant
-##Download Latest version here
+## Download Latest version here
 [Download](https://play.google.com/store/apps/details?id=ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout)
 
 ## More Info 

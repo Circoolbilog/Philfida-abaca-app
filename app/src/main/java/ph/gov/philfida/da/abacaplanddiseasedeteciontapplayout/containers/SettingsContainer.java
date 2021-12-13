@@ -12,6 +12,19 @@ public class SettingsContainer extends Application {
 
     int diagnoseMode;
     Boolean diagDialogRemember;
+
+    public Boolean getDownloadOnce() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        downloadOnce = sharedPreferences.getBoolean("DOWNLOAD_ONCE", true);
+        return downloadOnce;
+    }
+
+    public void setDownloadOnce(Boolean downloadOnce) {
+        this.downloadOnce = downloadOnce;
+        saveBooleanToSharedPrefs("DOWNLOAD_ONCE",downloadOnce);
+    }
+
+    Boolean downloadOnce;
     float confidence;
 
     public float getConfidence() {

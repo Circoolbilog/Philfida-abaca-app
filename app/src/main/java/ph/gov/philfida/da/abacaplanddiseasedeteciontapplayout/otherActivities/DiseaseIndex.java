@@ -15,8 +15,11 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DiseaseIndex extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -33,7 +36,6 @@ public class DiseaseIndex extends AppCompatActivity {
         populateList();
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
-        Log.d(TAG, "populateList: " + dbModelList.toString());
     }
 
     private void populateList() {

@@ -40,6 +40,7 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider;
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
@@ -62,12 +63,9 @@ public class  Map extends AppCompatActivity {
         //see also StorageUtils
         //note, the load method also sets the HTTP User Agent to your application's package name, abusing osm's
         //tile servers will get you banned based on this string
-
         //inflate and create the map
         setContentView(R.layout.activity_map);
-
         //get Current Location
-
         map = (MapView) findViewById(R.id.map);
         map.setMultiTouchControls(true);
 
@@ -78,7 +76,6 @@ public class  Map extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         });
         addOverlays(ctx);
-
     }
 
     public void statusCheck() {
@@ -140,7 +137,8 @@ public class  Map extends AppCompatActivity {
         //scaleBarOverlay
         addScale();
         map.postInvalidate();
-        map.getController().setCenter(myLocation);
+//        map.getController().setCenter(myLocation);
+        map.getController().animateTo(myLocation);
     }
 
     @Override
@@ -165,11 +163,8 @@ public class  Map extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        ArrayList<String> permissionsToRequest = new ArrayList<>();
-        for (int i = 0; i < grantResults.length; i++) {
-            permissionsToRequest.add(permissions[i]);
-        }
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, int[] grantResults) {
+        ArrayList<String> permissionsToRequest = new ArrayList<>(Arrays.asList(permissions).subList(0, grantResults.length));
         if (permissionsToRequest.size() > 0) {
             ActivityCompat.requestPermissions(
                     this,

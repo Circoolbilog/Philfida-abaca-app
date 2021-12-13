@@ -8,10 +8,12 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,6 +41,10 @@ public class AboutApp extends AppCompatActivity {
         reportBug = findViewById(R.id.reportBug);
         appVersionVal = findViewById(R.id.AppVersionVal);
         appVersionVal.setText(getAppVersion());
+        developer.setOnClickListener(v -> {
+            Intent dev = new Intent(this, AboutDev.class);
+            startActivity(dev);
+        }) ;
     }
 
 

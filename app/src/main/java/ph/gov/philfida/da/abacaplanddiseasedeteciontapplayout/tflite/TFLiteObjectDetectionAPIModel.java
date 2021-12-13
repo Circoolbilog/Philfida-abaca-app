@@ -146,7 +146,7 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
         } else {
             numBytesPerChannel = 4; // Floating point
         }
-        d.imgData = ByteBuffer.allocateDirect(1 * d.inputSize * d.inputSize * 3 * numBytesPerChannel);
+        d.imgData = ByteBuffer.allocateDirect(1 * d.inputSize * d.inputSize * 3 * 4);
         d.imgData.order(ByteOrder.nativeOrder());
         d.intValues = new int[d.inputSize * d.inputSize];
 
@@ -194,10 +194,10 @@ public class TFLiteObjectDetectionAPIModel implements Classifier {
 
         Object[] inputArray = {imgData};
         Map<Integer, Object> outputMap = new HashMap<>();
-        outputMap.put(0, outputLocations);
-        outputMap.put(1, outputClasses);
-        outputMap.put(2, outputScores);
-        outputMap.put(3, numDetections);
+        outputMap.put(0, outputScores);
+        outputMap.put(1, outputLocations );
+        outputMap.put(2, numDetections);
+        outputMap.put(3, outputClasses);
         Trace.endSection();
 
         // Run the inference call.

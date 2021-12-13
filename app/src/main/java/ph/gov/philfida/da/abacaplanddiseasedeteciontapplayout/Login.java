@@ -1,5 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Rect;
@@ -51,6 +52,7 @@ public class Login extends AppCompatActivity {
     public static final String SHARED_PREFS = "loginData";
     public static final String REMEMBER = "rememberMe";
 
+    @SuppressLint("ResourceType")
     @Override
     protected void onStart() {
         //TODO: Add Language selector on first start

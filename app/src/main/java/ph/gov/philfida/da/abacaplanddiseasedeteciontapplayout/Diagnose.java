@@ -51,40 +51,32 @@ public abstract class Diagnose extends AppCompatActivity
     private static final Logger LOGGER = new Logger();
 
     RelativeLayout layout;
-    private static final int MY_READ_PERMISSION_CODE = 101;
     private static final int MY_WRITE_PERMISSION_CODE = 102;
-    private int mode = 0;
     private static final int PERMISSIONS_REQUEST = 1;
     public Handler uiHandler = new Handler();
     DialogFragment diagnoseMode ;
-    ImageView captureButton, galleryButton;
+    ImageView captureButton;
 
     public Image image;
     private static final String PERMISSION_CAMERA = Manifest.permission.CAMERA;
     private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     protected int previewWidth = 0;
     protected int previewHeight = 0;
-    private boolean debug = false;
+    private final boolean debug = false;
     private Handler handler;
     private Handler handler2;
     private HandlerThread handlerThread;
     private HandlerThread handlerThread2;
     private boolean useCamera2API;
     private boolean isProcessingFrame = false;
-    private byte[][] yuvBytes = new byte[3][];
+    private final byte[][] yuvBytes = new byte[3][];
     private int[] rgbBytes = null;
     public int[] bytesToPass = null;
     private int yRowStride;
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
 
-    private LinearLayout bottomSheetLayout;
-    private LinearLayout gestureLayout;
-//    private BottomSheetBehavior<LinearLayout> sheetBehavior;
-
-    protected TextView frameValueTextView, cropValueTextView, inferenceTimeTextView, detectionModeText;
-    protected ImageView bottomSheetArrowImageView;
-    private ImageView plusImageView, minusImageView;
+    protected TextView detectionModeText;
     //    private SwitchCompat apiSwitchCompat;
     private TextView threadsTextView;
 
@@ -93,20 +85,22 @@ public abstract class Diagnose extends AppCompatActivity
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         savedConfidence = ((SettingsContainer) this.getApplication()).getConfidence();
-        Toast.makeText(this, "savedConfidence: " +savedConfidence, Toast.LENGTH_SHORT).show();
-        LOGGER.d("onCreate " + this);
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_diagnose);
         assigdnIDs();
         layout= findViewById(R.id.loading);
+        runInBackground(checkPerms());
+
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+    }
+    private Runnable checkPerms(){
         if (!hasPermission()) {
             requestPermission();
         }else {
             setFragment();
         }
-
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
+        return null;
     }
     public void openAssessmentActivity(View view) {
         Intent assessment = new Intent(this, AssessmentActivity.class);
@@ -128,7 +122,6 @@ public abstract class Diagnose extends AppCompatActivity
         } else {
             setDialogText("DEFAULT: " + "Dual Capture Mode");
         }
-        layout.setVisibility(View.GONE);
     }
 
     public void setDialogText(String text) {
@@ -140,7 +133,7 @@ public abstract class Diagnose extends AppCompatActivity
         ((SettingsContainer) this.getApplication()).setDiagnoseMode(0);
         ((SettingsContainer) this.getApplication()).setDiagDialogRemember(isRemember);
         setDialogText("Single Capture Mode");
-        //TODO: Shared Prefs on what mode was selected
+        layout.setVisibility(View.GONE);
     }
 
     @Override
@@ -148,6 +141,7 @@ public abstract class Diagnose extends AppCompatActivity
         ((SettingsContainer) this.getApplication()).setDiagnoseMode(1);
         ((SettingsContainer) this.getApplication()).setDiagDialogRemember(isRemember);
         setDialogText("Dual Capture Mode");
+        layout.setVisibility(View.GONE);
     }
 
     protected int[] getRgbBytes() {
@@ -544,8 +538,6 @@ public abstract class Diagnose extends AppCompatActivity
     protected abstract Size getDesiredPreviewFrameSize();
 
     protected abstract void setNumThreads(int numThreads);
-
-    protected abstract void setUseNNAPI(boolean isChecked);
 
     public void CaptureImage(View v) {
     }

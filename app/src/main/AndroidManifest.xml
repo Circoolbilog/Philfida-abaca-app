@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout">
+    package="ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout" >
 
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,9 +16,9 @@
     <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <application
-        android:configChanges="locale|orientation"
         android:name=".containers.SettingsContainer"
         android:allowBackup="true"
+        android:configChanges="locale|orientation"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
@@ -26,7 +26,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
-        tools:targetApi="m">
+        tools:targetApi="m" >
+        <activity
+            android:name=".otherActivities.AboutDev"
+            android:exported="false" />
+        <activity
+            android:name=".AboutDevs"
+            android:exported="false" />
         <activity
             android:name=".otherActivities.MoreInfo"
             android:theme="@style/NoActionBar" />
@@ -40,8 +46,7 @@
             android:name=".otherActivities.WelcomeScreen"
             android:screenOrientation="portrait"
             android:theme="@style/NoActionBar" />
-        <activity
-            android:name=".otherActivities.AboutApp" />
+        <activity android:name=".otherActivities.AboutApp" />
         <activity
             android:name=".otherActivities.Map"
             android:theme="@style/NoActionBar" />
@@ -49,8 +54,7 @@
             android:name=".otherActivities.DiseaseInfo"
             android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.ForgotPasswordActivity" />
-        <activity
-            android:name=".otherActivities.SettingsActivity" />
+        <activity android:name=".otherActivities.SettingsActivity" />
         <activity android:name=".otherActivities.DiseaseIndex" />
         <activity
             android:name=".otherActivities.AssessedImageViewer"
@@ -66,6 +70,7 @@
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".DetectorActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/NoActionBar" />
         <activity
             android:name=".MainActivity"
@@ -74,7 +79,7 @@
         <activity
             android:name=".Login"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar">
+            android:theme="@style/NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -84,6 +89,7 @@
         </activity>
         <activity
             android:name=".Diagnose"
+            android:screenOrientation="portrait"
             android:theme="@style/NoActionBar"
             android:windowSoftInputMode="adjustResize" />
         <activity

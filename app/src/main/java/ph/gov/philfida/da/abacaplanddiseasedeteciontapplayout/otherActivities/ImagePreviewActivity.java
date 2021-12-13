@@ -1,6 +1,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -24,8 +26,13 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.lang.reflect.Array;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 
 import androidx.annotation.NonNull;
@@ -33,6 +40,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
@@ -42,8 +50,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Setting
 public class ImagePreviewActivity extends AppCompatActivity {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String fileNum = "fileNumber";
-    public static final String SYMPTOMS_ARRAY = "symptomsArray";
-    public int fileNumber = 0;
+    public String timestamp;
     int noAllocationScore = 0, bractScore = 0, bunchyScore = 0, cmvScore = 0, genMosaicScore = 0, scmvScore = 0;
     ArrayList<String> no_allocation_list, bract_list, bunchy_list, cmv_list, gen_mosaic_list, scmv_list;
 
@@ -59,15 +66,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
     private static final int REQUEST = 112;
     private static final String TAG = "ImagePreviewActivity";
 
+    @SuppressLint("SimpleDateFormat")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_preview);
+        timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(new Date());
         assignIDs();
         loadDB();
         importExtras();
         //make sure that there are no duplicate names
-        loadFileNumber();
     }
 
     private void assignIDs() {
@@ -124,50 +132,30 @@ public class ImagePreviewActivity extends AppCompatActivity {
         symptomsDetected = extras.getStringArrayList("symptomsDetected");
         lat = extras.getDouble("lat");
         longt = extras.getDouble("longt");
-        title.setText("");
         categorize(symptomsDetected);
-        //          confidence = extras.getString("confidence");
     }
 
     private void categorize(ArrayList<String> symptoms) {
-        for (String symptom : no_allocation_list) {
-            if (symptoms.contains(symptom)) noAllocationScore++;
+        for (String symptom : symptoms) {
+            if (no_allocation_list.contains(symptom)) noAllocationScore++;
+            if (bract_list.contains(symptom)) bractScore++;
+            if (bunchy_list.contains(symptom)) bunchyScore++;
+            if (cmv_list.contains(symptom)) cmvScore++;
+            if (gen_mosaic_list.contains(symptom)) genMosaicScore++;
+            if (scmv_list.contains(symptom)) scmvScore++;
         }
-        for (String symptom : bract_list) {
-            if (symptoms.contains(symptom)) bractScore++;
-        }
-        for (String symptom : bunchy_list) {
-            if (symptoms.contains(symptom)) bunchyScore++;
-        }
-        for (String symptom : cmv_list) {
-            if (symptoms.contains(symptom)) cmvScore++;
-        }
-        for (String symptom : gen_mosaic_list) {
-            if (symptoms.contains(symptom)) genMosaicScore++;
-        }
-        for (String symptom : scmv_list) {
-            if (symptoms.contains(symptom)) scmvScore++;
-        }
-
-        if (noAllocationScore != 0) {
-            title.append("(No Allocation) score: " + noAllocationScore + "\n");
-        }
-        if (bractScore != 0) {
-            title.append("Bract Mosaic score: " + bractScore + "\n");
-        }
-        if (bunchyScore != 0) {
-            title.append("Bunchy Top score: " + bunchyScore + "\n");
-        }
-        if (cmvScore != 0) {
-            title.append("CMV score: " + cmvScore + "\n");
-        }
-        if (genMosaicScore != 0) {
-            title.append("General Mosaic score: " + genMosaicScore + "\n");
-        }
-        if (scmvScore != 0) {
-            title.append("SCMV score: " + scmvScore + "\n");
-        }
-        detectionInfo = title.getText().toString() + "\n" + getSymptoms() + "Lognitude: " + longt + "\n" + "Latitude: " + lat;
+        String symptomScores = "";
+        if (noAllocationScore != 0)
+            symptomScores = symptomScores.concat("(No Allocation) score: " + noAllocationScore + "<br>");
+        if (bractScore != 0) symptomScores = symptomScores.concat("Bract Mosaic score: " + bractScore + "<br>");
+        if (bunchyScore != 0) symptomScores = symptomScores.concat("Bunchy Top score: " + bunchyScore + "<br>");
+        if (cmvScore != 0) symptomScores = symptomScores.concat("CMV score: " + cmvScore + "<br>");
+        if (genMosaicScore != 0) symptomScores = symptomScores.concat("General Mosaic score: " + genMosaicScore + "<br>");
+        if (scmvScore != 0) symptomScores = symptomScores.concat("SCMV score: " + scmvScore + "<br>");
+        detectionInfo = "<h2><b>" + symptomScores + "</b></h2>"
+                + "<br>" + "<h4>"+getSymptoms() + "</h4>"+ "<br>"+"Lognitude: " + longt + "<br>" + "Latitude: " + lat;
+        title.setText(Html.fromHtml(symptomScores));
+        title.setText(HtmlCompat.fromHtml(symptomScores,HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     private void loadImage(Bundle extras) {
@@ -214,21 +202,21 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     private void saveImage(Bitmap bitmap3) throws IOException {
-        String name = "localImage_" + fileNumber;
+        String name = "localImage_" + timestamp;
         OutputStream fosOne; // image file 1 output stream
         OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
         File textDir = new File(Environment.getExternalStorageDirectory(), "Documents/Assessment");
         if (!dir.exists() || !textDir.exists()) {
-            if (dir.mkdirs()) Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
-            if (textDir.mkdirs()) Toast.makeText(this, "Info/Documents Directory Created", Toast.LENGTH_SHORT).show();
-
+            if (dir.mkdirs())
+                Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
+            if (textDir.mkdirs())
+                Toast.makeText(this, "Info/Documents Directory Created", Toast.LENGTH_SHORT).show();
         }
         if (isBuildVersionQ()) {
             //Save Image File
             Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             Uri textPathUri = MediaStore.Files.getContentUri("external");
-
             ContentResolver imageOneResolver = getContentResolver();
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
@@ -241,13 +229,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
             //Save Text file
             ContentResolver textContentResolver = getContentResolver();
             ContentValues textCV = new ContentValues();
-
             textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
             textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
             textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/Assessment/");
 
             Uri textUri = imageOneResolver.insert(textPathUri, textCV);
-
             fosText = textContentResolver.openOutputStream(textUri);
         } else {
             //below android Q
@@ -263,28 +249,12 @@ public class ImagePreviewActivity extends AppCompatActivity {
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
         Objects.requireNonNull(fosOne).close();
 
-        incrementFileNumber();
         finish();
     }
 
     private boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
-
-
-    public void incrementFileNumber() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        fileNumber += 1;
-        editor.putInt(fileNum, fileNumber);
-        editor.apply();
-    }
-
-    public void loadFileNumber() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        fileNumber = sharedPreferences.getInt(fileNum, 0);
-    }
-
 
     public void discardImage(View view) {
         finish();

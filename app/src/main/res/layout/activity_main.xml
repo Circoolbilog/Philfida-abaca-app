@@ -13,7 +13,6 @@
         android:layout_height="match_parent">
 
 
-
         <TextView
             android:id="@+id/monitorText"
             android:layout_width="wrap_content"
@@ -43,10 +42,12 @@
             app:layout_constraintTop_toBottomOf="@+id/monitorText"
             app:layout_constraintWidth_default="percent"
             app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,20 +83,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:clickable="true"
             android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openAssessmentActivity"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/diagnose"
             app:layout_constraintTop_toBottomOf="@+id/monitorText"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:onClick="openAssessmentActivity"
-            android:clickable="true"
-            android:focusable="true">
+            app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -130,20 +133,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:clickable="true"
             android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openDiseaseIndex"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toStartOf="@+id/map"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/diagnose"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:onClick="openDiseaseIndex"
-            android:clickable="true"
-            android:focusable="true">
+            app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -179,20 +184,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:clickable="true"
             android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openMap"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/diseaseIndex"
             app:layout_constraintTop_toBottomOf="@id/assessment"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="openMap">
+            app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -208,7 +215,7 @@
                     android:background="@drawable/ic_m_map"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="openMap"/>
+                    android:onClick="openMap" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -221,25 +228,28 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/settingsCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:clickable="true"
             android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openSettings"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toStartOf="@+id/aboutAppCard"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/diseaseIndex"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:onClick="openSettings"
-            android:clickable="true"
-            android:focusable="true">
+            app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -252,8 +262,8 @@
                     android:layout_height="80dp"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:background="@drawable/ic_baseline_settings_applications"
                     android:adjustViewBounds="true"
+                    android:background="@drawable/ic_baseline_settings_applications"
                     android:clickable="true"
                     android:focusable="true"
                     android:onClick="openSettings" />
@@ -270,25 +280,28 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
         <androidx.cardview.widget.CardView
             android:id="@+id/aboutAppCard"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:clickable="true"
             android:elevation="20dp"
+            android:focusable="true"
+            android:onClick="openAboutApp"
             app:cardCornerRadius="5dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/settingsCard"
             app:layout_constraintTop_toBottomOf="@id/map"
             app:layout_constraintWidth_default="percent"
-            app:layout_constraintWidth_percent="0.4"
-            android:clickable="true"
-            android:focusable="true"
-            android:onClick="openAboutApp">
+            app:layout_constraintWidth_percent="0.4">
+
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="match_parent"
-                android:background="@drawable/card_clickable"/>
+                android:background="@drawable/card_clickable" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -304,7 +317,7 @@
                     android:background="@drawable/ic_baseline_perm_device_information"
                     android:clickable="true"
                     android:focusable="true"
-                    android:onClick="openAboutApp"/>
+                    android:onClick="openAboutApp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -317,6 +330,18 @@
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
+
+        <ImageView
+            android:id="@+id/imagePlaceHolder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/abaca_welcome_1"
+            android:alpha="0.01"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <com.google.android.material.navigation.NavigationView

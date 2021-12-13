@@ -78,8 +78,8 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     // Configuration values for the prepackaged SSD model.
     private static final int TF_OD_API_INPUT_SIZE = 640;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
-    private static final String TF_OD_API_MODEL_FILE = "15ksteps2.tflite";
-    private static final String TF_OD_API_LABELS_FILE = "class_beta5.txt";
+    private static final String TF_OD_API_MODEL_FILE = "symptoms_tflite2.tflite";
+    private static final String TF_OD_API_LABELS_FILE = "symptoms.txt";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     // Minimum detection confidence to track a detection.
     private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
@@ -167,13 +167,10 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
         trackingOverlay = (OverlayView) findViewById(R.id.tracking_overlay);
         trackingOverlay.addCallback(
-                new OverlayView.DrawCallback() {
-                    @Override
-                    public void drawCallback(final Canvas canvas) {
-                        tracker.draw(canvas);
-                        if (isDebug()) {
-                            tracker.drawDebug(canvas);
-                        }
+                canvas -> {
+                    tracker.draw(canvas);
+                    if (isDebug()) {
+                        tracker.drawDebug(canvas);
                     }
                 });
 
@@ -212,71 +209,61 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         }
 
         runInBackground(
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        LOGGER.i("Running detection on image " + currTimestamp);
-                        final long startTime = SystemClock.uptimeMillis();
-                        final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
-                        lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
-                        cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
-                        final Canvas canvas = new Canvas(cropCopyBitmap);
-                        final Paint paint = new Paint();
-                        paint.setColor(Color.RED);
-                        paint.setStyle(Style.STROKE);
-                        paint.setStrokeWidth(2.0f);
+                () -> {
+                    LOGGER.i("Running detection on image " + currTimestamp);
+                    final long startTime = SystemClock.uptimeMillis();
+                    final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
+                    lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+                    cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
+                    final Canvas canvas1 = new Canvas(cropCopyBitmap);
+                    final Paint paint = new Paint();
+                    paint.setColor(Color.RED);
+                    paint.setStyle(Style.STROKE);
+                    paint.setStrokeWidth(2.0f);
 
-                        float minimumConfidence = savedConfidence;
-                        switch (MODE) {
-                            case TF_OD_API:
-                                minimumConfidence = savedConfidence;
-                                break;
+                    float minimumConfidence = savedConfidence;
+                    if (MODE == DetectorMode.TF_OD_API) minimumConfidence = savedConfidence;
+
+                    final List<Classifier.Recognition> mappedRecognitions =
+                            new LinkedList<>();
+
+                    detectedSymptomsList.clear();
+
+                    for (final Classifier.Recognition result : results) {
+                        final RectF location = result.getLocation();
+                        if (location != null && result.getConfidence() >= minimumConfidence) {
+                            canvas1.drawRect(location, paint);
+                            cropToFrameTransform.mapRect(location);
+                            detectedSymptomsList.add(result.getTitle());;
+                            result.setLocation(location);
+                            mappedRecognitions.add(result);
                         }
-
-                        final List<Classifier.Recognition> mappedRecognitions =
-                                new LinkedList<Classifier.Recognition>();
-
-                        detectedSymptomsList.clear();
-
-                        for (final Classifier.Recognition result : results) {
-                            final RectF location = result.getLocation();
-                            if (location != null && result.getConfidence() >= minimumConfidence) {
-                                canvas.drawRect(location, paint);
-                                cropToFrameTransform.mapRect(location);
-                                detectedSymptomsList.add(result.getTitle());;
-                                result.setLocation(location);
-                                mappedRecognitions.add(result);
-                            }
-                        }
-                        try {
-                            names = detectedSymptomsList.toArray(new String[0]);
-                        } catch (Exception e) {
-                            Log.d(TAG, "run: " + e.getMessage());
-                        }
-                        tracker.trackResults(mappedRecognitions, currTimestamp);
-                        trackingOverlay.postInvalidate();
-
-                        computingDetection = false;
-                        if (!initialized) {
-                            initialize();
-                            initialized = true;
-                        }
-
-
                     }
+                    try {
+                        names = detectedSymptomsList.toArray(new String[0]);
+                    } catch (Exception e) {
+                        Log.d(TAG, "run: " + e.getMessage());
+                    }
+                    tracker.trackResults(mappedRecognitions, currTimestamp);
+                    trackingOverlay.postInvalidate();
+
+                    computingDetection = false;
+                    if (!initialized) {
+                        initialize();
+                        initialized = true;
+                    }
+
+
                 });
     }
 
     private void initialize() {
         detectionModeText = findViewById(R.id.detectionModeText);
 
-        uiHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                captureButton.setEnabled(true);
-                createDialog();
+        uiHandler.post(() -> {
+            captureButton.setEnabled(true);
+            createDialog();
 
-            }
         });
     }
 
@@ -302,11 +289,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     }
 
     @Override
-    protected void setUseNNAPI(final boolean isChecked) {
-        runInBackground(() -> detector.setUseNNAPI(isChecked));
-    }
-
-    @Override
     protected void setNumThreads(final int numThreads) {
         runInBackground(() -> detector.setNumThreads(numThreads));
     }
@@ -316,33 +298,29 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     @Override
     public void CaptureImage(View v) {
         super.CaptureImage(v);
-
-        try {
-            getGeoLocation();
-        } catch (Exception e) {
-            Log.d(TAG, "CaptureImage: " + e.getMessage());
-        }
-        Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
-        runInBackground2(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Bitmap copyOfFrame;
-                    float degrees = 90;
-                    Matrix matrix = new Matrix();
-                    matrix.setRotate(degrees);
-                    copyOfFrame = Bitmap.createBitmap(rgbFrameBitmap, 0, 0, rgbFrameBitmap.getWidth(), rgbFrameBitmap.getHeight(), matrix, true);
-                    imagePrev.putExtra("byteArray", bitmapToArray(copyOfFrame));
-                    imagePrev.putExtra("backUpImage", bitmapToArray(cropCopyBitmap));
-                    imagePrev.putExtra("symptomsDetected", detectedSymptomsList);
-                    imagePrev.putExtra("longt", longt);
-                    imagePrev.putExtra("lat", lat);
-                    startActivity(imagePrev);
-                } catch (Exception e) {
-                    Log.d(TAG, "CaptureImage: " + e.getMessage());
-                }
-
+        runInBackground2(() -> {
+            try {
+                getGeoLocation();
+            } catch (Exception e) {
+                Log.d(TAG, "CaptureImage: " + e.getMessage());
             }
+            Intent imagePrev = new Intent(DetectorActivity.this, ImagePreviewActivity.class);
+            try {
+                Bitmap copyOfFrame;
+                float degrees = 90;
+                Matrix matrix = new Matrix();
+                matrix.setRotate(degrees);
+                copyOfFrame = Bitmap.createBitmap(rgbFrameBitmap, 0, 0, rgbFrameBitmap.getWidth(), rgbFrameBitmap.getHeight(), matrix, true);
+                imagePrev.putExtra("byteArray", bitmapToArray(copyOfFrame));
+                imagePrev.putExtra("backUpImage", bitmapToArray(cropCopyBitmap));
+                imagePrev.putExtra("symptomsDetected", detectedSymptomsList);
+                imagePrev.putExtra("longt", longt);
+                imagePrev.putExtra("lat", lat);
+                startActivity(imagePrev);
+            } catch (Exception e) {
+                Log.d(TAG, "CaptureImage: " + e.getMessage());
+            }
+
         });
 
         lastDetection = confidenceList.size();
@@ -373,46 +351,14 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             longt = location.getLongitude();
             lat = location.getLatitude();
         }
-         final LocationListener locationListener = new LocationListener() {
-            public void onLocationChanged(Location location) {
-                longt = location.getLongitude();
-                lat = location.getLatitude();
-            }
-        };
+         final LocationListener locationListener = location1 -> {
+             longt = location1.getLongitude();
+             lat = location1.getLatitude();
+         };
         lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 2000, 10, locationListener);
-        ////////////
 
     }
 
-
-
-
-    private void requestStoragePermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.READ_EXTERNAL_STORAGE)) {
-            new AlertDialog.Builder(this)
-                    .setTitle("Permission needed")
-                    .setMessage("This permission is needed because of this and that")
-                    .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            ActivityCompat.requestPermissions(DetectorActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-                        }
-                    })
-                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .create().show();
-        } else {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
-        }
-    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -422,34 +368,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
             } else {
                 Toast.makeText(this, "Permission DENIED", Toast.LENGTH_SHORT).show();
             }
-        }
-    }
-
-    private String getLocation() {
-        return passLocation.toString();
-    }
-
-
-    private String getConfidence() {
-        String formatted;
-        Float confidence;
-        if (lastDetection < confidenceList.size()) {
-            confidence = confidenceList.get(detectedSymptomsList.size() - 1);
-            confidence = confidence * 100;
-
-            DecimalFormat df = new DecimalFormat("##.##");
-            formatted = df.format(confidence);
-            return formatted + "%";
-        } else {
-            formatted = "";
-            return formatted;
-        }
-    }
-    class CaptureRunnable implements Runnable{
-
-        @Override
-        public void run() {
-
         }
     }
 }

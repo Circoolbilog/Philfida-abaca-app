@@ -16,6 +16,8 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,6 +38,7 @@ public class AssessedImageViewer extends AppCompatActivity {
     ImageView assessedImage;
     Bitmap selectedImage;
     TextView diseaseInfo;
+    Button buttonViewBox;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +46,13 @@ public class AssessedImageViewer extends AppCompatActivity {
         setContentView(R.layout.activity_assesed_image_viewer);
         assessedImage = findViewById(R.id.assessedImage);
         diseaseInfo = findViewById(R.id.diseaseInfo);
+        buttonViewBox = findViewById(R.id.buttonViewBoxes);
+        buttonViewBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String fileName = extras.getString("file");

@@ -18,6 +18,13 @@
         app:layout_constraintStart_toStartOf="parent"
         android:padding="5dp"
         android:adjustViewBounds="true"/>
+    <Button
+        android:id="@+id/buttonViewBoxes"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/assessedImage"
+        android:text="@string/view_boxes"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"

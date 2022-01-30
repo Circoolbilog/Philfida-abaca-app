@@ -3,13 +3,9 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Rect;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.util.Patterns;
-import android.view.Display;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -38,7 +34,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Fo
 public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
     Button login;
-    TextView noAccount, forgotPass;
+    TextView noAccount, forgotPass, guest;
     TextInputLayout emailAddress;
     TextInputLayout password;
     String inputEmail;
@@ -57,6 +53,7 @@ public class Login extends AppCompatActivity {
     protected void onStart() {
         //TODO: Add Language selector on first start
         super.onStart();
+        //hide all elements. add 2 buttons, login and skip login
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
         if (firebaseUser!=null){
             Intent login = new Intent(Login.this,MainActivity.class);
@@ -74,6 +71,7 @@ public class Login extends AppCompatActivity {
         loginLayout = findViewById(R.id.loginLayout);
         card = findViewById(R.id.bgCard);
         logo = findViewById(R.id.logo);
+        guest = findViewById(R.id.guest);
         assignButtons();
         assignInputs();
         layoutAdjustments();
@@ -129,6 +127,13 @@ public class Login extends AppCompatActivity {
     }
 
     private void assignButtons() {
+        guest.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
+        });
         noAccount = findViewById(R.id.openRegister);
         noAccount.setOnClickListener(new View.OnClickListener() {
             @Override

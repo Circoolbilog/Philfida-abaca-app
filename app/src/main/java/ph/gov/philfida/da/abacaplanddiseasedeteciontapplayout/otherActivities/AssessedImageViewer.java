@@ -59,12 +59,12 @@ public class AssessedImageViewer extends AppCompatActivity {
             selectedImage = BitmapFactory.decodeFile(fileName);
             assessedImage.setImageBitmap(selectedImage);
             String textFile = fileName.replace(".jpg", "_info.txt");
-//            if (isBuildVersionQ()) {
-//                File file = new File(textFile);
-//                diseaseInfo.setText(HtmlCompat.fromHtml(viewInfoQ(file.getName()), HtmlCompat.FROM_HTML_MODE_LEGACY));
-//            } else {
+            if (isBuildVersionQ()) {
+               File file = new File(textFile);
+               diseaseInfo.setText(HtmlCompat.fromHtml(viewInfoQ(file.getName()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+            } else {
                 viewInfo(textFile);
-//            }
+            }
         }
 
     }

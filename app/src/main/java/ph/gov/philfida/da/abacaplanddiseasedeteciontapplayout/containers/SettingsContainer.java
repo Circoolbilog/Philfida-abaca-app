@@ -12,6 +12,18 @@ public class SettingsContainer extends Application {
 
     int diagnoseMode;
     Boolean diagDialogRemember;
+    Boolean guest;
+
+    public Boolean getGuest() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        downloadOnce = sharedPreferences.getBoolean("GUEST", true);
+        return guest;
+    }
+
+    public void setGuest(Boolean guest) {
+        this.guest = guest;
+        saveBooleanToSharedPrefs("GUEST",guest);
+    }
 
     public Boolean getDownloadOnce() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

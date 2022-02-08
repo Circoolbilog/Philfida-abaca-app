@@ -106,9 +106,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        getUserDBDetails();
-        loadUserData();
-        saveUserData();
+        if (!((SettingsContainer) this.getApplication()).getGuest()){
+            getUserDBDetails();
+            loadUserData();
+            saveUserData();
+        }
+
         downloadDiseaseInfo();
         downloadDiseaseMap();
     }
@@ -385,7 +388,10 @@ public class MainActivity extends AppCompatActivity {
     //Open Diagnose Activity
 
     public void openDiagnoseActivity(View view) {
-        Intent diagnose = new Intent(this, DetectorActivity.class);
+        Intent diagnose = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
+            diagnose = new Intent(this, DetectorActivity.class);
+        }
         startActivity(diagnose);
     }
 

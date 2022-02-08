@@ -65,5 +65,5 @@
     <string name="developer">Developer</string>
     <string name="tutorial">Tutorial</string>
     <string name="view_boxes">View boxes</string>
-    <string name="continue_without_logging_in">Continue without logging in</string>
+    <string name="continue_without_logging_in">Continue as Guest</string>
 </resources>

@@ -17,7 +17,7 @@ Green_yellow_streaks
 Light_green_patches_petiole
 Light_green_streaks
 Light_green_thick_veins
-Narrow_leaf
+Narrow_leaf (To be removed)
 Necrotic_edge
 Necrotic_lamina
 Necrotic_midrib

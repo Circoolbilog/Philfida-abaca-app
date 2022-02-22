@@ -50,7 +50,7 @@ public class AboutApp extends AppCompatActivity {
             Intent email = new Intent(Intent.ACTION_SEND);
             email.putExtra(Intent.EXTRA_EMAIL, new String[]{ "circoolardev@gmail.com"});
             email.putExtra(Intent.EXTRA_SUBJECT, "Bug report: " + Build.MANUFACTURER + Build.MODEL);
-            email.putExtra(Intent.EXTRA_TEXT, "App Version: " + getAppVersion() + "\n SDK Version: " + Build.VERSION.SDK_INT + "\n" +
+            email.putExtra(Intent.EXTRA_TEXT, "App Version: " + getAppVersion() + "\nSDK Version: " + Build.VERSION.SDK_INT + "\n" +
                     "Describe the bug or problem with the app: ");
 
             //need this to prompts email client only

@@ -7,6 +7,7 @@ import androidx.core.text.HtmlCompat;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 import android.content.ContentUris;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -32,14 +33,16 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class AssessedImageViewer extends AppCompatActivity {
 
     ImageView assessedImage;
     Bitmap selectedImage;
     TextView diseaseInfo;
-    Button buttonViewBox;
-
+    Button buttonViewBox, openMap;
+    float latitude, longitude;
+    String info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,6 +56,13 @@ public class AssessedImageViewer extends AppCompatActivity {
 
             }
         });
+        openMap =findViewById(R.id.buttonOpenMaps);
+
+        openMap.setOnClickListener(view ->{
+            String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=" + latitude + "," + longitude, latitude, longitude);
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
+            this.startActivity(intent);
+        });
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             String fileName = extras.getString("file");
@@ -60,8 +70,23 @@ public class AssessedImageViewer extends AppCompatActivity {
             assessedImage.setImageBitmap(selectedImage);
             String textFile = fileName.replace(".jpg", "_info.txt");
             if (isBuildVersionQ()) {
-               File file = new File(textFile);
-               diseaseInfo.setText(HtmlCompat.fromHtml(viewInfoQ(file.getName()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                File file = new File(textFile);
+                info = viewInfoQ(file.getName());
+                diseaseInfo.setText(HtmlCompat.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                try {
+                    String remove =info.replaceAll("<h2><b>.*</b></h2>", "");
+                    remove = remove.replaceAll("<br><h4>.*","");
+                    remove = remove.replaceAll(".*</h4><br>","");
+                    remove = remove.replaceAll("<br>","");
+                    String longt = remove.replaceAll("Latitude: .*","");
+                    longt = longt.replaceAll("[a-zA-Z_:]","");
+                    String lat = remove.replaceAll(".*Longitude: .*L","L");
+                    longitude = Float.valueOf(longt.replaceAll("[a-zA-Z_:]",""));
+                    latitude = Float.valueOf(lat.replaceAll("[a-zA-Z_:]",""));
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Error: "+e.getMessage() , Toast.LENGTH_SHORT).show();
+                }
+
             } else {
                 viewInfo(textFile);
             }
@@ -145,7 +170,7 @@ public class AssessedImageViewer extends AppCompatActivity {
             String fileContents = stringBuilder.toString();
             fileContents = fileContents.replace(")", "");
             fileContents = fileContents.replace("RectF(", "Location(Coordinates): ");
-            diseaseInfo.append(Html.fromHtml(fileContents));
+            diseaseInfo.append(fileContents);
         }
 
     }

@@ -106,10 +106,14 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (!((SettingsContainer) this.getApplication()).getGuest()){
-            getUserDBDetails();
-            loadUserData();
-            saveUserData();
+        try {
+            if (!((SettingsContainer) this.getApplication()).getGuest()){
+                getUserDBDetails();
+                loadUserData();
+                saveUserData();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
 
         downloadDiseaseInfo();

@@ -161,6 +161,7 @@ public class Login extends AppCompatActivity {
                 if (validateEmail() && validatePassword()) {
                     progressBar.setVisibility(View.VISIBLE);
                     loginUser();
+                    setGuest(false);
                     //postData();
                 }
 

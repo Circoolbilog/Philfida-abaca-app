@@ -59,7 +59,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     ArrayList<String> symptomsDetected;
     String detectionInfo;
     ImageView prev;
-    Bitmap bitmap;
+    Bitmap bitmap, boxedBitmap;
     TextView title;
     CardView nextCapture;
     RelativeLayout loading;
@@ -154,7 +154,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (genMosaicScore != 0) symptomScores = symptomScores.concat("General Mosaic score: " + genMosaicScore + "<br>");
         if (scmvScore != 0) symptomScores = symptomScores.concat("SCMV score: " + scmvScore + "<br>");
         detectionInfo = "<h2><b>" + symptomScores + "</b></h2>"
-                + "<br>" + "<h4>"+getSymptoms() + "</h4>"+ "<br>"+"Lognitude: " + longt + "<br>" + "Latitude: " + lat;
+                + "<br><h4>"+getSymptoms() + "</h4>"+ "<br>"+"Longitude: " + longt + "<br>" + "Latitude: " + lat;
         title.setText(Html.fromHtml(symptomScores));
         title.setText(HtmlCompat.fromHtml(symptomScores,HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
@@ -164,6 +164,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         byte[] bs = extras.getByteArray("byteArray");
         bs2 = extras.getByteArray("backUpImage");
         bitmap = BitmapFactory.decodeByteArray(bs, 0, bs.length);
+        boxedBitmap = BitmapFactory.decodeByteArray(bs2,0, bs2.length);
         prev.setImageBitmap(bitmap);
         loading.setVisibility(View.GONE);
     }
@@ -176,6 +177,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         } else {
             try {
                 saveImage(bitmap);
+                saveBoxedImage(boxedBitmap);
             } catch (IOException e) {
                 e.printStackTrace();
                 Log.d(TAG, "requestPerms: " + e.getMessage());
@@ -192,7 +194,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 //saveImage2();
                 try {
                     saveImage(bitmap);
-                    saveBoxedImage(bitmap);
+                    saveBoxedImage(boxedBitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d(TAG, "onRequestPermissionsResult: " + e.getMessage());
@@ -203,7 +205,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
     }
     private void saveBoxedImage(Bitmap bitmap){
-        String name = "localImage_" + timestamp;
+        String name = "localBoxed_" + timestamp;
         OutputStream fosOne = null; // image file 1 output stream
         OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");

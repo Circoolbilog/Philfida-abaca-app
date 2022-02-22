@@ -4,6 +4,8 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import java.text.DecimalFormat;
+
 public class SettingsContainer extends Application {
     public static final String SHARED_PREFS = "sharedPrefs";
     public static final String DIAG_DIALOG_REMEMBER = "diagDialogRemember";
@@ -38,10 +40,9 @@ public class SettingsContainer extends Application {
 
     Boolean downloadOnce;
     float confidence;
-
     public float getConfidence() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        confidence = sharedPreferences.getFloat("CONFIDENCE", 50);
+        confidence = sharedPreferences.getFloat("CONFIDENCE", 0.5F);
         return confidence;
     }
 

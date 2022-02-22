@@ -11,6 +11,7 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleIte
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -45,8 +46,22 @@ public class AboutApp extends AppCompatActivity {
             Intent dev = new Intent(this, AboutDev.class);
             startActivity(dev);
         }) ;
-    }
+        reportBug.setOnClickListener(view -> {
+            Intent email = new Intent(Intent.ACTION_SEND);
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{ "circoolardev@gmail.com"});
+            email.putExtra(Intent.EXTRA_SUBJECT, "Bug report: " + Build.MANUFACTURER + Build.MODEL);
+            email.putExtra(Intent.EXTRA_TEXT, "App Version: " + getAppVersion() + "\n SDK Version: " + Build.VERSION.SDK_INT + "\n" +
+                    "Describe the bug or problem with the app: ");
 
+            //need this to prompts email client only
+            email.setType("message/rfc822");
+
+            startActivity(Intent.createChooser(email, "Choose an Email client :"));
+        });
+        tutorial.setOnClickListener(view ->{
+
+        });
+    }
 
     private String getAppVersion() {
         String version;

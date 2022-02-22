@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -191,6 +192,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 //saveImage2();
                 try {
                     saveImage(bitmap);
+                    saveBoxedImage(bitmap);
                 } catch (IOException e) {
                     e.printStackTrace();
                     Log.d(TAG, "onRequestPermissionsResult: " + e.getMessage());
@@ -200,6 +202,54 @@ public class ImagePreviewActivity extends AppCompatActivity {
             }
         }
     }
+    private void saveBoxedImage(Bitmap bitmap){
+        String name = "localImage_" + timestamp;
+        OutputStream fosOne = null; // image file 1 output stream
+        OutputStream fosText; // text file output stream
+        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
+        if (!dir.exists()) {
+            if (dir.mkdirs())
+                Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
+        }
+        if (isBuildVersionQ()) {
+            //Save Image File
+            Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            Uri textPathUri = MediaStore.Files.getContentUri("external");
+            ContentResolver imageOneResolver = getContentResolver();
+            ContentValues imageOneCV = new ContentValues();
+            imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
+            imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
+
+            Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
+            try {
+                fosOne = imageOneResolver.openOutputStream(Objects.requireNonNull(imageUri));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+
+            //Save Text file
+            ContentResolver textContentResolver = getContentResolver();
+            ContentValues textCV = new ContentValues();
+            textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
+            textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
+            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/Assessment/");
+
+            Uri textUri = imageOneResolver.insert(textPathUri, textCV);
+        } else {
+            //below android Q
+            //Save Image File
+            File imageFileOne = new File(dir, name + "jpg");
+        }
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
+        try {
+            Objects.requireNonNull(fosOne).close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finish();
+    }
+
 
     private void saveImage(Bitmap bitmap3) throws IOException {
         String name = "localImage_" + timestamp;

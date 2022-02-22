@@ -35,6 +35,9 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         setupIDs();
         loadSharedPrefs();
         getUserAccount();
+        if (((SettingsContainer) this.getApplication()).getGuest()){
+            userAccount.setVisibility(View.GONE);
+        }
 
         captureMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,7 +137,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         }
         showWelcomeVal.setText(((SettingsContainer) this.getApplication()).getShowWelcome().toString());
         captureModeVal.setText(sCaptureMode);
-        String conValThresh = String.valueOf(((SettingsContainer) this.getApplication()).getConfidence());
+        String conValThresh = String.valueOf(Math.round(((SettingsContainer) this.getApplication()).getConfidence() * 100));
         confidenceThresholdVal.setText(conValThresh + "%");
     }
 
@@ -186,13 +189,16 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
     }
     public void setConfidenceThreshold(int confidenceThreshold){
         float f=confidenceThreshold;
+        loadSharedPrefs();
         Toast.makeText(this, "confidence: " + f, Toast.LENGTH_SHORT).show();
     }
 
 
     @Override
     public void applyConfidence(int confidence) {
+        loadSharedPrefs();
         float fConfidence = confidence/100f;
+        Toast.makeText(this, "confidence: " + confidence, Toast.LENGTH_SHORT).show();
         ((SettingsContainer) this.getApplication()).setConfidence(fConfidence);
     }
 }

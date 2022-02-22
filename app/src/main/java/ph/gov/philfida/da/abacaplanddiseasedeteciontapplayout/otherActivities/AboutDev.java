@@ -18,8 +18,7 @@ public class AboutDev extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about_dev);
         devsTextView = findViewById(R.id.developers);
-        String developersHTML = "<a href = \"https://github.com/Circoolbilog/\" >Clark Llarena</a>";
-        String aiDev = "<a href = \"https://github.com/TaliyaB/\">Christalline Joie Borjal</a>";
+        String developersHTML = "<p>Android Application: </p><a href = \"https://github.com/Circoolbilog/\" >Clark L. Llarena</a> <p>Machine Learning Model: </p><a href = \"https://github.com/TaliyaB/\">Christalline Joie Borjal</a>";
         devsTextView.setText(HtmlCompat.fromHtml(developersHTML,HtmlCompat.FROM_HTML_MODE_LEGACY));
         devsTextView.setMovementMethod(LinkMovementMethod.getInstance());
     }

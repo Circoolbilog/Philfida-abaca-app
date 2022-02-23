@@ -31,9 +31,6 @@
             android:name=".otherActivities.AboutDev"
             android:exported="false" />
         <activity
-            android:name=".AboutDevs"
-            android:exported="false" />
-        <activity
             android:name=".otherActivities.MoreInfo"
             android:theme="@style/NoActionBar" />
         <activity
@@ -79,7 +76,8 @@
         <activity
             android:name=".Login"
             android:screenOrientation="portrait"
-            android:theme="@style/NoActionBar" >
+            android:theme="@style/NoActionBar"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

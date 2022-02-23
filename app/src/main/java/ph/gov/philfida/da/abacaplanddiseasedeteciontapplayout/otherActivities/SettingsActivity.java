@@ -188,6 +188,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         loadSharedPrefs();
     }
     public void setConfidenceThreshold(int confidenceThreshold){
+        if (confidenceThreshold == 0)return;
         float f=confidenceThreshold;
         loadSharedPrefs();
         Toast.makeText(this, "confidence: " + f, Toast.LENGTH_SHORT).show();
@@ -197,6 +198,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
     @Override
     public void applyConfidence(int confidence) {
         loadSharedPrefs();
+        if (confidence == 0)return;
         float fConfidence = confidence/100f;
         Toast.makeText(this, "confidence: " + confidence, Toast.LENGTH_SHORT).show();
         ((SettingsContainer) this.getApplication()).setConfidence(fConfidence);

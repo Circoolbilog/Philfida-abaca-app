@@ -142,6 +142,7 @@ public class Login extends AppCompatActivity {
             public void onClick(View v) {
                 setGuest(true);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+
                 startActivity(intent);
             }
         });

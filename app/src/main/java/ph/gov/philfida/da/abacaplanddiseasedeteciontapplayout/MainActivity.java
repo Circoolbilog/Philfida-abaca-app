@@ -91,6 +91,16 @@ public class MainActivity extends AppCompatActivity {
             welcomeScreen();
         }
         askPermissions();
+        try {
+            if (!((SettingsContainer) this.getApplication()).getGuest()){
+                getUserDBDetails();
+                loadUserData();
+                saveUserData();
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
     private void askPermissions() {
@@ -106,16 +116,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        try {
-            if (!((SettingsContainer) this.getApplication()).getGuest()){
-                getUserDBDetails();
-                loadUserData();
-                saveUserData();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
-
         downloadDiseaseInfo();
         downloadDiseaseMap();
     }

@@ -109,7 +109,6 @@ public class MainActivity extends AppCompatActivity {
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.ACCESS_FINE_LOCATION};
-
         ActivityCompat.requestPermissions(this, permissions, ALL_PERMISSIONS);
     }
 

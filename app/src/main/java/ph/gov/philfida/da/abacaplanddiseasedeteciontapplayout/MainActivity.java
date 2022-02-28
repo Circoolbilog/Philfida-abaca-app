@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -30,12 +29,12 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper;
@@ -46,7 +45,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ab
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AccountDetails;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AssessmentActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseInfo;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Map;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen;
@@ -56,14 +54,12 @@ public class MainActivity extends AppCompatActivity {
     NavigationView navigationView;
     DrawerLayout drawerLayout;
     private FirebaseUser user;
-    private DatabaseReference reference;
     private DatabaseReference reference2;
-    private String userID;
     String firstName, lastName, middleName, email, birthday, permAdd, occupation, institution;
-    private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
+//    private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
     private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV, stringVal_No_Allocation;
     private String DIName, DIDesc, DIPicture, DITreatment;
-    private int symptomID;
+//    private int symptomID;
 
     public static final String SHARED_PREFS = "USER_DATA";
     public static final String EMAIL = "EMAIL";
@@ -134,9 +130,9 @@ public class MainActivity extends AppCompatActivity {
 //                    get info from firebase
                     for (DataSnapshot child : snapshot.getChildren()) {
                         DIName = child.getKey();
-                        DIDesc = child.child("desc").getValue().toString();
-                        DIPicture = child.child("picture").getValue().toString();
-                        DITreatment = child.child("treatment").getValue().toString();
+                        DIDesc = Objects.requireNonNull(child.child("desc").getValue()).toString();
+                        DIPicture = Objects.requireNonNull(child.child("picture").getValue()).toString();
+                        DITreatment = Objects.requireNonNull(child.child("treatment").getValue()).toString();
                         Log.d(TAG, "onDataChange: " + DIName + DIDesc + DIPicture + DITreatment);
 
                         //                    save info to local db
@@ -155,7 +151,7 @@ public class MainActivity extends AppCompatActivity {
                             if (!success)
                                 Toast.makeText(getApplicationContext(), " catch Failed to update local database", Toast.LENGTH_SHORT).show();
                         }
-                        id = id+1;
+                        id += 1;
                     }
                 }
 
@@ -180,7 +176,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
                 int dbSize = dbModelList.size();
-                int largest[] = {((int) snapshot.child("0_No_Allocation").getChildrenCount()), ((int) snapshot.child("Bract_Mosaic").getChildrenCount()),
+                int[] largest = {((int) snapshot.child("0_No_Allocation").getChildrenCount()), ((int) snapshot.child("Bract_Mosaic").getChildrenCount()),
                         ((int) snapshot.child("Bunchy_Top").getChildrenCount()), ((int) snapshot.child("CMV").getChildrenCount()),
                         ((int) snapshot.child("Gen_Mosaic").getChildrenCount()), ((int) snapshot.child("SCMV").getChildrenCount())};
                 int temp = 0;
@@ -201,32 +197,32 @@ public class MainActivity extends AppCompatActivity {
                     for (int i = 0; i != currentDbSize; i++) {
 
                         if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_No_Allocation = snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue().toString();
+                            stringVal_No_Allocation = Objects.requireNonNull(snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_No_Allocation = "NULL";
                         }
                         if (snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_Bract_Mosaic = snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            stringVal_Bract_Mosaic = Objects.requireNonNull(snapshot.child("Bract_Mosaic").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_Bract_Mosaic = "NULL";
                         }
                         if (snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_Bunchy_Top = snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue().toString();
+                            stringVal_Bunchy_Top = Objects.requireNonNull(snapshot.child("Bunchy_Top").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_Bunchy_Top = "NULL";
                         }
                         if (snapshot.child("CMV").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_CMV = snapshot.child("CMV").child(String.valueOf(i)).getValue().toString();
+                            stringVal_CMV = Objects.requireNonNull(snapshot.child("CMV").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_CMV = "NULL";
                         }
                         if (snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_Gen_Mosaic = snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue().toString();
+                            stringVal_Gen_Mosaic = Objects.requireNonNull(snapshot.child("Gen_Mosaic").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_Gen_Mosaic = "NULL";
                         }
                         if (snapshot.child("SCMV").child(String.valueOf(i)).getValue() != null) {
-                            stringVal_SCMV = snapshot.child("SCMV").child(String.valueOf(i)).getValue().toString();
+                            stringVal_SCMV = Objects.requireNonNull(snapshot.child("SCMV").child(String.valueOf(i)).getValue()).toString();
                         } else {
                             stringVal_SCMV = "NULL";
                         }
@@ -280,6 +276,7 @@ public class MainActivity extends AppCompatActivity {
 
     //setting up navigation drawer(sidebar)
 
+    @SuppressLint({"NonConstantResourceId", "SetTextI18n"})
     private void setUpNavDrawer() {
         navigationView = findViewById(R.id.navView);
         View header = navigationView.getHeaderView(0);
@@ -297,30 +294,27 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
         ActionBar actionBar = MainActivity.this.getSupportActionBar();
+        assert actionBar != null;
         actionBar.setDisplayHomeAsUpEnabled(true);
         Menu menu = navigationView.getMenu();
         MenuItem userNameInNav = menu.findItem(R.id.userName);
         userNameInNav.setTitle(firstName + " " + lastName);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @SuppressLint("NonConstantResourceId")
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.userName:
-                        openAccountDetails();
-                        return true;
-                    case R.id.settings:
-                        openSettings();
-                        return true;
-                    case R.id.about:
-                        openAboutActivity();
-                        return true;
-                    case R.id.logout:
-                        logOut();
-                        return true;
-                }
-                return false;
+        navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.userName:
+                    openAccountDetails();
+                    return true;
+                case R.id.settings:
+                    openSettings();
+                    return true;
+                case R.id.about:
+                    openAboutActivity();
+                    return true;
+                case R.id.logout:
+                    logOut();
+                    return true;
             }
+            return false;
         });
     }
 
@@ -361,8 +355,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void getUserDBDetails() {
         user = FirebaseAuth.getInstance().getCurrentUser();
-        reference = FirebaseDatabase.getInstance().getReference("Users");
-        userID = user.getUid();
+        DatabaseReference reference = FirebaseDatabase.getInstance().getReference("Users");
+        String userID = user.getUid();
         reference.child(userID).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -391,10 +385,7 @@ public class MainActivity extends AppCompatActivity {
     //Open Diagnose Activity
 
     public void openDiagnoseActivity(View view) {
-        Intent diagnose = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
-            diagnose = new Intent(this, DetectorActivity.class);
-        }
+        Intent diagnose  = new Intent(this, DetectorActivity.class);
         startActivity(diagnose);
     }
 

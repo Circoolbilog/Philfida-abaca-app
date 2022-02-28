@@ -12,7 +12,6 @@ import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.media.Image;
 import android.media.ImageReader;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -23,11 +22,11 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
@@ -62,7 +61,6 @@ public abstract class Diagnose extends AppCompatActivity
     private static final String WRITE_EXTERNAL_STORAGE = Manifest.permission.WRITE_EXTERNAL_STORAGE;
     protected int previewWidth = 0;
     protected int previewHeight = 0;
-    private final boolean debug = false;
     private Handler handler;
     private Handler handler2;
     private HandlerThread handlerThread;
@@ -71,7 +69,6 @@ public abstract class Diagnose extends AppCompatActivity
     private boolean isProcessingFrame = false;
     private final byte[][] yuvBytes = new byte[3][];
     private int[] rgbBytes = null;
-    public int[] bytesToPass = null;
     private int yRowStride;
     private Runnable postInferenceCallback;
     private Runnable imageConverter;
@@ -88,7 +85,7 @@ public abstract class Diagnose extends AppCompatActivity
         super.onCreate(null);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         setContentView(R.layout.activity_diagnose);
-        assigdnIDs();
+        assignedIDs();
         layout= findViewById(R.id.loading);
         runInBackground(checkPerms());
 
@@ -107,7 +104,7 @@ public abstract class Diagnose extends AppCompatActivity
         startActivity(assessment);
     }
 
-    private void assigdnIDs() {
+    private void assignedIDs() {
         diagnoseMode = new DiagnoseModeDialog();
         captureButton = findViewById(R.id.capture);
         captureButton.setEnabled(false);
@@ -194,12 +191,9 @@ public abstract class Diagnose extends AppCompatActivity
                 };
 
         postInferenceCallback =
-                new Runnable() {
-                    @Override
-                    public void run() {
-                        camera.addCallbackBuffer(bytes);
-                        isProcessingFrame = false;
-                    }
+                () -> {
+                    camera.addCallbackBuffer(bytes);
+                    isProcessingFrame = false;
                 };
         processImage();
     }
@@ -236,21 +230,16 @@ public abstract class Diagnose extends AppCompatActivity
             final int uvPixelStride = planes[1].getPixelStride();
 
             imageConverter =
-                    new Runnable() {
-                        @Override
-                        public void run() {
-                            ImageUtils.convertYUV420ToARGB8888(
-                                    yuvBytes[0],
-                                    yuvBytes[1],
-                                    yuvBytes[2],
-                                    previewWidth,
-                                    previewHeight,
-                                    yRowStride,
-                                    uvRowStride,
-                                    uvPixelStride,
-                                    rgbBytes);
-                        }
-                    };
+                    () -> ImageUtils.convertYUV420ToARGB8888(
+                            yuvBytes[0],
+                            yuvBytes[1],
+                            yuvBytes[2],
+                            previewWidth,
+                            previewHeight,
+                            yRowStride,
+                            uvRowStride,
+                            uvPixelStride,
+                            rgbBytes);
 
             postInferenceCallback =
                     new Runnable() {
@@ -336,7 +325,7 @@ public abstract class Diagnose extends AppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(
-            final int requestCode, final String[] permissions, final int[] grantResults) {
+            final int requestCode, @NonNull final String[] permissions, @NonNull final int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST ) {
             if (allPermissionsGranted(grantResults)) {
@@ -367,36 +356,30 @@ public abstract class Diagnose extends AppCompatActivity
     }
 
     private boolean hasPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED
-                    && checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
-        } else {
-            return true;
-        }
+        return checkSelfPermission(PERMISSION_CAMERA) == PackageManager.PERMISSION_GRANTED
+                && checkSelfPermission(WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
     }
 
     private void requestPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
-                Toast.makeText(
-                        Diagnose.this,
-                        "Camera permission is required for this demo",
-                        Toast.LENGTH_LONG)
-                        .show();
-            }
-            requestPermissions(new String[]{PERMISSION_CAMERA,WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
+        if (shouldShowRequestPermissionRationale(PERMISSION_CAMERA)) {
+            Toast.makeText(
+                    Diagnose.this,
+                    "Camera permission is required for this demo",
+                    Toast.LENGTH_LONG)
+                    .show();
         }
+        requestPermissions(new String[]{PERMISSION_CAMERA,WRITE_EXTERNAL_STORAGE}, PERMISSIONS_REQUEST);
     }
 
     // Returns true if the device supports the required hardware level, or better.
     private boolean isHardwareLevelSupported(
-            CameraCharacteristics characteristics, int requiredLevel) {
+            CameraCharacteristics characteristics) {
         int deviceLevel = characteristics.get(CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL);
         if (deviceLevel == CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_LEGACY) {
-            return requiredLevel == deviceLevel;
+            return false;
         }
         // deviceLevel is not LEGACY, can use numerical sort
-        return requiredLevel <= deviceLevel;
+        return android.hardware.camera2.CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL <= deviceLevel;
     }
 
     private String chooseCamera() {
@@ -424,7 +407,7 @@ public abstract class Diagnose extends AppCompatActivity
                 useCamera2API =
                         (facing == CameraCharacteristics.LENS_FACING_EXTERNAL)
                                 || isHardwareLevelSupported(
-                                characteristics, CameraCharacteristics.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
+                                characteristics);
                 LOGGER.i("Camera API lv2?: %s", useCamera2API);
                 return cameraId;
             }
@@ -442,13 +425,10 @@ public abstract class Diagnose extends AppCompatActivity
         if (useCamera2API) {
             CameraConnectionFragment camera2Fragment =
                     CameraConnectionFragment.newInstance(
-                            new CameraConnectionFragment.ConnectionCallback() {
-                                @Override
-                                public void onPreviewSizeChosen(final Size size, final int rotation) {
-                                    previewHeight = size.getHeight();
-                                    previewWidth = size.getWidth();
-                                    Diagnose.this.onPreviewSizeChosen(size, rotation);
-                                }
+                            (size, rotation) -> {
+                                previewHeight = size.getHeight();
+                                previewWidth = size.getWidth();
+                                Diagnose.this.onPreviewSizeChosen(size, rotation);
                             },
                             this,
                             getLayoutId(),
@@ -478,6 +458,7 @@ public abstract class Diagnose extends AppCompatActivity
     }
 
     public boolean isDebug() {
+        boolean debug = false;
         return debug;
     }
 
@@ -495,19 +476,13 @@ public abstract class Diagnose extends AppCompatActivity
                 return 180;
             case Surface.ROTATION_90:
                 return 90;
-            default:
+            case Surface.ROTATION_0:
                 return 0;
         }
+        return 0;
     }
 
-    /*
-        @Override
-        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            setUseNNAPI(isChecked);
-            if (isChecked) apiSwitchCompat.setText("NNAPI");
-            else apiSwitchCompat.setText("TFLITE");
-        }
-    */
+
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.plus) {

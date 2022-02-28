@@ -34,7 +34,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.media.ImageReader.OnImageAvailableListener;
 import android.os.Build;
-import android.os.SystemClock;
 import android.util.Log;
 import android.util.Size;
 import android.util.TypedValue;
@@ -86,11 +85,10 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     private static final float TEXT_SIZE_DIP = 10;
     private static final int MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION = 500;
     OverlayView trackingOverlay;
-    private Integer sensorOrientation;
 
     private Classifier detector;
 
-    private long lastProcessingTimeMs;
+//    private long lastProcessingTimeMs;
     private Bitmap rgbFrameBitmap = null;
     private Bitmap croppedBitmap = null;
     private Bitmap cropCopyBitmap = null;
@@ -104,8 +102,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
     private MultiBoxTracker tracker;
 
-    private BorderedText borderedText;
-    RectF passLocation;
     ArrayList<String> detectedSymptomsList = new ArrayList<>();
     List<Float> confidenceList = new ArrayList<>();
     int lastDetection;
@@ -117,7 +113,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         final float textSizePx =
                 TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
-        borderedText = new BorderedText(textSizePx);
+        BorderedText borderedText = new BorderedText(textSizePx);
         borderedText.setTypeface(Typeface.MONOSPACE);
 
         tracker = new MultiBoxTracker(this);
@@ -146,7 +142,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         previewWidth = size.getWidth();
         previewHeight = size.getHeight();
 
-        sensorOrientation = rotation - getScreenOrientation();
+        int sensorOrientation = rotation - getScreenOrientation();
         LOGGER.i("Camera orientation relative to screen canvas: %d", sensorOrientation);
 
         LOGGER.i("Initializing at size %dx%d", previewWidth, previewHeight);
@@ -208,9 +204,9 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
         runInBackground(
                 () -> {
                     LOGGER.i("Running detection on image " + currTimestamp);
-                    final long startTime = SystemClock.uptimeMillis();
+//                    final long startTime = SystemClock.uptimeMillis();
                     final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
-                    lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
+//                    lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
                     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                     final Canvas canvas1 = new Canvas(cropCopyBitmap);
                     final Paint paint = new Paint();
@@ -218,7 +214,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                     paint.setStyle(Style.STROKE);
                     paint.setStrokeWidth(2.0f);
 
-                    float minimumConfidence = savedConfidence;
+                    float minimumConfidence = 0.0F;
                     if (MODE == DetectorMode.TF_OD_API) minimumConfidence = savedConfidence;
 
                     final List<Classifier.Recognition> mappedRecognitions =
@@ -231,7 +227,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                         if (location != null && result.getConfidence() >= minimumConfidence) {
                             canvas1.drawRect(location, paint);
                             cropToFrameTransform.mapRect(location);
-                            detectedSymptomsList.add(result.getTitle());;
+                            detectedSymptomsList.add(result.getTitle());
                             result.setLocation(location);
                             mappedRecognitions.add(result);
                         }
@@ -282,7 +278,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     // Which detection model to use: by default uses Tensorflow Object Detection API frozen
     // checkpoints.
     private enum DetectorMode {
-        TF_OD_API;
+        TF_OD_API
     }
 
     @Override

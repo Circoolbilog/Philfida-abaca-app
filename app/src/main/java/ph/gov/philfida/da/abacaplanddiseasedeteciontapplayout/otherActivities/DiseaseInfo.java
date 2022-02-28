@@ -5,7 +5,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
@@ -14,7 +13,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.ImageView;
@@ -22,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -63,7 +60,7 @@ public class DiseaseInfo extends AppCompatActivity {
     private void populateList() {
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
-        item = new ArrayList<SimpleItem>();
+        item = new ArrayList<>();
         for (DiseaseDBModel symptom : dbModelList) {
 
             switch (mDiseaseName) {
@@ -109,19 +106,16 @@ public class DiseaseInfo extends AppCompatActivity {
         adapter = new SimpleArrayAdapter(item);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(new DiseaseIndexAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(int position) {
+        adapter.setOnItemClickListener(position -> {
 //                open new activity displaying disease info on clicked item
 //                DataBaseHelper dataBaseHelper = new DataBaseHelper(getApplicationContext());
 //                List<SymptomModel> everySymptom = dataBaseHelper.getSymptoms();
 //                String symptomName = everySymptom.get(position).getSymptomName();
-                Intent symptomInfo = new Intent(DiseaseInfo.this, SymptomInfo.class);
-                symptomInfo.putExtra("position", position);
-                symptomInfo.putExtra("symptomName", item.get(position).getItemName());
-                startActivity(symptomInfo);
-                Toast.makeText(DiseaseInfo.this, "item at pos: " + position, Toast.LENGTH_SHORT).show();
-            }
+            Intent symptomInfo = new Intent(DiseaseInfo.this, SymptomInfo.class);
+            symptomInfo.putExtra("position", position);
+            symptomInfo.putExtra("symptomName", item.get(position).getItemName());
+            startActivity(symptomInfo);
+            Toast.makeText(DiseaseInfo.this, "item at pos: " + position, Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -153,14 +147,9 @@ public class DiseaseInfo extends AppCompatActivity {
 
     private void getDiseaseImage(String mDiseaseName) {
         StorageReference reference = FirebaseStorage.getInstance().getReference().child("Diseases").child(mDiseaseName+".png");
-        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                Glide.with(DiseaseInfo.this)
-                        .load(uri)
-                        .into(diseasePic);
-            }
-        });
+        reference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(DiseaseInfo.this)
+                .load(uri)
+                .into(diseasePic));
 
     }
 

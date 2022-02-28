@@ -136,22 +136,24 @@ public class MainActivity extends AppCompatActivity {
                         Log.d(TAG, "onDataChange: " + DIName + DIDesc + DIPicture + DITreatment);
 
                         //                    save info to local db
-                        int id = 0;
 
                         try {
+                            int id = -1;
+                            id += 1;
                             infoDBModel = new DiseaseInfoDBModel(id, DIName, DIDesc, DIPicture, DITreatment);
 
                             boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
                             if (!success)
                                 Toast.makeText(getApplicationContext(), "try Failed to update local database", Toast.LENGTH_SHORT).show();
                             Log.d(TAG, "addToDiseaseInfoDb: " + infoDBModel.getDiseaseName() + " " + success +dbModelList.size());
+
                         } catch (Exception e) {
                             infoDBModel = new DiseaseInfoDBModel(90,"DIName", "DIDesc", "DIPicture", "DITreatment");
                             boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
                             if (!success)
                                 Toast.makeText(getApplicationContext(), " catch Failed to update local database", Toast.LENGTH_SHORT).show();
                         }
-                        id += 1;
+
                     }
                 }
 

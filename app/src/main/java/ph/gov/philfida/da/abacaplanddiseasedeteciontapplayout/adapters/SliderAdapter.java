@@ -19,7 +19,7 @@ public class SliderAdapter extends PagerAdapter {
     LayoutInflater layoutInflater;
     String pageOne = "Android Based Abaca Disease Detection App, \n Identify diseases on your Abaca plant";
     String pageTwo = "This app is still under development, please report any bugs that may appear";
-    String loremIpsum = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas dapibus eu nibh et porta. Vestibulum posuere velit eu dolor tincidunt rutrum. Duis vitae tortor volutpat, ultrices tortor id, congue mi. Pellentesque sit amet urna leo. Integer et gravida leo, sed luctus nisl. Cras vel accumsan ante, vel sodales sem. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Pellentesque porttitor mattis urna, semper dictum sem mattis vitae. Etiam sodales quis sapien quis convallis. Nullam eget tempor purus, nec euismod dolor. ";
+
     public SliderAdapter(Context context) {
         this.context = context;
     }
@@ -50,7 +50,7 @@ public class SliderAdapter extends PagerAdapter {
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
-        layoutInflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+        layoutInflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View view = layoutInflater.inflate(R.layout.welcome_slide,container,false);
         ImageView slideImageView = view.findViewById(R.id.imageView2);
         TextView title = view.findViewById(R.id.title1);

@@ -4,32 +4,27 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
 import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent;
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener;
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+
+import java.util.Objects;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.ForgotPasswordActivity;
@@ -76,12 +71,7 @@ public class Login extends AppCompatActivity {
         logo = findViewById(R.id.logo);
         guest = findViewById(R.id.guest);
         revLogin = findViewById(R.id.login2);
-        revLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                revealLogin();
-            }
-        });
+        revLogin.setOnClickListener(view -> revealLogin());
         assignButtons();
         assignInputs();
         layoutAdjustments();
@@ -101,17 +91,12 @@ public class Login extends AppCompatActivity {
         emailAddress = findViewById(R.id.emailAdd);
         password = findViewById(R.id.password);
         keepLoggedIn = findViewById(R.id.keepLogged);
-        keepLoggedIn.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                keepMeLoggedIn = keepLoggedIn.isChecked();
-            }
-        });
+        keepLoggedIn.setOnCheckedChangeListener((buttonView, isChecked) -> keepMeLoggedIn = keepLoggedIn.isChecked());
     }
 
     private boolean validatePassword() {                                                            //validate password before sending it to database
         UIUtil.hideKeyboard(this);
-        inputPassword = password.getEditText().getText().toString();
+        inputPassword = Objects.requireNonNull(password.getEditText()).getText().toString();
         if (inputPassword.isEmpty()) {
             password.setError("Field can't be empty");
             return false;
@@ -123,7 +108,7 @@ public class Login extends AppCompatActivity {
     }
 
     private boolean validateEmail() {
-        inputEmail = emailAddress.getEditText().getText().toString();
+        inputEmail = Objects.requireNonNull(emailAddress.getEditText()).getText().toString();
         if (inputEmail.isEmpty()) {
             emailAddress.setError("Field can't be empty");
             return false;
@@ -137,44 +122,32 @@ public class Login extends AppCompatActivity {
     }
 
     private void assignButtons() {
-        guest.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setGuest(true);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        guest.setOnClickListener(v -> {
+            setGuest(true);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-                startActivity(intent);
-            }
+            startActivity(intent);
         });
         noAccount = findViewById(R.id.openRegister);
-        noAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), Register.class);
-                startActivity(intent);
-            }
+        noAccount.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), Register.class);
+            startActivity(intent);
         });
 
         login = findViewById(R.id.login);
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validateEmail() && validatePassword()) {
-                    progressBar.setVisibility(View.VISIBLE);
-                    loginUser();
-                    setGuest(false);
-                    //postData();
-                }
-
+        login.setOnClickListener(v -> {
+            if (validateEmail() && validatePassword()) {
+                progressBar.setVisibility(View.VISIBLE);
+                loginUser();
+                setGuest(false);
+                //postData();
             }
+
         });
         forgotPass = findViewById(R.id.openForgotPass);
-        forgotPass.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent forgot = new Intent(Login.this, ForgotPasswordActivity.class);
-                startActivity(forgot);
-            }
+        forgotPass.setOnClickListener(v -> {
+            Intent forgot = new Intent(Login.this, ForgotPasswordActivity.class);
+            startActivity(forgot);
         });
     }
 
@@ -183,36 +156,30 @@ public class Login extends AppCompatActivity {
     }
 
     void loginUser(){
-        mAuth.signInWithEmailAndPassword(inputEmail,inputPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()){
-                    progressBar.setVisibility(View.GONE);
-                    Intent login = new Intent(Login.this,MainActivity.class);
-                    startActivity(login);
-                    if (keepMeLoggedIn){
-                        saveUserData();
-                    }
-                    finish();
-                }else{
-                    Toast.makeText(Login.this,"Failed to login",Toast.LENGTH_LONG).show();
-                    progressBar.setVisibility(View.GONE);
+        mAuth.signInWithEmailAndPassword(inputEmail,inputPassword).addOnCompleteListener(task -> {
+            if(task.isSuccessful()){
+                progressBar.setVisibility(View.GONE);
+                Intent login = new Intent(Login.this,MainActivity.class);
+                startActivity(login);
+                if (keepMeLoggedIn){
+                    saveUserData();
                 }
+                finish();
+            }else{
+                Toast.makeText(Login.this,"Failed to login",Toast.LENGTH_LONG).show();
+                progressBar.setVisibility(View.GONE);
             }
         });
     }
 
     private void layoutAdjustments() {
-        KeyboardVisibilityEvent.setEventListener(this, new KeyboardVisibilityEventListener() {
-            @Override
-            public void onVisibilityChanged(boolean isOpen) {
-                if (isOpen) {
-                    card.setVisibility(View.GONE);
-                    logo.setVisibility(View.GONE);
-                } else {
-                    card.setVisibility(View.VISIBLE);
-                    logo.setVisibility(View.VISIBLE);
-                }
+        KeyboardVisibilityEvent.setEventListener(this, isOpen -> {
+            if (isOpen) {
+                card.setVisibility(View.GONE);
+                logo.setVisibility(View.GONE);
+            } else {
+                card.setVisibility(View.VISIBLE);
+                logo.setVisibility(View.VISIBLE);
             }
         });
     }

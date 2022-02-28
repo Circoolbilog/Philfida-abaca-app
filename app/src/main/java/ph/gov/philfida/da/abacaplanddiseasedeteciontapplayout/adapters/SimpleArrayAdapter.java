@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 public class SimpleArrayAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter.DiseaseIndexViewHolder> {
-    private ArrayList<SimpleItem> simpleItems;
+    private final ArrayList<SimpleItem> simpleItems;
     private DiseaseIndexAdapter.OnItemClickListener listener;
 
     public interface OnItemClickListener{
@@ -27,8 +27,7 @@ public class SimpleArrayAdapter extends RecyclerView.Adapter<DiseaseIndexAdapter
     @Override
     public DiseaseIndexAdapter.DiseaseIndexViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.simple_index_item,parent,false);
-        DiseaseIndexAdapter.DiseaseIndexViewHolder viewHolder = new DiseaseIndexAdapter.DiseaseIndexViewHolder(view , listener);
-        return viewHolder;
+        return new DiseaseIndexAdapter.DiseaseIndexViewHolder(view , listener);
     }
 
     @Override

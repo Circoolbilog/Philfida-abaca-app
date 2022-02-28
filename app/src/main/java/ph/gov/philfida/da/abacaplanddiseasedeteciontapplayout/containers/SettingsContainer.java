@@ -1,10 +1,8 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers;
 
 import android.app.Application;
-import android.content.Context;
 import android.content.SharedPreferences;
 
-import java.text.DecimalFormat;
 
 public class SettingsContainer extends Application {
     public static final String SHARED_PREFS = "sharedPrefs";
@@ -25,17 +23,6 @@ public class SettingsContainer extends Application {
     public void setGuest(Boolean guest) {
         this.guest = guest;
         saveBooleanToSharedPrefs("GUEST",guest);
-    }
-
-    public Boolean getDownloadOnce() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        downloadOnce = sharedPreferences.getBoolean("DOWNLOAD_ONCE", true);
-        return downloadOnce;
-    }
-
-    public void setDownloadOnce(Boolean downloadOnce) {
-        this.downloadOnce = downloadOnce;
-        saveBooleanToSharedPrefs("DOWNLOAD_ONCE",downloadOnce);
     }
 
     Boolean downloadOnce;

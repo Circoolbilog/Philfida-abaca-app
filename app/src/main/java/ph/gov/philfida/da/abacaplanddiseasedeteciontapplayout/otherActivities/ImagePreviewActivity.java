@@ -5,7 +5,6 @@ import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -27,10 +26,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -49,8 +46,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
 public class ImagePreviewActivity extends AppCompatActivity {
-    public static final String SHARED_PREFS = "sharedPrefs";
-    public static final String fileNum = "fileNumber";
     public String timestamp;
     int noAllocationScore = 0, bractScore = 0, bunchyScore = 0, cmvScore = 0, genMosaicScore = 0, scmvScore = 0;
     ArrayList<String> no_allocation_list, bract_list, bunchy_list, cmv_list, gen_mosaic_list, scmv_list;
@@ -207,8 +202,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     private void saveBoxedImage(Bitmap bitmap){
         String name = "localBoxed_" + timestamp;
         OutputStream fosOne = null; // image file 1 output stream
-        OutputStream fosText; // text file output stream
-        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
+        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment/boxed");
         if (!dir.exists()) {
             if (dir.mkdirs())
                 Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
@@ -216,12 +210,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (isBuildVersionQ()) {
             //Save Image File
             Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Uri textPathUri = MediaStore.Files.getContentUri("external");
             ContentResolver imageOneResolver = getContentResolver();
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
             imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/boxed");
 
             Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
             try {
@@ -230,18 +223,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            //Save Text file
-            ContentResolver textContentResolver = getContentResolver();
-            ContentValues textCV = new ContentValues();
-            textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
-            textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
-            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/Assessment/");
 
-            Uri textUri = imageOneResolver.insert(textPathUri, textCV);
         } else {
             //below android Q
             //Save Image File
             File imageFileOne = new File(dir, name + "jpg");
+            try {
+                fosOne = new FileOutputStream(imageFileOne);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
         try {

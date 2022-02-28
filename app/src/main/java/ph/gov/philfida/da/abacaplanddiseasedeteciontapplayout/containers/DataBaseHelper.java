@@ -1,5 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -84,21 +85,12 @@ public class DataBaseHelper extends SQLiteOpenHelper {
                 SymptomModel newSymptom = new SymptomModel(symptomID,symptom,bract,bunchy,gen,cmv,scmv);
                 returnList.add(newSymptom);
             }while (cursor.moveToNext());
-        }else {
-            //do not add blah blah blah
         }
+
         //close both cursor and db when done
         cursor.close();
         db.close();
         return returnList;
-    }
-
-    public boolean clear(SymptomModel symptomModel){
-        SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = " DELETE FROM " + SYMPTOMS_TABLE + " WHERE " + COLUMN_ID + " = " + symptomModel.getId();
-
-        Cursor cursor = db.rawQuery(queryString,null);
-        return cursor.isNull(0);
     }
 
 }

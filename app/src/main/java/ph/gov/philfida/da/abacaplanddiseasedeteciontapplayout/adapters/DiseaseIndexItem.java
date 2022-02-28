@@ -1,8 +1,8 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters;
 
 public class DiseaseIndexItem {
-    private int mDiseaseImageImageResource;
-    private String mDiseaseName;
+    private final int mDiseaseImageImageResource;
+    private final String mDiseaseName;
 
     public DiseaseIndexItem(int diseaseImageImageResource, String diseaseName) {
         this.mDiseaseImageImageResource = diseaseImageImageResource;

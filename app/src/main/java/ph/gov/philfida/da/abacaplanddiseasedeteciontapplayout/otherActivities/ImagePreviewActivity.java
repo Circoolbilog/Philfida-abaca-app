@@ -132,6 +132,10 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     private void categorize(ArrayList<String> symptoms) {
+        //Sort from highest to lowest,
+        //format the highest to be <h3>
+        //convert scores to percentage.  (number of detections corresponding to this disease(score)/number of total detections) * 100
+        //add text on top, describing the meaning of the percentage ("likelihood of the detected symptoms to be the disease not the likelihood of the plant having the disease")
         for (String symptom : symptoms) {
             if (no_allocation_list.contains(symptom)) noAllocationScore++;
             if (bract_list.contains(symptom)) bractScore++;
@@ -214,7 +218,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
             imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/boxed");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/boxed/");
 
             Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
             try {

@@ -12,14 +12,10 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class DiseaseIndex extends AppCompatActivity {
     RecyclerView recyclerView;

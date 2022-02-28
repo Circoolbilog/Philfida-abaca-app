@@ -66,4 +66,5 @@
     <string name="tutorial">Tutorial</string>
     <string name="view_boxes">View boxes</string>
     <string name="continue_without_logging_in">Continue as Guest</string>
+    <string name="wip">Work In Progress</string>
 </resources>

@@ -6,7 +6,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs.SettingsDi
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
-import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +13,9 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.text.MessageFormat;
+import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements SettingsDialog1.SettingsDialogListener {
     public static final String LAST_NAME = "LAST_NAME";
@@ -31,7 +33,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        getSupportActionBar().setTitle("Settings");
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
         setupIDs();
         loadSharedPrefs();
         getUserAccount();
@@ -93,7 +95,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
                 startActivity(intent);
             }
         });
-        languageVal.setText("Work In Progress");
+        languageVal.setText(R.string.wip);
 
         //TODO: Add Change Camera
         //TODO: Add Dark Mode
@@ -138,7 +140,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         showWelcomeVal.setText(((SettingsContainer) this.getApplication()).getShowWelcome().toString());
         captureModeVal.setText(sCaptureMode);
         String conValThresh = String.valueOf(Math.round(((SettingsContainer) this.getApplication()).getConfidence() * 100));
-        confidenceThresholdVal.setText(conValThresh + "%");
+        confidenceThresholdVal.setText(MessageFormat.format("{0}%", conValThresh));
     }
 
     private void setupIDs() {

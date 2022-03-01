@@ -150,7 +150,6 @@ public class DiseaseInfo extends AppCompatActivity {
         reference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(DiseaseInfo.this)
                 .load(uri)
                 .into(diseasePic));
-
     }
 
 

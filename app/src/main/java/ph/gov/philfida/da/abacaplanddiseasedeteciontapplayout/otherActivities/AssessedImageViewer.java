@@ -6,6 +6,7 @@ import androidx.core.text.HtmlCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
+import android.annotation.SuppressLint;
 import android.content.ContentUris;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,11 +39,13 @@ import java.util.Locale;
 public class AssessedImageViewer extends AppCompatActivity {
 
     ImageView assessedImage;
-    Bitmap selectedImage;
+    Bitmap selectedImage, boxedImage;
     TextView diseaseInfo;
     Button buttonViewBox, openMap;
     float latitude, longitude;
     String info;
+    boolean viewBoxed = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,15 +53,22 @@ public class AssessedImageViewer extends AppCompatActivity {
         assessedImage = findViewById(R.id.assessedImage);
         diseaseInfo = findViewById(R.id.diseaseInfo);
         buttonViewBox = findViewById(R.id.buttonViewBoxes);
-        buttonViewBox.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        buttonViewBox.setOnClickListener(v ->
+                {
+                    if (!viewBoxed) {
+                        assessedImage.setImageBitmap(boxedImage);
+                        viewBoxed = true;
+                        buttonViewBox.setText("BACK");
+                    } else {
+                        buttonViewBox.setText("VIEW BOXES");
+                        viewBoxed = false;
+                        assessedImage.setImageBitmap(selectedImage);
+                    }
+                }
+        );
+        openMap = findViewById(R.id.buttonOpenMaps);
 
-            }
-        });
-        openMap =findViewById(R.id.buttonOpenMaps);
-
-        openMap.setOnClickListener(view ->{
+        openMap.setOnClickListener(view -> {
             String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=" + latitude + "," + longitude, latitude, longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
             this.startActivity(intent);
@@ -67,6 +77,11 @@ public class AssessedImageViewer extends AppCompatActivity {
         if (extras != null) {
             String fileName = extras.getString("file");
             selectedImage = BitmapFactory.decodeFile(fileName);
+            String BfileName = fileName.replace("Assessment", "AssessmentBoxed");
+            BfileName = BfileName.replace("Image", "Boxed");
+            Toast.makeText(this, BfileName + " = " + fileName, Toast.LENGTH_SHORT).show();
+            boxedImage = BitmapFactory.decodeFile(BfileName);
+
             assessedImage.setImageBitmap(selectedImage);
             String textFile = fileName.replace(".jpg", "_info.txt");
             if (isBuildVersionQ()) {
@@ -74,22 +89,21 @@ public class AssessedImageViewer extends AppCompatActivity {
                 info = viewInfoQ(file.getName());
                 diseaseInfo.setText(HtmlCompat.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 try {
-                    String remove =info.replaceAll("<h2><b>.*</b></h2>", "");
-                    remove = remove.replaceAll("<br><h4>.*","");
-                    remove = remove.replaceAll(".*</h4><br>","");
-                    remove = remove.replaceAll("<br>","");
-                    String longt = remove.replaceAll("Latitude: .*","");
-                    longt = longt.replaceAll("[a-zA-Z_:]","");
-                    String lat = remove.replaceAll(".*Longitude: .*L","L");
-                    longitude = Float.valueOf(longt.replaceAll("[a-zA-Z_:]",""));
-                    latitude = Float.valueOf(lat.replaceAll("[a-zA-Z_:]",""));
+                    String remove = info.replaceAll("[\n]", "");
+                    remove = remove.replaceAll("<h2>.*Lo", "Lo");
+                    String longt = remove.replaceAll("Latitude: .*", "");
+                    longt = longt.replaceAll("i", "");
+                    String lat = remove.replaceAll(".*Longitude: .*L", "L");
+                    longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
+                    latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
                 } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Error: "+e.getMessage() , Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
 
             } else {
                 viewInfo(textFile);
             }
+
         }
 
     }
@@ -108,15 +122,14 @@ public class AssessedImageViewer extends AppCompatActivity {
 
             Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
             Uri uri = null;
-            Toast.makeText(this, "cursor size: " + cursor.getCount(), Toast.LENGTH_SHORT).show();
             if (cursor.getCount() == 0) {
                 Toast.makeText(this, "No Info File Found in \"" + Environment.DIRECTORY_DOCUMENTS + "/Assessment/\" " + "DIRECTORY", Toast.LENGTH_SHORT).show();
             } else {
                 while (cursor.moveToNext()) {
-                    String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
+                    @SuppressLint("Range") String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
                     selected = selected.replace("._info", "_info");
                     if (fileName.equals(selected)) {
-                        long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
+                        @SuppressLint("Range") long id = cursor.getLong(cursor.getColumnIndex(MediaStore.MediaColumns._ID));
 
                         uri = ContentUris.withAppendedId(textContentUri, id);
                         break;

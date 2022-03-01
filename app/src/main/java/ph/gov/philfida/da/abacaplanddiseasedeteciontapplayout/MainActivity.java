@@ -111,8 +111,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        downloadDiseaseInfo();
-        downloadDiseaseMap();
+        try {
+            downloadDiseaseInfo();
+            downloadDiseaseMap();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void downloadDiseaseInfo() {

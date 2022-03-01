@@ -32,7 +32,7 @@ public class ImagesGallery {
                     MediaStore.Images.Media.BUCKET_DISPLAY_NAME};
             String orderBy = MediaStore.Video.Media.DATE_TAKEN;
             cursor = context.getContentResolver().query(uri,projection, MediaStore.Images.Media.DATA + " like ? ",
-                    new String[] {"%Pictures/Assessment%"},orderBy+" DESC");
+                    new String[] {"%Pictures/Assessment/%"},orderBy+" DESC");
             // cursor = context.getContentResolver().query(uri,projection, null,
             //         null,orderBy+" DESC");
             column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
@@ -46,7 +46,7 @@ public class ImagesGallery {
         }
         else {
             try {
-                File imageDir = new File(Environment.getExternalStorageDirectory(),"Pictures/Assessment");
+                File imageDir = new File(Environment.getExternalStorageDirectory(),"Pictures/Assessment/");
                 File[] images = imageDir.listFiles();
                 for (File image:
                      images) {

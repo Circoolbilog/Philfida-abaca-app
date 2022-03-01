@@ -28,6 +28,8 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -136,6 +138,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         //format the highest to be <h3>
         //convert scores to percentage.  (number of detections corresponding to this disease(score)/number of total detections) * 100
         //add text on top, describing the meaning of the percentage ("likelihood of the detected symptoms to be the disease not the likelihood of the plant having the disease")
+
         for (String symptom : symptoms) {
             if (no_allocation_list.contains(symptom)) noAllocationScore++;
             if (bract_list.contains(symptom)) bractScore++;
@@ -144,26 +147,82 @@ public class ImagePreviewActivity extends AppCompatActivity {
             if (gen_mosaic_list.contains(symptom)) genMosaicScore++;
             if (scmv_list.contains(symptom)) scmvScore++;
         }
-        String symptomScores = "";
-        if (noAllocationScore != 0)
-            symptomScores = symptomScores.concat("(No Allocation) score: " + noAllocationScore + "<br>");
-        if (bractScore != 0) symptomScores = symptomScores.concat("Bract Mosaic score: " + bractScore + "<br>");
-        if (bunchyScore != 0) symptomScores = symptomScores.concat("Bunchy Top score: " + bunchyScore + "<br>");
-        if (cmvScore != 0) symptomScores = symptomScores.concat("CMV score: " + cmvScore + "<br>");
-        if (genMosaicScore != 0) symptomScores = symptomScores.concat("General Mosaic score: " + genMosaicScore + "<br>");
-        if (scmvScore != 0) symptomScores = symptomScores.concat("SCMV score: " + scmvScore + "<br>");
-        detectionInfo = "<h2><b>" + symptomScores + "</b></h2>"
-                + "<br><h4>"+getSymptoms() + "</h4>"+ "<br>"+"Longitude: " + longt + "<br>" + "Latitude: " + lat;
-        title.setText(Html.fromHtml(symptomScores));
-        title.setText(HtmlCompat.fromHtml(symptomScores,HtmlCompat.FROM_HTML_MODE_LEGACY));
+
+
+        List<ScoredDiseases> scoredDiseases;
+        scoredDiseases = new ArrayList<>();
+        scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore * 100 / symptoms.size()));
+        scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore * 100 / symptoms.size()));
+        scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore * 100 / symptoms.size()));
+        scoredDiseases.add(new ScoredDiseases("CMV", cmvScore * 100 / symptoms.size()));
+        scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore * 100 / symptoms.size()));
+        scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore * 100 / symptoms.size()));
+
+        List<ScoredDiseases> sortedDiseases;
+        sortedDiseases = new ArrayList<>();
+
+        for (ScoredDiseases disease : scoredDiseases) {
+            if (disease.getScore() != 0) sortedDiseases.add(disease);
+        }
+        sortedDiseases.sort((t0, t1) -> t1.getScore() - t0.getScore());
+
+        StringBuilder symptomScores = new StringBuilder();
+        int index = 0;
+        for (ScoredDiseases disease : sortedDiseases) {
+            if (index == 0) {
+                symptomScores = new StringBuilder(("<h2><b>" + disease.getName() + " : " + disease.getScore() + "%" + "</b></h2>"));
+            } else {
+                symptomScores.append("<p>").append(disease.getName()).append(" : ").append(disease.getScore()).append("%").append("<br>");
+            }
+            index++;
+        }
+        symptomScores.append("<small><sub><i>*the percentage shown is the likelihood of the disease relative to the symptoms detected</i></sub></small></p>");
+
+        detectionInfo = symptomScores + "<br><p><i>" + getSymptoms() + "</i></p><br>" + "Longitude: " + longt + "<br>" + "Latitude: " + lat;
+        title.setText(Html.fromHtml(symptomScores.toString()));
+//        title.setText(HtmlCompat.fromHtml(symptomScores, HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
+
+    private static class ScoredDiseases {
+        int score;
+        String name;
+
+        @NonNull
+        @Override
+        public String toString() {
+            return name + ": " + score + "%" + '\''
+                    ;
+        }
+
+        ScoredDiseases(String name, int score) {
+            this.name = name;
+            this.score = score;
+        }
+
+        public int getScore() {
+            return score;
+        }
+
+        public void setScore(int score) {
+            this.score = score;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
+
 
     private void loadImage(Bundle extras) {
         //load image from camera
         byte[] bs = extras.getByteArray("byteArray");
         bs2 = extras.getByteArray("backUpImage");
         bitmap = BitmapFactory.decodeByteArray(bs, 0, bs.length);
-        boxedBitmap = BitmapFactory.decodeByteArray(bs2,0, bs2.length);
+        boxedBitmap = BitmapFactory.decodeByteArray(bs2, 0, bs2.length);
         prev.setImageBitmap(bitmap);
         loading.setVisibility(View.GONE);
     }
@@ -203,10 +262,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
             }
         }
     }
-    private void saveBoxedImage(Bitmap bitmap){
+
+    private void saveBoxedImage(Bitmap bitmap) {
         String name = "localBoxed_" + timestamp;
         OutputStream fosOne = null; // image file 1 output stream
-        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment/boxed");
+        File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/AssessmentBoxed");
         if (!dir.exists()) {
             if (dir.mkdirs())
                 Toast.makeText(this, "Pictures Directory Created", Toast.LENGTH_SHORT).show();
@@ -218,7 +278,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
             imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
-            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Assessment/boxed/");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/AssessmentBoxed/");
 
             Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
             try {
@@ -323,11 +383,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public String getSymptoms() {
-        String s = "Symptoms: \n";
+        String s = "Symptoms: <br>";
         if (symptomsDetected == null) return s;
         StringBuilder sBuilder = new StringBuilder("Symptoms: \n");
         for (String symptom : symptomsDetected) {
-            sBuilder.append(symptom).append("\n");
+            sBuilder.append(symptom).append("<br>");
         }
         s = sBuilder.toString();
         return s;

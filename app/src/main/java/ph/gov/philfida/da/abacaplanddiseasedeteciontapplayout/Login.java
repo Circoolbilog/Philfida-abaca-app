@@ -123,10 +123,14 @@ public class Login extends AppCompatActivity {
 
     private void assignButtons() {
         guest.setOnClickListener(v -> {
-            setGuest(true);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            try {
+                setGuest(true);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
 
-            startActivity(intent);
+                startActivity(intent);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         });
         noAccount = findViewById(R.id.openRegister);
         noAccount.setOnClickListener(v -> {

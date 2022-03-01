@@ -67,4 +67,6 @@
     <string name="view_boxes">View boxes</string>
     <string name="continue_without_logging_in">Continue as Guest</string>
     <string name="wip">Work In Progress</string>
+    <string name="b">BACK</string>
+    <string name="vb">VIEW BOXES</string>
 </resources>

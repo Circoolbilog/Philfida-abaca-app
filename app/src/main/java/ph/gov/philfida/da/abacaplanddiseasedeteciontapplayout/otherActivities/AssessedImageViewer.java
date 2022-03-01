@@ -1,6 +1,6 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
 
-import androidx.annotation.RequiresApi;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
@@ -17,8 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.text.Html;
-import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -26,14 +24,10 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 public class AssessedImageViewer extends AppCompatActivity {
@@ -58,9 +52,9 @@ public class AssessedImageViewer extends AppCompatActivity {
                     if (!viewBoxed) {
                         assessedImage.setImageBitmap(boxedImage);
                         viewBoxed = true;
-                        buttonViewBox.setText("BACK");
+                        buttonViewBox.setText(R.string.b);
                     } else {
-                        buttonViewBox.setText("VIEW BOXES");
+                        buttonViewBox.setText(R.string.vb);
                         viewBoxed = false;
                         assessedImage.setImageBitmap(selectedImage);
                     }

@@ -16,6 +16,8 @@ import androidx.appcompat.app.AppCompatDialogFragment;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity;
@@ -117,29 +119,16 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
         builder.setTitle(dialogTitle)
                 .setMessage(dialogMessage)
                 .setCancelable(false)
-                .setPositiveButton(option1, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (customDialogLayout == R.layout.custom_confidence_threshold_dialog) {
-                            int confidence = Integer.parseInt(confidenceVal.getText().toString().trim());
-                            listener.applyConfidence(confidence);
-                        } else {
-                            call(1);
-                        }
+                .setPositiveButton(option1, (dialog, which) -> {
+                    if (customDialogLayout == R.layout.custom_confidence_threshold_dialog) {
+                        int confidence = Integer.parseInt(confidenceVal.getText().toString().trim());
+                        listener.applyConfidence(confidence);
+                    } else {
+                        call(1);
                     }
                 })
-                .setNegativeButton(option2, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        call(2);
-                    }
-                })
-                .setNeutralButton(option3, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        call(3);
-                    }
-                });
+                .setNegativeButton(option2, (dialog, which) -> call(2))
+                .setNeutralButton(option3, (dialog, which) -> call(3));
 
         return builder.create();
 
@@ -149,13 +138,13 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
         SettingsContainer settingsContainer = new SettingsContainer();
         switch (dialogTitle) {
             case "Capture Mode":
-                ((SettingsActivity) this.getActivity()).setCaptureMode(i);
+                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setCaptureMode(i);
                 break;
             case "Show Welcome Screen":
-                ((SettingsActivity) this.getActivity()).setWelcomeScreen(i);
+                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setWelcomeScreen(i);
                 break;
             case "Enter Confidence Threshold":
-                ((SettingsActivity) this.getActivity()).setConfidenceThreshold(i);
+                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setConfidenceThreshold(i);
                 break;
         }
     }
@@ -169,7 +158,7 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
         try {
             listener = (SettingsDialogListener)context;
         } catch (ClassCastException e) {
-            throw new ClassCastException(context.toString() + "must implement SettingsDialogListener");
+            throw new ClassCastException(context + "must implement SettingsDialogListener");
         }
     }
 }

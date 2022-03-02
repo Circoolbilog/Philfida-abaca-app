@@ -2,9 +2,19 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,6 +24,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.CustomTarget;
+import com.bumptech.glide.request.transition.Transition;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -33,6 +45,11 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 import java.util.Objects;
 
@@ -56,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseUser user;
     private DatabaseReference reference2;
     String firstName, lastName, middleName, email, birthday, permAdd, occupation, institution;
-//    private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
+    //    private boolean Bract_Mosaic, Bunchy_Top, CMV, Gen_Mosaic, SCMV;
     private String stringVal_Bract_Mosaic, stringVal_Bunchy_Top, stringVal_CMV, stringVal_Gen_Mosaic, stringVal_SCMV, stringVal_No_Allocation;
     private String DIName, DIDesc, DIPicture, DITreatment;
 //    private int symptomID;
@@ -74,12 +91,13 @@ public class MainActivity extends AppCompatActivity {
     private final int currentDbSize = 39;
 
     int ALL_PERMISSIONS = 101;
+    boolean saving;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
+
         if (((SettingsContainer) this.getApplication()).getShowWelcome() == null) {
             ((SettingsContainer) this.getApplication()).setShowWelcome(true);
         }
@@ -88,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         }
         askPermissions();
         try {
-            if (!((SettingsContainer) this.getApplication()).getGuest()){
+            if (!((SettingsContainer) this.getApplication()).getGuest()) {
                 getUserDBDetails();
                 loadUserData();
                 saveUserData();
@@ -138,8 +156,8 @@ public class MainActivity extends AppCompatActivity {
                         DIPicture = Objects.requireNonNull(child.child("picture").getValue()).toString();
                         DITreatment = Objects.requireNonNull(child.child("treatment").getValue()).toString();
                         Log.d(TAG, "onDataChange: " + DIName + DIDesc + DIPicture + DITreatment);
-
-                        //                    save info to local db
+                        DownloadRunnable runnable = new DownloadRunnable(DIPicture, DIName);
+                        new Thread(runnable).start();
 
                         try {
                             int id = -1;
@@ -149,10 +167,10 @@ public class MainActivity extends AppCompatActivity {
                             boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
                             if (!success)
                                 Toast.makeText(getApplicationContext(), "try Failed to update local database", Toast.LENGTH_SHORT).show();
-                            Log.d(TAG, "addToDiseaseInfoDb: " + infoDBModel.getDiseaseName() + " " + success +dbModelList.size());
+                            Log.d(TAG, "addToDiseaseInfoDb: " + infoDBModel.getDiseaseName() + " " + success + dbModelList.size());
 
                         } catch (Exception e) {
-                            infoDBModel = new DiseaseInfoDBModel(90,"DIName", "DIDesc", "DIPicture", "DITreatment");
+                            infoDBModel = new DiseaseInfoDBModel(90, "DIName", "DIDesc", "DIPicture", "DITreatment");
                             boolean success = infoDBHelper.addOneDiseaseInfo(infoDBModel);
                             if (!success)
                                 Toast.makeText(getApplicationContext(), " catch Failed to update local database", Toast.LENGTH_SHORT).show();
@@ -391,7 +409,7 @@ public class MainActivity extends AppCompatActivity {
     //Open Diagnose Activity
 
     public void openDiagnoseActivity(View view) {
-        Intent diagnose  = new Intent(this, DetectorActivity.class);
+        Intent diagnose = new Intent(this, DetectorActivity.class);
         startActivity(diagnose);
     }
 
@@ -416,7 +434,145 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    /**
+     * download images from database
+     */
+
+    class DownloadRunnable implements Runnable {
+
+        String image, name;
+
+        DownloadRunnable(String imageURL, String name) {
+            this.image = imageURL;
+            this.name = name;
+        }
+
+        @Override
+        public void run() {
+            downloadImage(image, name);
+        }
+
+    }
+
+
+    void downloadImage(String imageURL, String name) {
+        Log.d(TAG, "downloadImage: try download");
+        if (!verifyPermissions()) {
+            return;
+        }
+
+        String dirPath = Environment.getExternalStorageDirectory() + "/Pictures/Diseases/";
+
+        final File dir = new File(dirPath);
+
+        final String fileName = name;
+
+        Glide.with(this)
+                .load(imageURL)
+                .into(new CustomTarget<Drawable>() {
+                    @Override
+                    public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+
+                        Bitmap bitmap = ((BitmapDrawable) resource).getBitmap();
+                        saveImage(bitmap, dir, fileName);
+                        Log.d(TAG, "downloadImage: save " + imageURL);
+                    }
+
+                    @Override
+                    public void onLoadCleared(@Nullable Drawable placeholder) {
+
+                    }
+
+                    @Override
+                    public void onLoadFailed(@Nullable Drawable errorDrawable) {
+                        super.onLoadFailed(errorDrawable);
+                        Log.d(TAG, "onLoadFailed: failed");
+                    }
+                });
+
+    }
+
+    public Boolean verifyPermissions() {
+
+        // This will return the current Status
+        int permissionExternalMemory = ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+
+        if (permissionExternalMemory != PackageManager.PERMISSION_GRANTED) {
+
+            String[] STORAGE_PERMISSIONS = {Manifest.permission.WRITE_EXTERNAL_STORAGE};
+            // If permission not granted then ask for permission real time.
+            ActivityCompat.requestPermissions(this, STORAGE_PERMISSIONS, 1);
+            return false;
+        }
+
+        return true;
+
+    }
+
+    private void saveImage(Bitmap image, File storageDir, String imageFileName) {
+    File img = new File(storageDir.toString() + "/" + imageFileName + ".jpg");
+        boolean successDirCreated = false;
+        if (!storageDir.exists()) {
+            successDirCreated = storageDir.mkdir();
+            Log.d(TAG, "downloadImage: try download");
+        }
+        if (!successDirCreated && !storageDir.exists()) {
+            Toast.makeText(this, "Failed to make folder!" + storageDir, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Log.d(TAG, "downloadImage: " + img.toString() + " exists: " + img.exists());
+        if (img.exists()){
+            Log.d(TAG, "downloadImage: File exists");
+            return;
+        }
+        File imageFile = new File(storageDir, imageFileName);
+        OutputStream fOut;
+        if (isBuildVersionQ()) {
+            //Save Image File
+            Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            ContentResolver imageOneResolver = getContentResolver();
+            ContentValues imageOneCV = new ContentValues();
+            imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, imageFileName + ".jpg");
+            imageOneCV.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+            imageOneCV.put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES + "/Diseases");
+
+            Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
+            Log.d(TAG, "downloadImage: try save Q");
+            try {
+                fOut = imageOneResolver.openOutputStream(Objects.requireNonNull(imageUri));
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                Objects.requireNonNull(fOut).close();
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                Log.d(TAG, "downloadImage: " + e.getMessage());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Log.d(TAG, "downloadImage: saved");
+
+        } else {
+            try {
+                fOut = new FileOutputStream(imageFile);
+                image.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+                fOut.close();
+                Toast.makeText(MainActivity.this, "Image Saved!", Toast.LENGTH_SHORT).show();
+            } catch (Exception e) {
+                Toast.makeText(MainActivity.this, "Error while saving image!", Toast.LENGTH_SHORT).show();
+                e.printStackTrace();
+            }
+        }
+
+    }
     //save user info to shared prefs(store locally)
+
+    /**
+     * end
+     * download images from database
+     */
+    private boolean isBuildVersionQ() {
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
+    }
 
     public void saveUserData() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);

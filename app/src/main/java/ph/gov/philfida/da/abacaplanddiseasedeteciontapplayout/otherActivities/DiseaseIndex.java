@@ -12,7 +12,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;

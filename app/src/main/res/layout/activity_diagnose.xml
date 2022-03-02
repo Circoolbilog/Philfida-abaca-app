@@ -27,36 +27,6 @@
         android:background="@android:color/black"
         android:orientation="vertical">
 
-        <RelativeLayout
-            android:id="@+id/loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:visibility="visible">
-
-            <ProgressBar
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true" />
-
-            <ImageView
-                android:id="@+id/imageView4"
-                android:layout_width="200dp"
-                android:layout_height="150dp"
-                android:layout_centerInParent="true"
-                app:srcCompat="@drawable/text_bg" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@android:color/white"
-                android:textStyle="bold"
-                android:textSize="12sp"
-                android:text="if loading takes longer than 10s, \n restart the app"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="10dp"
-                android:textAlignment="center"/>
-        </RelativeLayout>
-
 
         <FrameLayout
             android:id="@+id/container"
@@ -130,6 +100,36 @@
                 android:onClick="openAssessmentActivity"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+        <RelativeLayout
+            android:id="@+id/loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible">
+
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true" />
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="200dp"
+                android:layout_height="150dp"
+                android:layout_centerInParent="true"
+                app:srcCompat="@drawable/text_bg" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="10dp"
+                android:text="if loading takes too long, \n restart the app"
+                android:textAlignment="center"
+                android:textColor="@android:color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+        </RelativeLayout>
 
 
     </RelativeLayout>

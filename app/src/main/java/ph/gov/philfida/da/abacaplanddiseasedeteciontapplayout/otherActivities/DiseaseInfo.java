@@ -13,16 +13,13 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.Disease
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
-
-import com.bumptech.glide.Glide;
-import com.google.firebase.storage.FirebaseStorage;
-import com.google.firebase.storage.StorageReference;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,6 +32,7 @@ public class DiseaseInfo extends AppCompatActivity {
     ImageView diseasePic;
     int position;
     String mDiseaseName = "", mDiseaseDesc;
+    Bitmap selectedImage;
     private static final String TAG = "DiseaseInfo";
 
     @Override
@@ -62,7 +60,6 @@ public class DiseaseInfo extends AppCompatActivity {
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         item = new ArrayList<>();
         for (DiseaseDBModel symptom : dbModelList) {
-
             switch (mDiseaseName) {
                 case "0_No_Allocation":
                     if (symptom.getNo_Allocation() == null) break;
@@ -115,7 +112,6 @@ public class DiseaseInfo extends AppCompatActivity {
             symptomInfo.putExtra("position", position);
             symptomInfo.putExtra("symptomName", item.get(position).getItemName());
             startActivity(symptomInfo);
-            Toast.makeText(DiseaseInfo.this, "item at pos: " + position, Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -146,10 +142,9 @@ public class DiseaseInfo extends AppCompatActivity {
     }
 
     private void getDiseaseImage(String mDiseaseName) {
-        StorageReference reference = FirebaseStorage.getInstance().getReference().child("Diseases").child(mDiseaseName+".png");
-        reference.getDownloadUrl().addOnSuccessListener(uri -> Glide.with(DiseaseInfo.this)
-                .load(uri)
-                .into(diseasePic));
+        String imgDir =  Environment.getExternalStorageDirectory() + "/Pictures/Diseases/" + mDiseaseName + ".jpg";
+        selectedImage = BitmapFactory.decodeFile(imgDir);
+        diseasePic.setImageBitmap(selectedImage);
     }
 
 

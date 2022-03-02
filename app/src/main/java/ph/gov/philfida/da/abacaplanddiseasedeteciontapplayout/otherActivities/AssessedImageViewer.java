@@ -73,7 +73,6 @@ public class AssessedImageViewer extends AppCompatActivity {
             selectedImage = BitmapFactory.decodeFile(fileName);
             String BfileName = fileName.replace("Assessment", "AssessmentBoxed");
             BfileName = BfileName.replace("Image", "Boxed");
-            Toast.makeText(this, BfileName + " = " + fileName, Toast.LENGTH_SHORT).show();
             boxedImage = BitmapFactory.decodeFile(BfileName);
 
             assessedImage.setImageBitmap(selectedImage);

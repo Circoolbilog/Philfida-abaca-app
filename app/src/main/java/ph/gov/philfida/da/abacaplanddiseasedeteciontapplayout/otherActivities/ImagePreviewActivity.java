@@ -151,12 +151,14 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
         List<ScoredDiseases> scoredDiseases;
         scoredDiseases = new ArrayList<>();
-        scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore * 100 / symptoms.size()));
-        scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore * 100 / symptoms.size()));
-        scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore * 100 / symptoms.size()));
-        scoredDiseases.add(new ScoredDiseases("CMV", cmvScore * 100 / symptoms.size()));
-        scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore * 100 / symptoms.size()));
-        scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore * 100 / symptoms.size()));
+        if(!symptoms.isEmpty()){
+            scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("CMV", cmvScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore * 100 / symptoms.size()));
+        }
 
         List<ScoredDiseases> sortedDiseases;
         sortedDiseases = new ArrayList<>();

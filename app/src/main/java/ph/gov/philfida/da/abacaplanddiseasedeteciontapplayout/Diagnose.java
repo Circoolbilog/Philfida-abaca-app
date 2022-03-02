@@ -113,6 +113,7 @@ public abstract class Diagnose extends AppCompatActivity
     public void createDialog() {
         if (!((SettingsContainer) this.getApplication()).getDiagDialogRemember()) {
             diagnoseMode.show(getSupportFragmentManager(), "Choose Diagnose Mode");
+            return;
         }
         if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0) {
             setDialogText("DEFAULT: " + "Single Capture Mode");

@@ -83,7 +83,7 @@ public class AssessedImageViewer extends AppCompatActivity {
                 diseaseInfo.setText(HtmlCompat.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY));
                 try {
                     String remove = info.replaceAll("[\n]", "");
-                    remove = remove.replaceAll("<h2>.*Lo", "Lo");
+                    remove = remove.replaceAll(".*Lo", "Lo");
                     String longt = remove.replaceAll("Latitude: .*", "");
                     longt = longt.replaceAll("i", "");
                     String lat = remove.replaceAll(".*Longitude: .*L", "L");

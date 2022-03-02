@@ -55,7 +55,6 @@ public class DiseaseIndex extends AppCompatActivity {
             @Override
             public void onItemClick(int position) {
 //                open new activity displaying disease info on clicked item
-                Toast.makeText(DiseaseIndex.this, "item at pos " + position, Toast.LENGTH_SHORT).show();
                 String diseaseName;
                 switch (position){
                     case 0:

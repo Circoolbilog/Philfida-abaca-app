@@ -173,7 +173,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
         StringBuilder symptomScores = new StringBuilder();
         int index = 0;
         for (ScoredDiseases disease : sortedDiseases) {
-            disease.setScore(((disease.getScore()* 100 / symptoms.size())*((100/sortedDiseases.size())))/100);
+//            disease.setScore(((disease.getScore()* 100 / symptoms.size())*((100/sortedDiseases.size())))/100);
+            disease.setScore((int)(((float)disease.getScore()/((float) symptoms.size()*(float) sortedDiseases.size()))*100));
             if (index == 0) {
                 symptomScores = new StringBuilder(("<h2><b>" + disease.getName() + " : " + disease.getScore() + "%" + "</b></h2>"));
             } else {

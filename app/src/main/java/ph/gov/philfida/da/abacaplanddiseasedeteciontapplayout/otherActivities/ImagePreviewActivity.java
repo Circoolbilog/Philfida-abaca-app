@@ -138,7 +138,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
         //format the highest to be <h3>
         //convert scores to percentage.  (number of detections corresponding to this disease(score)/number of total detections) * 100
         //add text on top, describing the meaning of the percentage ("likelihood of the detected symptoms to be the disease not the likelihood of the plant having the disease")
-
+        List<ScoredDiseases> sortedDiseases;
+        sortedDiseases = new ArrayList<>();
         for (String symptom : symptoms) {
             if (no_allocation_list.contains(symptom)) noAllocationScore++;
             if (bract_list.contains(symptom)) bractScore++;
@@ -152,25 +153,27 @@ public class ImagePreviewActivity extends AppCompatActivity {
         List<ScoredDiseases> scoredDiseases;
         scoredDiseases = new ArrayList<>();
         if(!symptoms.isEmpty()){
-            scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore * 100 / symptoms.size()));
-            scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore * 100 / symptoms.size()));
-            scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore * 100 / symptoms.size()));
-            scoredDiseases.add(new ScoredDiseases("CMV", cmvScore * 100 / symptoms.size()));
-            scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore * 100 / symptoms.size()));
-            scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore * 100 / symptoms.size()));
+            scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore ));
+            scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore));
+            scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore ));
+            scoredDiseases.add(new ScoredDiseases("CMV", cmvScore ));
+            scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore ));
+            scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore));
         }
 
-        List<ScoredDiseases> sortedDiseases;
-        sortedDiseases = new ArrayList<>();
+
+
 
         for (ScoredDiseases disease : scoredDiseases) {
             if (disease.getScore() != 0) sortedDiseases.add(disease);
         }
         sortedDiseases.sort((t0, t1) -> t1.getScore() - t0.getScore());
 
+
         StringBuilder symptomScores = new StringBuilder();
         int index = 0;
         for (ScoredDiseases disease : sortedDiseases) {
+            disease.setScore(((disease.getScore()* 100 / symptoms.size())*((100/sortedDiseases.size())))/100);
             if (index == 0) {
                 symptomScores = new StringBuilder(("<h2><b>" + disease.getName() + " : " + disease.getScore() + "%" + "</b></h2>"));
             } else {

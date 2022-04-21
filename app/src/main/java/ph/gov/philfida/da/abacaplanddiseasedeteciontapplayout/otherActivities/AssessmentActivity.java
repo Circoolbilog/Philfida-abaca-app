@@ -67,9 +67,7 @@ public class AssessmentActivity extends AppCompatActivity {
     private void loadImages() {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 4));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            images = ImagesGallery.listOfImages(this);
-        }
+        images = ImagesGallery.listOfImages(this);
         galleryAdapter = new GalleryAdapter(this, images, path -> {
             Intent intent = new Intent(AssessmentActivity.this, AssessedImageViewer.class);
             intent.putExtra("file", path);

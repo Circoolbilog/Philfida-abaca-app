@@ -94,7 +94,20 @@ public class AssessedImageViewer extends AppCompatActivity {
                 }
 
             } else {
-                viewInfo(textFile);
+                textFile = fileName.replace("jpg", "_info.txt");
+                diseaseInfo.setText(HtmlCompat.fromHtml(viewInfo(textFile), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                try {
+                    String remove = viewInfo(textFile).replaceAll("[\n]", "");
+                    remove = remove.replaceAll(".*Lo", "Lo");
+                    String longt = remove.replaceAll("Latitude: .*", "");
+                    longt = longt.replaceAll("i", "");
+                    String lat = remove.replaceAll(".*Longitude: .*L", "L");
+                    longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
+                    latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
+                } catch (NumberFormatException e) {
+                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+
             }
 
         }
@@ -156,10 +169,11 @@ public class AssessedImageViewer extends AppCompatActivity {
         return "no such file in directory";
     }
 
-    private void viewInfo(String textFile) {
+    private String viewInfo(String textFile) {
         FileReader fr;
         String newFile = textFile.replace("Pictures", "documents");
         StringBuilder stringBuilder = new StringBuilder();
+        String output;
         try {
             fr = new FileReader(newFile);
             BufferedReader br = new BufferedReader(fr);
@@ -175,9 +189,9 @@ public class AssessedImageViewer extends AppCompatActivity {
         } finally {
             String fileContents = stringBuilder.toString();
             fileContents = fileContents.replace(")", "");
-            fileContents = fileContents.replace("RectF(", "Location(Coordinates): ");
-            diseaseInfo.append(fileContents);
-        }
+            output = fileContents.replace("RectF(", "Location(Coordinates): ");
 
+        }
+        return output;
     }
 }

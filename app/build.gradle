@@ -9,7 +9,7 @@ android {
     }
     defaultConfig {
         applicationId "ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout"
-        minSdkVersion 26
+        minSdkVersion 23
         targetSdkVersion 32
         versionCode 14
         versionName "1.1.4"

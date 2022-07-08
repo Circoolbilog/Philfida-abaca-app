@@ -167,7 +167,9 @@ public class ImagePreviewActivity extends AppCompatActivity {
         for (ScoredDiseases disease : scoredDiseases) {
             if (disease.getScore() != 0) sortedDiseases.add(disease);
         }
-        sortedDiseases.sort((t0, t1) -> t1.getScore() - t0.getScore());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            sortedDiseases.sort((t0, t1) -> t1.getScore() - t0.getScore());
+        }
 
 
         StringBuilder symptomScores = new StringBuilder();

@@ -67,6 +67,8 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
+    static long startTime;
+    static long elapsedTime;
 
     private boolean initialized = false;
     private static final String TAG = "DetectorActivity";
@@ -78,7 +80,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     private static final String TF_OD_API_LABELS_FILE = "symptoms.txt";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     // Minimum detection confidence to track a detection.
-//    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.5f;
+    private static final float MINIMUM_CONFIDENCE_TF_OD_API = 0.7f;
     private static final boolean MAINTAIN_ASPECT = false;
     private static final Size DESIRED_PREVIEW_SIZE = new Size(640, 640);
     private static final boolean SAVE_PREVIEW_BITMAP = false;
@@ -203,26 +205,22 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
         runInBackground(
                 () -> {
-                    LOGGER.i("Running detection on image " + currTimestamp);
-//                    final long startTime = SystemClock.uptimeMillis();
                     final List<Classifier.Recognition> results = detector.recognizeImage(croppedBitmap);
-//                    lastProcessingTimeMs = SystemClock.uptimeMillis() - startTime;
                     cropCopyBitmap = Bitmap.createBitmap(croppedBitmap);
                     final Canvas canvas1 = new Canvas(cropCopyBitmap);
                     final Paint paint = new Paint();
                     paint.setColor(Color.RED);
                     paint.setStyle(Style.STROKE);
-                    paint.setStrokeWidth(2.0f);
-
+                    paint.setStrokeWidth(3.0f);
                     float minimumConfidence = 0.0F;
-                    if (MODE == DetectorMode.TF_OD_API) minimumConfidence = savedConfidence;
+                    if (MODE == DetectorMode.TF_OD_API) minimumConfidence = MINIMUM_CONFIDENCE_TF_OD_API;
 
                     final List<Classifier.Recognition> mappedRecognitions =
                             new LinkedList<>();
 
                     detectedSymptomsList.clear();
-
                     for (final Classifier.Recognition result : results) {
+
                         final RectF location = result.getLocation();
                         if (location != null && result.getConfidence() >= minimumConfidence) {
                             canvas1.drawRect(location, paint);
@@ -232,6 +230,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                             mappedRecognitions.add(result);
                         }
                     }
+
                     try {
                         names = detectedSymptomsList.toArray(new String[0]);
                     } catch (Exception e) {
@@ -239,14 +238,11 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
                     }
                     tracker.trackResults(mappedRecognitions, currTimestamp);
                     trackingOverlay.postInvalidate();
-
                     computingDetection = false;
                     if (!initialized) {
                         initialize();
                         initialized = true;
                     }
-
-
                 });
     }
 
@@ -328,13 +324,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     private void getGeoLocation() {
         LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                     MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION);
             return;
@@ -355,6 +344,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == MY_PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();

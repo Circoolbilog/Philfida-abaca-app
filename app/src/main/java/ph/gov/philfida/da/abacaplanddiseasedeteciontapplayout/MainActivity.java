@@ -1,5 +1,20 @@
+/*
+ * Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
-
+// Import stuff
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
@@ -118,7 +133,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void askPermissions() {
-
+    // Ask user for permission for read and write, and location
         final String[] permissions = new String[]{Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -570,6 +585,7 @@ public class MainActivity extends AppCompatActivity {
      * end
      * download images from database
      */
+    //Check for the build version of the android phone
     private boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }

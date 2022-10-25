@@ -1,3 +1,17 @@
+/* Copyright 2019 The TensorFlow Authors. All Rights Reserved.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+==============================================================================*/
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.Dialogs;
 
 import android.app.AlertDialog;
@@ -138,13 +152,13 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
         SettingsContainer settingsContainer = new SettingsContainer();
         switch (dialogTitle) {
             case "Capture Mode":
-                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setCaptureMode(i);
+                ((SettingsActivity) this.requireActivity()).setCaptureMode(i);
                 break;
             case "Show Welcome Screen":
-                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setWelcomeScreen(i);
+                ((SettingsActivity) this.requireActivity()).setWelcomeScreen(i);
                 break;
             case "Enter Confidence Threshold":
-                ((SettingsActivity) Objects.requireNonNull(this.getActivity())).setConfidenceThreshold(i);
+                ((SettingsActivity) this.requireActivity()).setConfidenceThreshold(i);
                 break;
         }
     }

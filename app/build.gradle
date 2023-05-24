@@ -11,8 +11,8 @@ android {
         applicationId "ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout"
         minSdkVersion 23
         targetSdkVersion 32
-        versionCode 16
-        versionName "1.1.6"
+        versionCode 17
+        versionName "1.1.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

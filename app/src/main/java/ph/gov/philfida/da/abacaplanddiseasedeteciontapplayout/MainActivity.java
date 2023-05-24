@@ -228,7 +228,8 @@ public class MainActivity extends AppCompatActivity {
                 if (snapshot.exists() && temp != dbSize) {
                     Log.d(TAG, "onDataChange: " + diseaseDBModels.size() + "/" + snapshot.getChildrenCount());
                     for (DiseaseDBModel disease : diseaseDBModels) {
-                        dbHelper.clear(disease);
+
+//                        dbHelper.clear(disease);
 //                      Clear table
                     }
 

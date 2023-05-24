@@ -1,50 +1,415 @@
-Abaca_plant
-Bract_brown_streaks
-Brown_border_streaks
-Brown_leaf_margin
-Brown_streaks_lamina
-Corrugated_leaf
-Corrugated_petiole
-Dark_green_spindle_streaks_petiole
-Dark_green_spots_patches_petiole
-Dark_green_thick_veins
-Dashes_lamina
-Dots_patches_midrib
-Dots_spots_lamina
-Failed_leaf_unfurling
-Green_streaks
-Green_yellow_streaks
-Light_green_patches_petiole
-Light_green_streaks
-Light_green_thick_veins
-Narrow_leaf
-Necrotic_edge
-Necrotic_lamina
-Necrotic_midrib
-Oval_streaks
-Petiole_breaking
-Petiole_yellow_streaks
-Restricted_leaf_growth
-Rosetting
-Rusty_yellow_dots
-Rusty_yellow_streaks
-Shoe_stringing
-Stunting
-Thick_leaf_veins
-Upward_curling
-White_patches
-White_patches_pseudostem
-White_streaks
-White_thick_veins
-Wrikled_leaf
-Wrinkled_leaf
-Wrinkled_petiole
-Yellow_brown_lamina
-Yellow_brown_leaf_lamina
-Yellow_edge
-Yellow_leaf_lamina
-Yellow_patches_green_lamina
-Yellow_patches_lamina
-Yellow_streaks_green_lamina
-Yellow_streaks_lamina
-Yellow_thick_veins
+item{
+	id: 1
+	name: 'Alt_green_yellow_streaks_spindled_chlorosis'
+}
+item{
+	id: 2
+	name: 'Bract_red_brown_mosaic_pattern'
+}
+item{
+	id: 3
+	name: 'Brown_leaf_margin'
+}
+item{
+	id: 4
+	name: 'Chlorosis_midrib'
+}
+item{
+	id: 5
+	name: 'Corrugated_leaf'
+}
+item{
+	id: 6
+	name: 'Dark_green_leaf_streaks'
+}
+item{
+	id: 7
+	name: 'Dark_green_spots_patches_streaks_petiole'
+}
+item{
+	id: 8
+	name: 'Dark_green_thick_veins'
+}
+item{
+	id: 9
+	name: 'Dashes_dots_lamina'
+}
+item{
+	id: 10
+	name: 'Deformed_leaf'
+}
+item{
+	id: 11
+	name: 'Necrotic_lamina'
+}
+item{
+	id: 12
+	name: 'Necrotic_vein'
+}
+item{
+	id: 13
+	name: 'Rosetting'
+}
+item{
+	id: 14
+	name: 'Rusty_yellow_leaf_margins'
+}
+item{
+	id: 15
+	name: 'Rusty_yellow_streaks'
+}
+item{
+	id: 16
+	name: 'Shoe_stringing'
+}
+item{
+	id: 17
+	name: 'Streaks_midrib'
+}
+item{
+	id: 18
+	name: 'Upward_leaf_curling'
+}
+item{
+	id: 19
+	name: 'White_patches_leaf_chlorosis'
+}
+item{
+	id: 20
+	name: 'White_streaks'
+}
+item{
+	id: 21
+	name: 'White_veins'
+}
+item{
+	id: 22
+	name: 'Wrinkled_leaf'
+}
+item{
+	id: 23
+	name: 'Yellow_brown_leaf_lamina'
+}
+item{
+	id: 24
+	name: 'Yellow_edge'
+}
+item{
+	id: 25
+	name: 'Yellow_streaks_lamina'
+}
+item{
+	id: 26
+	name: 'Youngest_leaf_drying'
+}item{
+	id: 1
+	name: 'Alt_green_yellow_streaks_spindled_chlorosis'
+}
+item{
+	id: 2
+	name: 'Bract_red_brown_mosaic_pattern'
+}
+item{
+	id: 3
+	name: 'Brown_leaf_margin'
+}
+item{
+	id: 4
+	name: 'Chlorosis_midrib'
+}
+item{
+	id: 5
+	name: 'Corrugated_leaf'
+}
+item{
+	id: 6
+	name: 'Dark_green_leaf_streaks'
+}
+item{
+	id: 7
+	name: 'Dark_green_spots_patches_streaks_petiole'
+}
+item{
+	id: 8
+	name: 'Dark_green_thick_veins'
+}
+item{
+	id: 9
+	name: 'Dashes_dots_lamina'
+}
+item{
+	id: 10
+	name: 'Deformed_leaf'
+}
+item{
+	id: 11
+	name: 'Necrotic_lamina'
+}
+item{
+	id: 12
+	name: 'Necrotic_vein'
+}
+item{
+	id: 13
+	name: 'Rosetting'
+}
+item{
+	id: 14
+	name: 'Rusty_yellow_leaf_margins'
+}
+item{
+	id: 15
+	name: 'Rusty_yellow_streaks'
+}
+item{
+	id: 16
+	name: 'Shoe_stringing'
+}
+item{
+	id: 17
+	name: 'Streaks_midrib'
+}
+item{
+	id: 18
+	name: 'Upward_leaf_curling'
+}
+item{
+	id: 19
+	name: 'White_patches_leaf_chlorosis'
+}
+item{
+	id: 20
+	name: 'White_streaks'
+}
+item{
+	id: 21
+	name: 'White_veins'
+}
+item{
+	id: 22
+	name: 'Wrinkled_leaf'
+}
+item{
+	id: 23
+	name: 'Yellow_brown_leaf_lamina'
+}
+item{
+	id: 24
+	name: 'Yellow_edge'
+}
+item{
+	id: 25
+	name: 'Yellow_streaks_lamina'
+}
+item{
+	id: 26
+	name: 'Youngest_leaf_drying'
+}
+item{
+	id: 1
+	name: 'Alt_green_yellow_streaks_spindled_chlorosis'
+}
+item{
+	id: 2
+	name: 'Bract_red_brown_mosaic_pattern'
+}
+item{
+	id: 3
+	name: 'Brown_leaf_margin'
+}
+item{
+	id: 4
+	name: 'Chlorosis_midrib'
+}
+item{
+	id: 5
+	name: 'Corrugated_leaf'
+}
+item{
+	id: 6
+	name: 'Dark_green_leaf_streaks'
+}
+item{
+	id: 7
+	name: 'Dark_green_spots_patches_streaks_petiole'
+}
+item{
+	id: 8
+	name: 'Dark_green_thick_veins'
+}
+item{
+	id: 9
+	name: 'Dashes_dots_lamina'
+}
+item{
+	id: 10
+	name: 'Deformed_leaf'
+}
+item{
+	id: 11
+	name: 'Necrotic_lamina'
+}
+item{
+	id: 12
+	name: 'Necrotic_vein'
+}
+item{
+	id: 13
+	name: 'Rosetting'
+}
+item{
+	id: 14
+	name: 'Rusty_yellow_leaf_margins'
+}
+item{
+	id: 15
+	name: 'Rusty_yellow_streaks'
+}
+item{
+	id: 16
+	name: 'Shoe_stringing'
+}
+item{
+	id: 17
+	name: 'Streaks_midrib'
+}
+item{
+	id: 18
+	name: 'Upward_leaf_curling'
+}
+item{
+	id: 19
+	name: 'White_patches_leaf_chlorosis'
+}
+item{
+	id: 20
+	name: 'White_streaks'
+}
+item{
+	id: 21
+	name: 'White_veins'
+}
+item{
+	id: 22
+	name: 'Wrinkled_leaf'
+}
+item{
+	id: 23
+	name: 'Yellow_brown_leaf_lamina'
+}
+item{
+	id: 24
+	name: 'Yellow_edge'
+}
+item{
+	id: 25
+	name: 'Yellow_streaks_lamina'
+}
+item{
+	id: 26
+	name: 'Youngest_leaf_drying'
+}
+item{
+	id: 1
+	name: 'Alt_green_yellow_streaks_spindled_chlorosis'
+}
+item{
+	id: 2
+	name: 'Bract_red_brown_mosaic_pattern'
+}
+item{
+	id: 3
+	name: 'Brown_leaf_margin'
+}
+item{
+	id: 4
+	name: 'Chlorosis_midrib'
+}
+item{
+	id: 5
+	name: 'Corrugated_leaf'
+}
+item{
+	id: 6
+	name: 'Dark_green_leaf_streaks'
+}
+item{
+	id: 7
+	name: 'Dark_green_spots_patches_streaks_petiole'
+}
+item{
+	id: 8
+	name: 'Dark_green_thick_veins'
+}
+item{
+	id: 9
+	name: 'Dashes_dots_lamina'
+}
+item{
+	id: 10
+	name: 'Deformed_leaf'
+}
+item{
+	id: 11
+	name: 'Necrotic_lamina'
+}
+item{
+	id: 12
+	name: 'Necrotic_vein'
+}
+item{
+	id: 13
+	name: 'Rosetting'
+}
+item{
+	id: 14
+	name: 'Rusty_yellow_leaf_margins'
+}
+item{
+	id: 15
+	name: 'Rusty_yellow_streaks'
+}
+item{
+	id: 16
+	name: 'Shoe_stringing'
+}
+item{
+	id: 17
+	name: 'Streaks_midrib'
+}
+item{
+	id: 18
+	name: 'Upward_leaf_curling'
+}
+item{
+	id: 19
+	name: 'White_patches_leaf_chlorosis'
+}
+item{
+	id: 20
+	name: 'White_streaks'
+}
+item{
+	id: 21
+	name: 'White_veins'
+}
+item{
+	id: 22
+	name: 'Wrinkled_leaf'
+}
+item{
+	id: 23
+	name: 'Yellow_brown_leaf_lamina'
+}
+item{
+	id: 24
+	name: 'Yellow_edge'
+}
+item{
+	id: 25
+	name: 'Yellow_streaks_lamina'
+}
+item{
+	id: 26
+	name: 'Youngest_leaf_drying'
+}

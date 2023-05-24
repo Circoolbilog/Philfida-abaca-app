@@ -16,6 +16,7 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,9 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.ViewHold
     }
     public interface PhotoListener{
         void onPhotoClick(String path);
+    }
 
+    private boolean isBuildVersionQ() {
+        return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
 }

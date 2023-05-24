@@ -45,7 +45,6 @@ public class AssessmentActivity extends AppCompatActivity {
     private static final int MY_READ_PERMISSION_CODE = 101;
 
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,7 +61,6 @@ public class AssessmentActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -76,7 +74,6 @@ public class AssessmentActivity extends AppCompatActivity {
         }
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     @SuppressLint("SetTextI18n")
     private void loadImages() {
         recyclerView.setHasFixedSize(true);
@@ -88,7 +85,11 @@ public class AssessmentActivity extends AppCompatActivity {
             startActivity(intent);
             //open photo
         });
+
         recyclerView.setAdapter(galleryAdapter);
         gallery_number.setText("Photos (" + images.size() + ")");
     }
+
+
+
 }

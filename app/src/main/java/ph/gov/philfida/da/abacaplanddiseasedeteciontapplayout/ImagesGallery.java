@@ -32,7 +32,6 @@ public class ImagesGallery {
     private static boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
-    @RequiresApi(api = Build.VERSION_CODES.Q)
     public static ArrayList<String> listOfImages(Context context){
         ArrayList<String> listOfAllImages = new ArrayList<>();
         if (isBuildVersionQ()){
@@ -47,8 +46,10 @@ public class ImagesGallery {
             String orderBy = MediaStore.Video.Media.DATE_TAKEN;
             cursor = context.getContentResolver().query(uri,projection, MediaStore.Images.Media.DATA + " like ? ",
                     new String[] {"%Pictures/Assessment/%"},orderBy+" DESC");
-            // cursor = context.getContentResolver().query(uri,projection, null,
-            //         null,orderBy+" DESC");
+            /*
+             cursor = context.getContentResolver().query(uri,projection, null,
+                     null,orderBy+" DESC");
+            */
             column_index_data = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
 
             //get folder name

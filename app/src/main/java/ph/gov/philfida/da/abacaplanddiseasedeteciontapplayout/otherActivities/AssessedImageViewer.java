@@ -30,7 +30,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -45,7 +47,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public class AssessedImageViewer extends AppCompatActivity {
-
+    private static final String TAG = "AssessedImageViewer";
     ImageView assessedImage;
     Bitmap selectedImage, boxedImage;
     TextView diseaseInfo;
@@ -91,6 +93,7 @@ public class AssessedImageViewer extends AppCompatActivity {
 
             assessedImage.setImageBitmap(selectedImage);
             String textFile = fileName.replace(".jpg", "_info.txt");
+            textFile = textFile.replace("Pictures", "Documents");
             if (isBuildVersionQ()) {
                 File file = new File(textFile);
                 info = viewInfoQ(file.getName());
@@ -133,9 +136,11 @@ public class AssessedImageViewer extends AppCompatActivity {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
 
+
     //in case future android versions requires mediastore in the future.
     private String viewInfoQ(String selected) {
         if (isBuildVersionQ()) {
+
             Uri textContentUri = MediaStore.Files.getContentUri("external");
             String selection = MediaStore.MediaColumns.RELATIVE_PATH + "=?";
             String[] selectionArgs = new String[]{Environment.DIRECTORY_DOCUMENTS + "/Assessment/"};
@@ -143,7 +148,7 @@ public class AssessedImageViewer extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
             Uri uri = null;
             if (cursor.getCount() == 0) {
-                Toast.makeText(this, "No Info File Found in \"" + Environment.DIRECTORY_DOCUMENTS + "/Assessment/\" " + "DIRECTORY", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, "viewInfoQ: "+ "No Info File Found in \"" + textContentUri + "DIRECTORY");
             } else {
                 while (cursor.moveToNext()) {
                     @SuppressLint("Range") String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));
@@ -199,6 +204,7 @@ public class AssessedImageViewer extends AppCompatActivity {
 
         } catch (IOException e) {
             e.printStackTrace();
+            Log.d(TAG, "viewInfo: " + e.getMessage());
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_LONG).show();
         } finally {
             String fileContents = stringBuilder.toString();

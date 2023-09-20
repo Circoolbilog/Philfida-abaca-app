@@ -16,6 +16,7 @@ package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
@@ -28,6 +29,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.things.update.UpdateManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -38,10 +44,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+
+
 import java.util.Objects;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.ForgotPasswordActivity;
+
 
 public class Login extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -60,6 +69,9 @@ public class Login extends AppCompatActivity {
     public static final String SHARED_PREFS = "loginData";
     public static final String REMEMBER = "rememberMe";
 
+    private AppUpdateManager appUpdateManager;
+    private final int updateType = AppUpdateType.IMMEDIATE;
+
     @SuppressLint("ResourceType")
     @Override
     protected void onStart() {
@@ -67,8 +79,8 @@ public class Login extends AppCompatActivity {
         super.onStart();
         //hide all elements. add 2 buttons, login and skip login
         FirebaseUser firebaseUser = mAuth.getCurrentUser();
-        if (firebaseUser!=null){
-            Intent login = new Intent(Login.this,MainActivity.class);
+        if (firebaseUser != null) {
+            Intent login = new Intent(Login.this, MainActivity.class);
             startActivity(login);
             finish();
         }
@@ -86,10 +98,55 @@ public class Login extends AppCompatActivity {
         guest = findViewById(R.id.guest);
         revLogin = findViewById(R.id.login2);
         revLogin.setOnClickListener(view -> revealLogin());
+
+        appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
+        checkForAppUpdates();
+
         assignButtons();
         assignInputs();
         layoutAdjustments();
         loadUserData();
+    }
+
+    private void checkForAppUpdates() {
+        appUpdateManager.getAppUpdateInfo().addOnSuccessListener(info -> {
+            boolean isUpdateAvailable = info.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE;
+            boolean isUpdateAllowed;
+
+            switch (updateType) {
+                case AppUpdateType.FLEXIBLE:
+                    isUpdateAllowed = info.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE);
+                    break;
+                case AppUpdateType.IMMEDIATE:
+                    isUpdateAllowed = info.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE);
+                    break;
+                default:
+                    isUpdateAllowed = false;
+            }
+
+            if (isUpdateAvailable && isUpdateAllowed) {
+                try {
+                    appUpdateManager.startUpdateFlowForResult(
+                            info,
+                            updateType,
+                            this,
+                            123
+                    );
+                } catch (IntentSender.SendIntentException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123){
+            if (resultCode != RESULT_OK){
+                System.out.println("Something went wrong updating....");
+            }
+        }
     }
 
     @Override
@@ -99,6 +156,7 @@ public class Login extends AppCompatActivity {
         finishAndRemoveTask();
         System.exit(1);
     }
+
 
 
     private void assignInputs() {                                                                   //assign id to inputs(TextInputEditText)
@@ -173,18 +231,18 @@ public class Login extends AppCompatActivity {
         ((SettingsContainer) this.getApplication()).setGuest(isGuest);
     }
 
-    void loginUser(){
-        mAuth.signInWithEmailAndPassword(inputEmail,inputPassword).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
+    void loginUser() {
+        mAuth.signInWithEmailAndPassword(inputEmail, inputPassword).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
                 progressBar.setVisibility(View.GONE);
-                Intent login = new Intent(Login.this,MainActivity.class);
+                Intent login = new Intent(Login.this, MainActivity.class);
                 startActivity(login);
-                if (keepMeLoggedIn){
+                if (keepMeLoggedIn) {
                     saveUserData();
                 }
                 finish();
-            }else{
-                Toast.makeText(Login.this,"Failed to login",Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(Login.this, "Failed to login", Toast.LENGTH_LONG).show();
                 progressBar.setVisibility(View.GONE);
             }
         });
@@ -202,19 +260,21 @@ public class Login extends AppCompatActivity {
         });
     }
 
-    private void saveUserData(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        SharedPreferences.Editor editor= sharedPreferences.edit();
-        editor.putBoolean(REMEMBER,keepMeLoggedIn);
+    private void saveUserData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(REMEMBER, keepMeLoggedIn);
         editor.apply();
     }
-    public void loadUserData(){
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS,MODE_PRIVATE);
-        keepMeLoggedIn = sharedPreferences.getBoolean(REMEMBER,true);
+
+    public void loadUserData() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        keepMeLoggedIn = sharedPreferences.getBoolean(REMEMBER, true);
         keepLoggedIn.setChecked(keepMeLoggedIn);
 
     }
-    public void revealLogin(){
+
+    public void revealLogin() {
         emailAddress.setVisibility(View.VISIBLE);
         password.setVisibility(View.VISIBLE);
         keepLoggedIn.setVisibility(View.VISIBLE);

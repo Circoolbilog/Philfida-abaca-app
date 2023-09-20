@@ -226,15 +226,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 if (snapshot.exists() && temp != dbSize) {
-                    Log.d(TAG, "onDataChange: " + diseaseDBModels.size() + "/" + snapshot.getChildrenCount());
-                    for (DiseaseDBModel disease : diseaseDBModels) {
-
-//                        dbHelper.clear(disease);
-//                      Clear table
-                    }
-
-
-                    Log.d(TAG, "onDataChange: TABLE cleared, ready to be repopulated");
                     for (int i = 0; i != currentDbSize; i++) {
 
                         if (snapshot.child("0_No_Allocation").child(String.valueOf(i)).getValue() != null) {
@@ -297,8 +288,8 @@ public class MainActivity extends AppCompatActivity {
         }
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         boolean success = dbHelper.addOneSymptom(dbModel);
-        if (!success)
-            Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
+        //if (!success)
+           // Toast.makeText(this, "Failed to update local database", Toast.LENGTH_SHORT).show();
     }
 
     //Load user data from Shared Preference(locally stored)
@@ -533,10 +524,7 @@ public class MainActivity extends AppCompatActivity {
             successDirCreated = storageDir.mkdir();
             Log.d(TAG, "downloadImage: try download");
         }
-        if (!successDirCreated && !storageDir.exists()) {
-            Toast.makeText(this, "Failed to make folder!" + storageDir, Toast.LENGTH_SHORT).show();
-            return;
-        }
+ 
         Log.d(TAG, "downloadImage: " + img.toString() + " exists: " + img.exists());
         if (img.exists()){
             Log.d(TAG, "downloadImage: File exists");

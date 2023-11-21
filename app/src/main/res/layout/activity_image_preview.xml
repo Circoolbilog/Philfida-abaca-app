@@ -184,7 +184,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="15dp"
         android:elevation="15dp"
-        android:onClick="captureNextImage"
+        android:onClick="requestPerms"
         android:visibility="invisible"
         app:cardBackgroundColor="@color/translucent_bg"
         app:cardCornerRadius="5dp"

@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.text.HtmlCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DetectedObjectsData;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper;
 
 import android.annotation.SuppressLint;
 import android.content.ContentUris;
@@ -30,7 +32,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Button;
@@ -44,6 +45,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
 
 public class AssessedImageViewer extends AppCompatActivity {
@@ -55,6 +57,7 @@ public class AssessedImageViewer extends AppCompatActivity {
     float latitude, longitude;
     String info;
     boolean viewBoxed = false;
+    List<DetectedObjectsData> dbModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +80,6 @@ public class AssessedImageViewer extends AppCompatActivity {
                 }
         );
         openMap = findViewById(R.id.buttonOpenMaps);
-
         openMap.setOnClickListener(view -> {
             String uri = String.format(Locale.ENGLISH, "geo:%f,%f?q=" + latitude + "," + longitude, latitude, longitude);
             Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
@@ -92,50 +94,81 @@ public class AssessedImageViewer extends AppCompatActivity {
             boxedImage = BitmapFactory.decodeFile(BfileName);
 
             assessedImage.setImageBitmap(selectedImage);
+
             String textFile = fileName.replace(".jpg", "_info.txt");
             textFile = textFile.replace("Pictures", "Documents");
-            if (isBuildVersionQ()) {
-                File file = new File(textFile);
-                info = viewInfoQ(file.getName());
-                diseaseInfo.setText(HtmlCompat.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY));
-                try {
-                    String remove = info.replaceAll("[\n]", "");
-                    remove = remove.replaceAll(".*Lo", "Lo");
-                    String longt = remove.replaceAll("Latitude: .*", "");
-                    longt = longt.replaceAll("i", "");
-                    String lat = remove.replaceAll(".*Longitude: .*L", "L");
-                    longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
-                    latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
-                } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
 
+            // Check if the text file exists
+            if (new File(textFile).exists()) {
+                if (isBuildVersionQ()) {
+                    File file = new File(textFile);
+                    info = viewInfoQ(file.getName());
+                    diseaseInfo.setText(HtmlCompat.fromHtml(info, HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    try {
+                        String remove = info.replaceAll("[\n]", "");
+                        remove = remove.replaceAll(".*Lo", "Lo");
+                        String longt = remove.replaceAll("Latitude: .*", "");
+                        longt = longt.replaceAll("i", "");
+                        String lat = remove.replaceAll(".*Longitude: .*L", "L");
+                        longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
+                        latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+
+                } else {
+                    textFile = fileName.replace("jpg", "_info.txt");
+                    diseaseInfo.setText(HtmlCompat.fromHtml(viewInfo(textFile), HtmlCompat.FROM_HTML_MODE_LEGACY));
+                    try {
+                        String remove = viewInfo(textFile).replaceAll("[\n]", "");
+                        remove = remove.replaceAll(".*Lo", "Lo");
+                        String longt = remove.replaceAll("Latitude: .*", "");
+                        longt = longt.replaceAll("i", "");
+                        String lat = remove.replaceAll(".*Longitude: .*L", "L");
+                        longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
+                        latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
+                    } catch (NumberFormatException e) {
+                        Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
             } else {
-                textFile = fileName.replace("jpg", "_info.txt");
-                diseaseInfo.setText(HtmlCompat.fromHtml(viewInfo(textFile), HtmlCompat.FROM_HTML_MODE_LEGACY));
-                try {
-                    String remove = viewInfo(textFile).replaceAll("[\n]", "");
-                    remove = remove.replaceAll(".*Lo", "Lo");
-                    String longt = remove.replaceAll("Latitude: .*", "");
-                    longt = longt.replaceAll("i", "");
-                    String lat = remove.replaceAll(".*Longitude: .*L", "L");
-                    longitude = Float.parseFloat(longt.replaceAll("[a-zA-Z<>:_]", ""));
-                    latitude = Float.parseFloat(lat.replaceAll("[a-zA-Z<>:_]", ""));
-                } catch (NumberFormatException e) {
-                    Toast.makeText(this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-                }
-
+                // If the text file doesn't exist, fetch information from the database
+                getInfoFromDB(fileName);
             }
-
         }
 
     }
-
 
     private boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
 
+
+    private void getInfoFromDB(String file) {
+        String infos = "";
+        File filePath = new File(file);
+        String filename = filePath.getName();
+        DiseaseInfoDBHelper infoDBHelper = new DiseaseInfoDBHelper(this);
+        diseaseInfo.setText("");
+        List<DetectedObjectsData> fromDB = infoDBHelper.searchByImageFileName(filename);
+        if (fromDB.size() == 1) {
+            DetectedObjectsData detectedObjectsData = fromDB.get(0);
+            infos = String.join(",",detectedObjectsData.getDetectedDiseases());
+            infos = infos + "\n\nSymptoms: \n" + String.join(",",detectedObjectsData.getSymptoms());
+            infos = infos + "\n\nGeolocation:\n" + detectedObjectsData.getGeolocation();
+            infos = infos.replace(",","\n");
+            diseaseInfo.setText(infos);
+        } else {
+            for (DetectedObjectsData detectedObjectsData : fromDB) {
+                infos = String.join(",",detectedObjectsData.getDetectedDiseases());
+                infos = infos + "\n\nSymptoms: \n" + String.join(",",detectedObjectsData.getSymptoms());
+                infos = infos + "\n\nGeolocation:\n" + detectedObjectsData.getGeolocation();
+                infos = infos.replace(",","\n");
+                diseaseInfo.setText(infos);
+            }
+        }
+
+    }
 
     //in case future android versions requires mediastore in the future.
     private String viewInfoQ(String selected) {
@@ -148,7 +181,7 @@ public class AssessedImageViewer extends AppCompatActivity {
             Cursor cursor = getContentResolver().query(textContentUri, null, selection, selectionArgs, null);
             Uri uri = null;
             if (cursor.getCount() == 0) {
-                Log.d(TAG, "viewInfoQ: "+ "No Info File Found in \"" + textContentUri + "DIRECTORY");
+                Log.d(TAG, "viewInfoQ: " + "No Info File Found in \"" + textContentUri + "DIRECTORY");
             } else {
                 while (cursor.moveToNext()) {
                     @SuppressLint("Range") String fileName = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DISPLAY_NAME));

@@ -131,10 +131,8 @@ public abstract class Diagnose extends AppCompatActivity
         }
         if (((SettingsContainer) this.getApplication()).getDiagnoseMode() == 0) {
             setDialogText("DEFAULT: " + "Single Capture Mode");
-            layout.setVisibility(View.GONE);
         } else {
             setDialogText("DEFAULT: " + "Dual Capture Mode");
-            layout.setVisibility(View.GONE);
         }
     }
 

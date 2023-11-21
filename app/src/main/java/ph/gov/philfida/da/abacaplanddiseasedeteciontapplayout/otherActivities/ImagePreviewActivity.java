@@ -58,7 +58,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DetectedObjectsData;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer;
 
@@ -66,6 +68,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
     public String timestamp;
     int noAllocationScore = 0, bractScore = 0, bunchyScore = 0, cmvScore = 0, genMosaicScore = 0, scmvScore = 0;
     ArrayList<String> no_allocation_list, bract_list, bunchy_list, cmv_list, gen_mosaic_list, scmv_list;
+    ArrayList<String> detectedDiseasesWScores = new ArrayList<>();
 
     byte[] bs2;
     ArrayList<String> symptomsDetected;
@@ -78,6 +81,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
     double lat, longt;
     private static final int REQUEST = 112;
     private static final String TAG = "ImagePreviewActivity";
+    int groupID = 0;
+    boolean increment = true;
 
     @SuppressLint("SimpleDateFormat")
     @Override
@@ -88,7 +93,13 @@ public class ImagePreviewActivity extends AppCompatActivity {
         assignIDs();
         loadDB();
         importExtras();
+        getLastGroupID();
         //make sure that there are no duplicate names
+    }
+
+    private void getLastGroupID() {
+        DiseaseInfoDBHelper infoDBHelper = new DiseaseInfoDBHelper(this);
+        groupID = infoDBHelper.getLastGroupID();
     }
 
     private void assignIDs() {
@@ -96,7 +107,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
         loading = findViewById(R.id.loading);
         title = findViewById(R.id.diseasePredicion);
         nextCapture = findViewById(R.id.captureNextImage);
-
     }
 
     private void loadDB() {
@@ -109,18 +119,18 @@ public class ImagePreviewActivity extends AppCompatActivity {
         DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
         List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
         for (DiseaseDBModel dbModel : dbModelList) {
-            if (!dbModel.getNo_Allocation().equals("NULL") | !dbModel.getNo_Allocation().equals(""))
-                no_allocation_list.add(dbModel.getNo_Allocation());
-            if (!dbModel.getBract_Mosaic().equals("NULL") | !dbModel.getBract_Mosaic().equals(""))
-                bract_list.add(dbModel.getBract_Mosaic());
-            if (!dbModel.getBunchy_Top().equals("NULL") | !dbModel.getBunchy_Top().equals(""))
-                bunchy_list.add(dbModel.getBunchy_Top());
-            if (!dbModel.getCMV().equals("NULL") | !dbModel.getCMV().equals(""))
-                cmv_list.add(dbModel.getCMV());
-            if (!dbModel.getGen_Mosaic().equals("NULL") | !dbModel.getGen_Mosaic().equals(""))
-                gen_mosaic_list.add(dbModel.getGen_Mosaic());
-            if (!dbModel.getSCMV().equals("NULL") | !dbModel.getSCMV().equals(""))
-                scmv_list.add(dbModel.getSCMV());
+            addIfValid(no_allocation_list, dbModel.getNo_Allocation());
+            addIfValid(bract_list, dbModel.getBract_Mosaic());
+            addIfValid(bunchy_list, dbModel.getBunchy_Top());
+            addIfValid(cmv_list, dbModel.getCMV());
+            addIfValid(gen_mosaic_list, dbModel.getGen_Mosaic());
+            addIfValid(scmv_list, dbModel.getSCMV());
+        }
+    }
+
+    public void addIfValid(List<String> list, String value) {
+        if (!"NULL".equals(value) && !value.isEmpty()) {
+            list.add(value);
         }
     }
 
@@ -164,20 +174,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
             if (scmv_list.contains(symptom)) scmvScore++;
         }
 
-
         List<ScoredDiseases> scoredDiseases;
         scoredDiseases = new ArrayList<>();
-        if(!symptoms.isEmpty()){
-            scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore ));
+        if (!symptoms.isEmpty()) {
+            scoredDiseases.add(new ScoredDiseases("No Allocation", noAllocationScore));
             scoredDiseases.add(new ScoredDiseases("Bract Mosaic", bractScore));
-            scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore ));
-            scoredDiseases.add(new ScoredDiseases("CMV", cmvScore ));
-            scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore ));
+            scoredDiseases.add(new ScoredDiseases("Bunchy Top", bunchyScore));
+            scoredDiseases.add(new ScoredDiseases("CMV", cmvScore));
+            scoredDiseases.add(new ScoredDiseases("General Mosaic", genMosaicScore));
             scoredDiseases.add(new ScoredDiseases("SCMV", scmvScore));
         }
-
-
-
 
         for (ScoredDiseases disease : scoredDiseases) {
             if (disease.getScore() != 0) sortedDiseases.add(disease);
@@ -186,12 +192,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
             sortedDiseases.sort((t0, t1) -> t1.getScore() - t0.getScore());
         }
 
-
         StringBuilder symptomScores = new StringBuilder();
         int index = 0;
         for (ScoredDiseases disease : sortedDiseases) {
-//            disease.setScore(((disease.getScore()* 100 / symptoms.size())*((100/sortedDiseases.size())))/100);
-            disease.setScore((int)(((float)disease.getScore()/((float) symptoms.size()*(float) sortedDiseases.size()))*100));
+            disease.setScore((int) (((float) disease.getScore() / ((float) symptoms.size() * (float) sortedDiseases.size())) * 100));
+            detectedDiseasesWScores.add(disease.toString());
             if (index == 0) {
                 symptomScores = new StringBuilder(("<h2><b>" + disease.getName() + " : " + disease.getScore() + "%" + "</b></h2>"));
             } else {
@@ -203,7 +208,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
 
         detectionInfo = symptomScores + "<br><p><i>" + getSymptoms() + "</i></p><br>" + "Longitude: " + longt + "<br>" + "Latitude: " + lat;
         title.setText(Html.fromHtml(symptomScores.toString()));
-//        title.setText(HtmlCompat.fromHtml(symptomScores, HtmlCompat.FROM_HTML_MODE_LEGACY));
     }
 
     private static class ScoredDiseases {
@@ -213,8 +217,7 @@ public class ImagePreviewActivity extends AppCompatActivity {
         @NonNull
         @Override
         public String toString() {
-            return name + ": " + score + "%" + '\''
-                    ;
+            return name + ": " + score + "%" + '\'';
         }
 
         ScoredDiseases(String name, int score) {
@@ -239,7 +242,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
         }
     }
 
-
     private void loadImage(Bundle extras) {
         //load image from camera
         byte[] bs = extras.getByteArray("byteArray");
@@ -251,11 +253,16 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void requestPerms(View view) {
+
         if (ContextCompat.checkSelfPermission(ImagePreviewActivity.this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(ImagePreviewActivity.this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQUEST);
         } else {
+            if (view.getId() == R.id.captureNextImage) {
+                Toast.makeText(this, "button clicked: " + view, Toast.LENGTH_SHORT).show();
+                increment = false;
+            }
             try {
                 saveImage(bitmap);
                 saveBoxedImage(boxedBitmap);
@@ -264,6 +271,8 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 Log.d(TAG, "requestPerms: " + e.getMessage());
             }
         }
+
+
     }
 
     @Override
@@ -310,7 +319,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-
         } else {
             //below android Q
             //Save Image File
@@ -330,11 +338,11 @@ public class ImagePreviewActivity extends AppCompatActivity {
         finish();
     }
 
-
     private void saveImage(Bitmap bitmap3) throws IOException {
+        DiseaseInfoDBHelper dbHelper = new DiseaseInfoDBHelper(this);
+
         String name = "localImage_" + timestamp;
         OutputStream fosOne; // image file 1 output stream
-        OutputStream fosText; // text file output stream
         File dir = new File(Environment.getExternalStorageDirectory(), "Pictures/Assessment");
         File textDir = new File(Environment.getExternalStorageDirectory(), "Documents/Assessment");
         if (!dir.exists() || !textDir.exists()) {
@@ -346,7 +354,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
         if (isBuildVersionQ()) {
             //Save Image File
             Uri imagePathUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            Uri textPathUri = MediaStore.Files.getContentUri("external");
             ContentResolver imageOneResolver = getContentResolver();
             ContentValues imageOneCV = new ContentValues();
             imageOneCV.put(MediaStore.Images.Media.DISPLAY_NAME, name + ".jpg");
@@ -356,30 +363,41 @@ public class ImagePreviewActivity extends AppCompatActivity {
             Uri imageUri = imageOneResolver.insert(imagePathUri, imageOneCV);
             fosOne = imageOneResolver.openOutputStream(Objects.requireNonNull(imageUri));
 
-            //Save Text file
-            ContentResolver textContentResolver = getContentResolver();
-            ContentValues textCV = new ContentValues();
-            textCV.put(MediaStore.MediaColumns.DISPLAY_NAME, name + "_info.txt");
-            textCV.put(MediaStore.MediaColumns.MIME_TYPE, "text/plain");
-            textCV.put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOCUMENTS + "/Assessment/");
-
-            Uri textUri = imageOneResolver.insert(textPathUri, textCV);
-            fosText = textContentResolver.openOutputStream(textUri);
         } else {
             //below android Q
             //Save Image File
             File imageFileOne = new File(dir, name + "jpg");
             fosOne = new FileOutputStream(imageFileOne);
-            //Save Text file
-            File textFile = new File(textDir, name + "_info.txt");
-            fosText = new FileOutputStream(textFile);
         }
-        fosText.write(detectionInfo.getBytes());
-        fosText.close();
         bitmap3.compress(Bitmap.CompressFormat.JPEG, 100, fosOne);
         Objects.requireNonNull(fosOne).close();
 
         finish();
+
+        //Save to database
+        if (detectedDiseasesWScores != null) {
+            String filename = name + ".jpg";
+            List<String> detectedDiseases = detectedDiseasesWScores;
+            List<String> detectedSymptoms = symptomsDetected;
+            String geolocation = lat + "," + longt;
+            if(!increment) groupID++;
+            DetectedObjectsData detectedObjectsData = new DetectedObjectsData(filename, detectedDiseases, detectedSymptoms, geolocation, groupID);
+            boolean success = dbHelper.addDetected(detectedObjectsData);
+            if (!success)
+                Toast.makeText(getApplicationContext(), "try Failed to update local database", Toast.LENGTH_LONG).show();
+        } else {
+            String filename = name + ".jpg";
+            List<String> detectedDiseases = new ArrayList<>();
+            detectedDiseases.add("");
+            List<String> detectedSymptoms = new ArrayList<>();
+            detectedSymptoms.add("");
+            String geolocation = lat + "," + longt;
+            groupID++;
+            DetectedObjectsData detectedObjectsData = new DetectedObjectsData(filename, detectedDiseases, detectedSymptoms, geolocation, groupID);
+            boolean success = dbHelper.addDetected(detectedObjectsData);
+            if (!success)
+                Toast.makeText(getApplicationContext(), "try Failed to update local database", Toast.LENGTH_LONG).show();
+        }
     }
 
     private boolean isBuildVersionQ() {
@@ -387,12 +405,6 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void discardImage(View view) {
-        finish();
-    }
-
-    public void captureNextImage(View view) {
-        Toast.makeText(this, "Feature Under Development", Toast.LENGTH_SHORT).show();
-        //save symptoms to an array
         finish();
     }
 
@@ -415,5 +427,4 @@ public class ImagePreviewActivity extends AppCompatActivity {
         s = sBuilder.toString();
         return s;
     }
-
 }

@@ -135,8 +135,19 @@ public class SettingsDialog1 extends AppCompatDialogFragment {
                 .setCancelable(false)
                 .setPositiveButton(option1, (dialog, which) -> {
                     if (customDialogLayout == R.layout.custom_confidence_threshold_dialog) {
-                        int confidence = Integer.parseInt(confidenceVal.getText().toString().trim());
-                        listener.applyConfidence(confidence);
+                        String confidenceText = confidenceVal.getText().toString().trim();
+                        if (!confidenceText.isEmpty()) {
+                            try {
+                                int confidence = Integer.parseInt(confidenceText);
+                                listener.applyConfidence(confidence);
+                            } catch (NumberFormatException e) {
+                                // Handle the case where input is not a valid integer
+                                // Show an error message or take appropriate action
+                            }
+                        } else {
+                            // Handle the case where input is empty
+                            // Show an error message or take appropriate action
+                        }
                     } else {
                         call(1);
                     }

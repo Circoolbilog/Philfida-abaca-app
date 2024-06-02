@@ -65,7 +65,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.tracking.MultiBoxT
  * objects.
  */
 
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class DetectorActivity extends Diagnose implements OnImageAvailableListener {
     static long startTime;
     static long elapsedTime;
@@ -76,7 +75,7 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
     // Configuration values for the prepackaged SSD model.
     private static final int TF_OD_API_INPUT_SIZE = 640;
     private static final boolean TF_OD_API_IS_QUANTIZED = false;
-    private static final String TF_OD_API_MODEL_FILE = "offlinemodel9_meta.tflite";
+    private static final String TF_OD_API_MODEL_FILE = "offline_model29.tflite";
     private static final String TF_OD_API_LABELS_FILE = "symptoms.txt";
     private static final DetectorMode MODE = DetectorMode.TF_OD_API;
     // Minimum detection confidence to track a detection.
@@ -171,7 +170,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
         tracker.setFrameConfiguration(previewWidth, previewHeight, sensorOrientation);
     }
-
 
     @Override
     public synchronized void onPause() {
@@ -312,7 +310,6 @@ public class DetectorActivity extends Diagnose implements OnImageAvailableListen
 
         });
 
-        lastDetection = confidenceList.size();
     }
 
     private byte[] bitmapToArray(Bitmap bitmap) {

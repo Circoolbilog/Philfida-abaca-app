@@ -82,25 +82,29 @@ public class DiseaseInfo extends AppCompatActivity {
                     item.add(new SimpleItem(symptom.getNo_Allocation()));
                     break;
                 case "Bract_Mosaic":
+                    if (symptom.getBract_Mosaic() == null) break;
                     if (symptom.getBract_Mosaic().equals("NULL") | symptom.getBract_Mosaic().equals(""))
                         break;
                     item.add(new SimpleItem(symptom.getBract_Mosaic()));
                     break;
                 case "Bunchy_Top":
+                    if (symptom.getBunchy_Top() == null) break;
                     if (symptom.getBunchy_Top().equals("NULL") | symptom.getBunchy_Top().equals(""))
                         break;
                     item.add(new SimpleItem(symptom.getBunchy_Top()));
                     break;
                 case "CMV":
+                    if (symptom.getCMV() == null) break;
                     if (symptom.getCMV().equals("NULL") | symptom.getCMV().equals("")) break;
                     item.add(new SimpleItem(symptom.getCMV()));
                     break;
                 case "Gen_Mosaic":
+                    if (symptom.getGen_Mosaic() == null) break;
                     if (symptom.getGen_Mosaic().equals("NULL") | symptom.getGen_Mosaic().equals(""))
                         break;
                     item.add(new SimpleItem(symptom.getGen_Mosaic()));
                     break;
-                case "SCMV":
+                case "SCMV": if (symptom.getSCMV() == null) break;
                     if (symptom.getSCMV().equals("NULL") | symptom.getSCMV().equals("")) break;
                     item.add(new SimpleItem(symptom.getSCMV()));
                     break;

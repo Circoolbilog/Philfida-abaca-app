@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -20,8 +19,9 @@
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_diagnose.xml" value="0.4542572463768116" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_disease_index.xml" value="0.15096251266464034" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_image_preview.xml" value="0.2796352583586626" />
-        <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_login.xml" value="0.24094202898550723" />
+        <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_login.xml" value="0.1" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_main.xml" value="0.3802083333333333" />
+        <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_settings.xml" value="0.19908814589665655" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/activity_welcome_screen.xml" value="0.3151041666666667" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/disease_index_item.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/MSIGAMINGEDGE/StudioProjects/Philfida-abaca-app/app/src/main/res/layout/gallery_item.xml" value="0.446875" />
@@ -29,7 +29,7 @@
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="corretto-11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

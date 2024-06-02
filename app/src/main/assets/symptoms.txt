@@ -23,4 +23,3 @@ Wrinkled_leaf
 Yellow_brown_leaf_lamina
 Yellow_edge
 Yellow_streaks_lamina
-Youngest_leaf_drying

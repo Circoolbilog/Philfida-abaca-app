@@ -22,14 +22,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import androidx.annotation.Nullable;
-
-import org.json.JSONArray;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 
 public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     public static final String DISEASES_INFO_TABLE = "DISEASES_INFO";
@@ -38,22 +37,33 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PICTURE = "Picture";
     public static final String COLUMN_TREATMENT = "Treatment";
     public static final String COLUMN_ID = "ID";
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 3;
+    private static final String TAG = "DiseaseInfoDBHelper";
+    private Context mContext;
 
     public DiseaseInfoDBHelper(Context context) {
         super(context, "DiseaseInfo.db", null, DATABASE_VERSION);
+        this.mContext = context;
     }
 
     //firstTime db access
     @Override
     public void onCreate(SQLiteDatabase db) {
+        // Create the initial tables
+        createInitialTables(db);
+        createNewTablesAndData(db);
+        Log.d(TAG, "onCreate: Database created and tables populated.");
+
+    }
+
+    public void createInitialTables(SQLiteDatabase db) {
         String createTableStatement = "CREATE TABLE IF NOT EXISTS " + DISEASES_INFO_TABLE +
                 "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COLUMN_DISEASE_NAME + " TEXT, " +
                 COLUMN_DISEASE_DESC + " TEXT, " +
                 COLUMN_PICTURE + " TEXT, " +
-                COLUMN_TREATMENT +  " TEXT )";
-// Create Table2
+                COLUMN_TREATMENT + " TEXT )";
+        db.execSQL(createTableStatement);
         String createTable2 = "CREATE TABLE IF NOT EXISTS Table2 ("
                 + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
                 + "imageFileName TEXT, "
@@ -62,44 +72,49 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
                 + "geolocation TEXT, "
                 + "groupID TEXT)";
         db.execSQL(createTable2);
-        db.execSQL(createTableStatement);
+    }
+
+    public void createNewTablesAndData(SQLiteDatabase db) {
+        // Insert data into DISEASES_INFO table
+        db.execSQL("INSERT OR IGNORE INTO " + DISEASES_INFO_TABLE + " (" +
+                COLUMN_DISEASE_NAME + ", " + COLUMN_DISEASE_DESC + ", " +
+                COLUMN_PICTURE + ", " + COLUMN_TREATMENT + ") VALUES" +
+                "('Bract_Mosaic', '" + mContext.getResources().getString(R.string.bract_mosaic_desc) + "', 'https://firebasestorage.googleapis.com/v0/b/abaca-app-1608255969777.appspot.com/o/Diseases%2FBANANA%20BRACT%20MOSAIC%20DISEASE.png?alt=media&token=641c0799-3061-448d-bf87-50ffe0ce7889', 'value')," +
+                "('Bunchy_Top', '" + mContext.getResources().getString(R.string.bunchy_top_desc) + "', 'https://firebasestorage.googleapis.com/v0/b/abaca-app-1608255969777.appspot.com/o/Diseases%2FBUNCHY%20TOP%20VIRUS.png?alt=media&token=5d84a775-3cd2-4e93-964f-1778cb6119a5', 'value')," +
+                "('CMV', '" + mContext.getResources().getString(R.string.CMV_desc) + "', 'value', 'value')," +
+                "('Gen_Mosaic', '" + mContext.getResources().getString(R.string.Gen_mosaic_desc) + "', 'https://firebasestorage.googleapis.com/v0/b/abaca-app-1608255969777.appspot.com/o/Diseases%2FGen_Mosaic.png?alt=media&token=37c03ca2-4fb6-41f5-8dbc-69c8ec61ff15', 'value')," +
+                "('SCMV', '" + mContext.getResources().getString(R.string.SCMV_desc) + "', 'https://firebasestorage.googleapis.com/v0/b/abaca-app-1608255969777.appspot.com/o/Diseases%2FSUGARCANE%20MOSAIC%20DISEASE%20IN%20ABACA.png?alt=media&token=b9e82707-e1c2-4d9c-a042-ba96a51ee55a', 'value')");
+
+        // Create Diseases table
+        db.execSQL("CREATE TABLE IF NOT EXISTS Diseases (" +
+                "grouping_name TEXT PRIMARY KEY," +
+                "diseases TEXT)");
+
+        // Insert data into Diseases table
+        db.execSQL("INSERT OR IGNORE INTO Diseases (grouping_name, diseases) VALUES" +
+                "('0_No_Allocation', 'Yellow_patches_peduncle')," +
+                "('Bract_Mosaic', 'Alt_green_yellow_streaks_spindled_chlorosis, Bract_red_brown_mosaic_pattern, ...')," +
+                "('Bunchy_Top', 'Brown_leaf_margin, Dark_green_thick_veins, Jhooks, ...')," +
+                "('CMV', 'Chlorosis_midrib, Dark_green_leaf_streaks, ...')," +
+                "('Gen_Mosaic', 'Alt_green_yellow_streaks_spindled_chlorosis, Bract_red_brown_mosaic_pattern, ...')," +
+                "('SCMV', 'Chlorosis_midrib, Dashes_dots_lamina, ...')");
+        Log.d(TAG, "createNewTablesAndData: this method ran");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion < 2) {
-            // Create Table2
-            String createTable2 = "CREATE TABLE IF NOT EXISTS Table2 ("
-                    + "id INTEGER PRIMARY KEY AUTOINCREMENT, "
-                    + "imageFileName TEXT, "
-                    + "detectedDiseases TEXT, "
-                    + "symptoms TEXT, "
-                    + "geolocation TEXT, "
-                    + "groupID TEXT)";
-            db.execSQL(createTable2);
+        if (oldVersion < newVersion) {
+            createNewTablesAndData(db);
         }
     }
 
 
-
-    public boolean addOneDiseaseInfo(DiseaseInfoDBModel dbModel) {
+    public int getLastGroupID() {
+        String queryString = "SELECT * FROM Table2";
         SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_DISEASE_NAME, dbModel.getDiseaseName());
-        cv.put(COLUMN_DISEASE_DESC, dbModel.getDiseaseDesc());
-        cv.put(COLUMN_PICTURE, dbModel.getPicture());
-        cv.put(COLUMN_TREATMENT, dbModel.getTreatment());;
-
-
-        long insert = db.insert(DISEASES_INFO_TABLE, null, cv);
-        return insert != -1;
-    }
-
-    public int getLastGroupID(){
-        String queryString = "SELECT MAX(groupID) FROM Table2";
-        SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(queryString,null);
+        Cursor cursor = db.rawQuery(queryString, null);
         int lastGroupID = 0;
+
         if (cursor.moveToFirst()) {
             lastGroupID = Integer.parseInt(cursor.getString(0));
         }
@@ -110,22 +125,23 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     }
 
 
-    public List<DetectedObjectsData> getDetectedObjects(){
+    public List<DetectedObjectsData> getDetectedObjects() {
         List<DetectedObjectsData> dataObjects = new ArrayList<>();
         String queryString = "SELECT * FROM " + "Table2";
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery(queryString,null);
+        Cursor cursor = db.rawQuery(queryString, null);
+        Log.d(TAG, "getDetectedObjects: database path: " + db.getPath());
 
-        if (cursor.moveToFirst()){
-            do{
+        if (cursor.moveToFirst()) {
+            do {
                 String imageFileName = cursor.getString(1);
                 List<String> detectedDiseases = toListString(cursor.getString(2));
                 List<String> symptoms = toListString(cursor.getString(3));
                 String geoLocation = cursor.getString(4);
                 int groupID = cursor.getInt(5);
-                DetectedObjectsData detectedObjectsData = new DetectedObjectsData(imageFileName,detectedDiseases,symptoms,geoLocation,groupID);
+                DetectedObjectsData detectedObjectsData = new DetectedObjectsData(imageFileName, detectedDiseases, symptoms, geoLocation, groupID);
                 dataObjects.add(detectedObjectsData);
-            }while(cursor.moveToNext());
+            } while (cursor.moveToNext());
 
         }
         return dataObjects;
@@ -169,14 +185,14 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     }
 
 
-    public boolean addDetected(DetectedObjectsData detectedObjectsData){
+    public boolean addDetected(DetectedObjectsData detectedObjectsData) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues cv = new ContentValues();
         cv.put("imageFileName", detectedObjectsData.getImageFileName());
         cv.put("detectedDiseases", fromListString(detectedObjectsData.getDetectedDiseases()));
         cv.put("symptoms", fromListString(detectedObjectsData.getSymptoms()));
-        cv.put("geolocation",detectedObjectsData.getGeolocation());
-        cv.put("groupID",detectedObjectsData.getGroupID());
+        cv.put("geolocation", detectedObjectsData.getGeolocation());
+        cv.put("groupID", detectedObjectsData.getGroupID());
 
         long insert = db.insert("Table2", null, cv);
         return insert != -1;
@@ -189,6 +205,7 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     private static String fromListString(List<String> list) {
         return String.join(",", list);
     }
+
     public List<DiseaseInfoDBModel> getDiseasesInfo() {
         List<DiseaseInfoDBModel> returnList = new ArrayList<>();
 
@@ -209,7 +226,7 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
                 String picture = cursor.getString(3);
                 String treatment = cursor.getString(4);
 
-                DiseaseInfoDBModel newDisease = new DiseaseInfoDBModel(diseaseID,diseaseName, diseaseDesc, picture, treatment);
+                DiseaseInfoDBModel newDisease = new DiseaseInfoDBModel(diseaseID, diseaseName, diseaseDesc, picture, treatment);
                 returnList.add(newDisease);
             } while (cursor.moveToNext());
         } else {

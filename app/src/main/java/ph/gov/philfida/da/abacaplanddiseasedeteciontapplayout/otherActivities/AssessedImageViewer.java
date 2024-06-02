@@ -136,13 +136,11 @@ public class AssessedImageViewer extends AppCompatActivity {
                 getInfoFromDB(fileName);
             }
         }
-
     }
 
     private boolean isBuildVersionQ() {
         return Build.VERSION.SDK_INT > Build.VERSION_CODES.Q;
     }
-
 
     private void getInfoFromDB(String file) {
         String infos = "";
@@ -167,7 +165,6 @@ public class AssessedImageViewer extends AppCompatActivity {
                 diseaseInfo.setText(infos);
             }
         }
-
     }
 
     //in case future android versions requires mediastore in the future.
@@ -199,17 +196,11 @@ public class AssessedImageViewer extends AppCompatActivity {
                 } else {
                     try {
                         InputStream inputStream = getContentResolver().openInputStream(uri);
-
                         int size = inputStream.available();
-
                         byte[] bytes = new byte[size];
-
                         inputStream.read(bytes);
-
                         inputStream.close();
-
                         return new String(bytes, StandardCharsets.UTF_8);
-
                     } catch (IOException e) {
                         e.printStackTrace();
                         return e.getMessage();
@@ -217,7 +208,6 @@ public class AssessedImageViewer extends AppCompatActivity {
                 }
             }
         }
-
         return "no such file in directory";
     }
 
@@ -243,7 +233,6 @@ public class AssessedImageViewer extends AppCompatActivity {
             String fileContents = stringBuilder.toString();
             fileContents = fileContents.replace(")", "");
             output = fileContents.replace("RectF(", "Location(Coordinates): ");
-
         }
         return output;
     }

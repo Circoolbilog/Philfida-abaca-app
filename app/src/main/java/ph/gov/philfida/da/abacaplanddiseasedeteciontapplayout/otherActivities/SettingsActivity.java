@@ -91,8 +91,8 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
                         R.layout.custom_confidence_threshold_dialog);
             }
         });
-        confidenceThreshold.setVisibility(View.INVISIBLE);
-        confidenceThreshold.setEnabled(false);
+//        confidenceThreshold.setVisibility(View.INVISIBLE);
+//        confidenceThreshold.setEnabled(false);
         showWelcome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

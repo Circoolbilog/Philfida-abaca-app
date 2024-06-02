@@ -1,0 +1,76 @@
+{
+  "0_No_Allocation": [
+    "Yellow_patches_peduncle"
+  ],
+  "Bract_Mosaic": [
+    "Alt_green_yellow_streaks_spindled_chlorosis",
+    "Bract_red_brown_mosaic_pattern",
+    "Chlorosis_midrib",
+    "Corrugated_leaf",
+    "Dark_green_leaf_streaks",
+    "Dark_green_spots_patches_streaks_petiole",
+    "Dashes_dots_lamina",
+    "Deformed_leaf",
+    "Rusty_yellow_leaf_margins",
+    "Rusty_yellow_streaks",
+    "Shoe_stringing",
+    "Streaks_midrib",
+    "Upward_leaf_curling",
+    "White_patches_leaf_chlorosis",
+    "Wrinkled_leaf",
+    "Yellow_edge",
+    "Yellow_streaks_lamina",
+    "Youngest_leaf_drying"
+  ],
+  "Bunchy_Top": [
+    "Brown_leaf_margin",
+    "Dark_green_thick_veins",
+    "Jhooks",
+    "Necrotic_lamina",
+    "Necrotic_vein",
+    "Rosetting",
+    "Rusty_yellow_leaf_margins",
+    "Yellow_edge",
+    "Youngest_leaf_drying"
+  ],
+  "CMV": [
+    "Chlorosis_midrib",
+    "Dark_green_leaf_streaks",
+    "Dark_green_spots_patches_streaks_petiole",
+    "Dashes_dots_lamina",
+    "Necrotic_lamina",
+    "Necrotic_vein",
+    "Rusty_yellow_streaks",
+    "White_patches_leaf_chlorosis",
+    "Yellow_edge",
+    "Yellow_streaks_lamina"
+  ],
+  "Gen_Mosaic": [
+    "Alt_green_yellow_streaks_spindled_chlorosis",
+    "Bract_red_brown_mosaic_pattern",
+    "Chlorosis_midrib",
+    "Corrugated_leaf",
+    "Dark_green_leaf_streaks",
+    "Dark_green_spots_patches_streaks_petiole",
+    "Dashes_dots_lamina",
+    "Deformed_leaf",
+    "Necrotic_lamina",
+    "Necrotic_vein",
+    "Rusty_yellow_leaf_margins",
+    "Rusty_yellow_streaks",
+    "Shoe_stringing",
+    "Streaks_midrib",
+    "White_patches_leaf_chlorosis",
+    "White_streaks",
+    "White_veins",
+    "Yellow_edge",
+    "Yellow_streaks_lamina"
+  ],
+  "SCMV": [
+    "Chlorosis_midrib",
+    "Dashes_dots_lamina",
+    "White_patches_leaf_chlorosis",
+    "Yellow_edge",
+    "Yellow_streaks_lamina"
+  ]
+}

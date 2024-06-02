@@ -129,9 +129,12 @@ public class ImagePreviewActivity extends AppCompatActivity {
     }
 
     public void addIfValid(List<String> list, String value) {
-        if (!"NULL".equals(value) && !value.isEmpty()) {
-            list.add(value);
+        if (value != null){
+            if (!"NULL".equals(value) && !value.isEmpty()) {
+                list.add(value);
+            }
         }
+
     }
 
     private void importExtras() {

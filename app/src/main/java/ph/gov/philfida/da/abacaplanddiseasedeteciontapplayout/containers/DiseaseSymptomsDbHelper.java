@@ -25,10 +25,21 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseInfo;
 
 public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
@@ -41,9 +52,13 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_GEN_MOSAIC = "Gen_Mosaic";
     public static final String COLUMN_NO_ALLOCATION = "No_Allocation";
     public static final String COLUMN_ID = "ID";
+    private static final String TAG = "DiseaseSymptomsDbHelper";
+
+    private Context mContext;
 
     public DiseaseSymptomsDbHelper(@Nullable Context context) {
-        super(context, "DiseaseInfoSymptoms.db", null, 1);
+        super(context, "DiseaseInfoSymptoms.db", null, 5);
+        mContext=context;
     }
 
 
@@ -65,9 +80,72 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
     //runs when version number changes
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if(oldVersion < newVersion) {
+            db.execSQL("DROP TABLE IF EXISTS " + DISEASES_TABLE);
+            onCreate(db);
+
+            // Read JSON data
+            Map<String, List<String>> symptomsMap = readSymptomsFromJson(mContext);
+
+            // Create the table
+            String createTableStatement = "CREATE TABLE IF NOT EXISTS " + DISEASES_TABLE +
+                    "(" + COLUMN_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                    COLUMN_NO_ALLOCATION + " TEXT, " +
+                    COLUMN_BRACT_MOSAIC + " TEXT, " +
+                    COLUMN_BUNCHY_TOP + " TEXT, " +
+                    COLUMN_CMV + " TEXT, " +
+                    COLUMN_GEN_MOSAIC + " TEXT, " +
+                    COLUMN_SCMV + " TEXT )";
+            db.execSQL(createTableStatement);
+
+            // Insert data from JSON File
+            for (Map.Entry<String, List<String>> entry : symptomsMap.entrySet()) {
+                String column = entry.getKey();
+                List<String> symptoms = entry.getValue();
+                for (String symptom : symptoms){
+                    ContentValues cv = new ContentValues();
+                    cv.put(column, symptom);
+                    db.insert(DISEASES_TABLE, null, cv);
+                    Log.d(TAG, "onUpgrade: inserted: " + symptom);
+                }
+            }
+        }
 
     }
 
+
+
+    public Map<String, List<String>> readSymptomsFromJson(Context context) {
+        Map<String, List<String>> symptomsMap = new HashMap<>();
+        String json = null;
+
+        try {
+            InputStream is = context.getAssets().open("symptom_map.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+
+            JSONObject jsonObject = new JSONObject(json);
+
+            // Parse the JSON data into the Map
+            for (Iterator<String> it = jsonObject.keys(); it.hasNext(); ) {
+                String key = it.next();
+                JSONArray jsonArray = jsonObject.getJSONArray(key);
+                List<String> symptomsList = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    symptomsList.add(jsonArray.getString(i));
+                }
+                symptomsMap.put(key, symptomsList);
+            }
+
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        }
+
+        return symptomsMap;
+    }
 
     public List<DiseaseDBModel> getDiseases() {
         List<DiseaseDBModel> returnList = new ArrayList<>();
@@ -103,27 +181,4 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
         return returnList;
     }
 
-    public boolean clear(@org.jetbrains.annotations.NotNull DiseaseDBModel dbModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String queryString = " DELETE FROM " + DISEASES_TABLE ;
-
-        Cursor cursor = db.rawQuery(queryString, null);
-        return cursor.isNull(0);
-    }
-
-    public boolean addOneSymptom(DiseaseDBModel dbModel) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues cv = new ContentValues();
-        cv.put(COLUMN_ID, dbModel.getId());
-        //cv.put(SYMPTOM_NAME,dbModel.getSymptomName());
-        cv.put(COLUMN_BRACT_MOSAIC, dbModel.getBract_Mosaic());
-        cv.put(COLUMN_BUNCHY_TOP, dbModel.getBunchy_Top());
-        cv.put(COLUMN_CMV, dbModel.getCMV());
-        cv.put(COLUMN_GEN_MOSAIC, dbModel.getGen_Mosaic());
-        cv.put(COLUMN_SCMV, dbModel.getSCMV());
-        cv.put(COLUMN_NO_ALLOCATION, dbModel.getNo_Allocation());
-
-        long insert = db.insert(DISEASES_TABLE, null, cv);
-        return insert != -1;
-    }
 }

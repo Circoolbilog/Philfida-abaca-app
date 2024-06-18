@@ -37,7 +37,7 @@ public class DiseaseInfoDBHelper extends SQLiteOpenHelper {
     public static final String COLUMN_PICTURE = "Picture";
     public static final String COLUMN_TREATMENT = "Treatment";
     public static final String COLUMN_ID = "ID";
-    public static final int DATABASE_VERSION = 3;
+    public static final int DATABASE_VERSION = 4;
     private static final String TAG = "DiseaseInfoDBHelper";
     private Context mContext;
 

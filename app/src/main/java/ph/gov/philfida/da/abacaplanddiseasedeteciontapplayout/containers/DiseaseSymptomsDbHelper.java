@@ -54,10 +54,11 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_ID = "ID";
     private static final String TAG = "DiseaseSymptomsDbHelper";
 
+    public static final int DATABASE_VERSION = 6;
     private Context mContext;
 
     public DiseaseSymptomsDbHelper(@Nullable Context context) {
-        super(context, "DiseaseInfoSymptoms.db", null, 5);
+        super(context, "DiseaseInfoSymptoms.db", null, DATABASE_VERSION);
         mContext=context;
     }
 
@@ -75,6 +76,20 @@ public class DiseaseSymptomsDbHelper extends SQLiteOpenHelper {
                 COLUMN_SCMV + " TEXT )";
 
         db.execSQL(createTableStatement);
+        // Read JSON data
+        Map<String, List<String>> symptomsMap = readSymptomsFromJson(mContext);
+        // Insert data from JSON File
+        for (Map.Entry<String, List<String>> entry : symptomsMap.entrySet()) {
+            String column = entry.getKey();
+            List<String> symptoms = entry.getValue();
+            for (String symptom : symptoms){
+                ContentValues cv = new ContentValues();
+                cv.put(column, symptom);
+                db.insert(DISEASES_TABLE, null, cv);
+                Log.d(TAG, "onUpgrade: inserted: " + symptom);
+            }
+        }
+
     }
 
     //runs when version number changes

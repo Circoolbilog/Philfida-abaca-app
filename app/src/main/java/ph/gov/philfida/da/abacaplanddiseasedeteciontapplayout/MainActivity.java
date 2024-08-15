@@ -199,19 +199,19 @@ public class MainActivity extends AppCompatActivity {
         MenuItem userNameInNav = menu.findItem(R.id.userName);
         userNameInNav.setTitle(firstName + " " + lastName);
         navigationView.setNavigationItemSelectedListener(item -> {
-            switch (item.getItemId()) {
-                case R.id.userName:
-                    openAccountDetails();
-                    return true;
-                case R.id.settings:
-                    openSettings();
-                    return true;
-                case R.id.about:
-                    openAboutActivity();
-                    return true;
-                case R.id.logout:
-                    logOut();
-                    return true;
+            int itemId = item.getItemId();
+            if (itemId == R.id.userName) {
+                openAccountDetails();
+                return true;
+            } else if (itemId == R.id.settings) {
+                openSettings();
+                return true;
+            } else if (itemId == R.id.about) {
+                openAboutActivity();
+                return true;
+            } else if (itemId == R.id.logout) {
+                logOut();
+                return true;
             }
             return false;
         });

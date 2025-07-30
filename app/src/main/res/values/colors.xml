@@ -20,4 +20,8 @@
     <color name="tfe_color_accent">#425066</color>
 
     <color name="tfe_semi_transparent">#66000000</color>
+    <color name="bottom_sheet_background">#EEEEEE</color>
+    <color name="bottom_sheet_text_color">#000000</color>
+    <color name="toolbar_background">#FFFFFF</color>
+    <color name="bounding_box_color">#FF6F00</color>
 </resources>

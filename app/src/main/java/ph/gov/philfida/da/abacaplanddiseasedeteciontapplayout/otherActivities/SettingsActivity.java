@@ -32,28 +32,20 @@ import java.text.MessageFormat;
 import java.util.Objects;
 
 public class SettingsActivity extends AppCompatActivity implements SettingsDialog1.SettingsDialogListener {
-    public static final String LAST_NAME = "LAST_NAME";
-    public static final String FIRST_NAME = "FIRST_NAME";
     LinearLayout captureMode, userAccount, locationSettings, confidenceThreshold, showWelcome,
             language, about;
     TextView captureModeVal, userAccountVal, locationSettingsVal, confidenceThresholdVal, showWelcomeVal,
-            languageVal, aboutVal;
-    public static final String SHARED_PREFS = "USER_DATA";
-    String sCaptureMode, sUserAccount, sLocationSettings, sConfidenceThreshold, sShowWelcome,
-            sLanguage, sAbout;
+            languageVal;
+    String sCaptureMode;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Objects.requireNonNull(getSupportActionBar()).setTitle("Settings");
         setupIDs();
         loadSharedPrefs();
-        getUserAccount();
-        if (((SettingsContainer) this.getApplication()).getGuest()){
-            userAccount.setVisibility(View.GONE);
-        }
+
 
         captureMode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,14 +58,7 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
                         0);
             }
         });
-        userAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(SettingsActivity.this, AccountDetails.class);
-                startActivity(intent);
-            }
 
-        });
         locationSettings.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,12 +104,6 @@ public class SettingsActivity extends AppCompatActivity implements SettingsDialo
         //TODO: Weather
     }
 
-    private void getUserAccount() {
-        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        sUserAccount = sharedPreferences.getString(FIRST_NAME, "")
-                + " " +sharedPreferences.getString(LAST_NAME, "");
-        userAccountVal.setText(sUserAccount);
-    }
 
     private void openDialog(String title, String message, String option1,
                             String option2, String option3, int customLayout) {

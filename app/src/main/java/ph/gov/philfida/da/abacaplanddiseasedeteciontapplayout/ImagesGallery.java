@@ -23,9 +23,6 @@ import android.provider.MediaStore;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Date;
-
-import androidx.annotation.RequiresApi;
 
 public class ImagesGallery {
 

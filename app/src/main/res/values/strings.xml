@@ -74,4 +74,31 @@
     <string name="CMV_desc">Placeholder</string>
     <string name="SCMV_desc">Mosaic virus in abaca is reported as a member strain of the sugarcane mosaic subgroup of the genus Potyvirus, designated SCMV-Ab (Gambley et al, 2004). In contrast to other members of the subgroup, it has a wider host range and naturally infects Musa textilis (Musaceae), Canna indica (Cannaceae), and Maranta arundinaceae  (Marantaceae) and experimentally infects various cultivars of banana (Musa sp.), cowpea (Vigna sinesis L.), corn (Zea mays L.), sugarcane  (Saccharum  officinarum L.), cogon (Imperata exaltata Brongn.), and other species in Poaceae (Kent, 1954; Thomas et al, 1997). The virus may be transmitted mechanically and through vegetative propagules, as well as by aphid    vectors A. gossypii, R. nympheae, and A. maidis, but interestingly not by the banana aphid P. nigronervosa, in a non-circulative, non-persistent manner.     Virus distribution is   reported to be limited thus far to the Philippines (Gambley, et al., 2004).   SCMV-Ab and BBrMV were confirmed to be serologically different. Symptoms of SCMV-Ab infected plant include various mosaic patterns, coloured midrib and streaks on petiole, and chlorotic lesions with rusty-red borders.  In sugarcane, SCMV was found to alter the structure and pigmentation in chloroplasts, causing depletion in photosynthetic activity, and hence, the display of chlorosis and mosaic symptoms which is similar to its manifestation in abaca.  Moreover, SCMV produces proteins that alter the size of the plasmodesmata during sucrose translocation, thus impairing the photo-assimilate trafficking.  Fibers derived from infected plants are shorter and weaker, and plants mature longer. The disease cannot be diagnosed by symptoms alone, since sugar cane mosaic disease in abaca (SCMD-Ab) produce similar symptoms (e.g. chlorotic areas with rusty-red borders) as those produced by BBrMV and CMV infections in banana (Thomas and Magnaye, 1996).  Recently, high incidence of mixed   infections has made determination of the etiological agents and control of the disease difficult in different regions in the Philippines. (For more details on abaca diseases, please refer to Abaca Pathology Manual, 2021.)</string>
     <string name="Gen_mosaic_desc">Placeholder</string>
+    <string name="alt_bottom_sheet_chevron">Bottom sheet expandable indicator</string>
+    <string name="label_interence_time">Inference Time</string>
+    <string name="label_confidence_threshold">Threshold</string>
+    <string name="alt_bottom_sheet_threshold_button_minus">Decreasing threshold of detected object results button</string>
+    <string name="alt_bottom_sheet_threshold_button_plus">Increasing threshold of detected object results button</string>
+    <string name="label_max_results">Max Results</string>
+    <string name="alt_bottom_sheet_max_results_button_minus">Decreasing maximum detected results button</string>
+    <string name="alt_bottom_sheet_max_results_button_plus">Increasing maximum detected results button</string>
+    <string name="label_threads">Number of Threads</string>
+    <string name="alt_bottom_sheet_thread_button_minus">Decrease the number of threds used</string>
+    <string name="alt_bottom_sheet_thread_button_plus">Increase the number of threads used</string>
+    <string name="label_delegate">Delegate</string>
+    <string name="label_models">ML Model</string>
+    <string-array name="delegate_spinner_titles">
+        <item>CPU</item>
+        <item>GPU</item>
+        <item>NNAPI</item>
+    </string-array>
+
+    <string-array name="models_spinner_titles">
+        <item>MobileNet V1</item>
+        <item>EfficientDet Lite0</item>
+        <item>EfficientDet Lite1</item>
+        <item>EfficientDet Lite2</item>
+    </string-array>
+    <string name="title_activity_capture_image_preview">CaptureImagePreviewActivity</string>
+    <string name="prediction">Prediction</string>
 </resources>

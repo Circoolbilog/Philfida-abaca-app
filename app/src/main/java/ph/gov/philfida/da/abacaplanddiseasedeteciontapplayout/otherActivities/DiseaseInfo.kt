@@ -12,158 +12,156 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ==============================================================================*/
-package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities;
+package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
+import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.os.Bundle
+import android.os.Environment
+import android.util.Log
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.DiseaseIndexAdapter
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper
 
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleArrayAdapter;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.adapters.SimpleItem;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBModel;
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper;
-
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Bundle;
-import android.os.Environment;
-import android.util.Log;
-import android.widget.ImageView;
-import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.List;
-
-public class DiseaseInfo extends AppCompatActivity {
-    TextView diseaseName, diseaseDesc;
-    RecyclerView recyclerView;
-    SimpleArrayAdapter adapter;
-    RecyclerView.LayoutManager layoutManager;
-    ArrayList<SimpleItem> item;
-    ImageView diseasePic;
-    int position;
-    String mDiseaseName = "", mDiseaseDesc;
-    Bitmap selectedImage;
-    private static final String TAG = "DiseaseInfo";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_disease_info);
-        assignIds();
-        loadDiseaseInfo();
+class DiseaseInfo : AppCompatActivity() {
+    var diseaseName: TextView? = null
+    var diseaseDesc: TextView? = null
+    var recyclerView: RecyclerView? = null
+    var adapter: SimpleArrayAdapter? = null
+    var layoutManager: RecyclerView.LayoutManager? = null
+    var item: ArrayList<SimpleItem?>? = null
+    var diseasePic: ImageView? = null
+    var position: Int = 0
+    var mDiseaseName: String? = ""
+    var mDiseaseDesc: String? = null
+    var selectedImage: Bitmap? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_disease_info)
+        assignIds()
+        loadDiseaseInfo()
     }
 
-    private void assignIds() {
-        diseaseDesc = findViewById(R.id.diseaseDesc);
-        diseaseName = findViewById(R.id.diseaseNameInd);
-        diseasePic = findViewById(R.id.diseaseImageInd);
-        Bundle extras = getIntent().getExtras();
+    private fun assignIds() {
+        diseaseDesc = findViewById<TextView>(R.id.diseaseDesc)
+        diseaseName = findViewById<TextView>(R.id.diseaseNameInd)
+        diseasePic = findViewById<ImageView>(R.id.diseaseImageInd)
+        val extras = getIntent().getExtras()
         if (extras != null) {
-            mDiseaseName = extras.getString("diseaseName");
-            position = extras.getInt("position");
+            mDiseaseName = extras.getString("diseaseName")
+            position = extras.getInt("position")
         }
-        diseaseName.setText(mDiseaseName);
+        diseaseName!!.setText(mDiseaseName)
     }
 
-    private void populateList() {
-        DiseaseSymptomsDbHelper dbHelper = new DiseaseSymptomsDbHelper(this);
-        List<DiseaseDBModel> dbModelList = dbHelper.getDiseases();
-        item = new ArrayList<>();
-        for (DiseaseDBModel symptom : dbModelList) {
-            switch (mDiseaseName) {
-                case "0_No_Allocation":
-                    if (symptom.getNo_Allocation() == null) break;
-                    if (symptom.getNo_Allocation().equals("NULL") | symptom.getNo_Allocation().equals(""))
-                        break;
-                    item.add(new SimpleItem(symptom.getNo_Allocation()));
-                    break;
-                case "Bract_Mosaic":
-                    if (symptom.getBract_Mosaic() == null) break;
-                    if (symptom.getBract_Mosaic().equals("NULL") | symptom.getBract_Mosaic().equals(""))
-                        break;
-                    item.add(new SimpleItem(symptom.getBract_Mosaic()));
-                    break;
-                case "Bunchy_Top":
-                    if (symptom.getBunchy_Top() == null) break;
-                    if (symptom.getBunchy_Top().equals("NULL") | symptom.getBunchy_Top().equals(""))
-                        break;
-                    item.add(new SimpleItem(symptom.getBunchy_Top()));
-                    break;
-                case "CMV":
-                    if (symptom.getCMV() == null) break;
-                    if (symptom.getCMV().equals("NULL") | symptom.getCMV().equals("")) break;
-                    item.add(new SimpleItem(symptom.getCMV()));
-                    break;
-                case "Gen_Mosaic":
-                    if (symptom.getGen_Mosaic() == null) break;
-                    if (symptom.getGen_Mosaic().equals("NULL") | symptom.getGen_Mosaic().equals(""))
-                        break;
-                    item.add(new SimpleItem(symptom.getGen_Mosaic()));
-                    break;
-                case "SCMV": if (symptom.getSCMV() == null) break;
-                    if (symptom.getSCMV().equals("NULL") | symptom.getSCMV().equals("")) break;
-                    item.add(new SimpleItem(symptom.getSCMV()));
-                    break;
+    private fun populateList() {
+        val dbHelper = DiseaseSymptomsDbHelper(this)
+        val dbModelList = dbHelper.getDiseases()
+        item = ArrayList<SimpleItem?>()
+        for (symptom in dbModelList) {
+            when (mDiseaseName) {
+                "0_No_Allocation" -> {
+                    if (symptom.getNo_Allocation() == null) break
+                    if ((symptom.getNo_Allocation() == "NULL") or (symptom.getNo_Allocation() == "")) break
+                    item!!.add(SimpleItem(symptom.getNo_Allocation()))
+                }
+
+                "Bract_Mosaic" -> {
+                    if (symptom.getBract_Mosaic() == null) break
+                    if ((symptom.getBract_Mosaic() == "NULL") or (symptom.getBract_Mosaic() == "")) break
+                    item!!.add(SimpleItem(symptom.getBract_Mosaic()))
+                }
+
+                "Bunchy_Top" -> {
+                    if (symptom.getBunchy_Top() == null) break
+                    if ((symptom.getBunchy_Top() == "NULL") or (symptom.getBunchy_Top() == "")) break
+                    item!!.add(SimpleItem(symptom.getBunchy_Top()))
+                }
+
+                "CMV" -> {
+                    if (symptom.getCMV() == null) break
+                    if ((symptom.getCMV() == "NULL") or (symptom.getCMV() == "")) break
+                    item!!.add(SimpleItem(symptom.getCMV()))
+                }
+
+                "Gen_Mosaic" -> {
+                    if (symptom.getGen_Mosaic() == null) break
+                    if ((symptom.getGen_Mosaic() == "NULL") or (symptom.getGen_Mosaic() == "")) break
+                    item!!.add(SimpleItem(symptom.getGen_Mosaic()))
+                }
+
+                "SCMV" -> {
+                    if (symptom.getSCMV() == null) break
+                    if ((symptom.getSCMV() == "NULL") or (symptom.getSCMV() == "")) break
+                    item!!.add(SimpleItem(symptom.getSCMV()))
+                }
             }
-
         }
-        buildRecyclerView();
+        buildRecyclerView()
     }
 
-    private void buildRecyclerView() {
-        recyclerView = findViewById(R.id.symptomList);
-        recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
-        adapter = new SimpleArrayAdapter(item);
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(adapter);
-        adapter.setOnItemClickListener(position -> {
+    private fun buildRecyclerView() {
+        recyclerView = findViewById<RecyclerView>(R.id.symptomList)
+        layoutManager = LinearLayoutManager(this)
+        adapter = SimpleArrayAdapter(item)
+        recyclerView!!.setLayoutManager(layoutManager)
+        recyclerView!!.setAdapter(adapter)
+        adapter!!.setOnItemClickListener(DiseaseIndexAdapter.OnItemClickListener { position: Int ->
 //                open new activity displaying disease info on clicked item
 //                DataBaseHelper dataBaseHelper = new DataBaseHelper(getApplicationContext());
 //                List<SymptomModel> everySymptom = dataBaseHelper.getSymptoms();
 //                String symptomName = everySymptom.get(position).getSymptomName();
-            Intent symptomInfo = new Intent(DiseaseInfo.this, SymptomInfo.class);
-            symptomInfo.putExtra("position", position);
-            symptomInfo.putExtra("symptomName", item.get(position).getItemName());
-            startActivity(symptomInfo);
-        });
+            val symptomInfo = Intent(this@DiseaseInfo, SymptomInfo::class.java)
+            symptomInfo.putExtra("position", position)
+            symptomInfo.putExtra("symptomName", item!!.get(position)!!.getItemName())
+            startActivity(symptomInfo)
+        })
     }
 
-    private void loadDiseaseInfo() {
-        Bundle display = getIntent().getExtras();
-        int position = display.getInt("position");
-        String diseaseName = display.getString("diseaseName");
-        this.diseaseName.append(" " + position);
-        this.diseaseName.setText(diseaseName);
-        this.diseaseDesc.setText(getmDiseaseDesc(diseaseName));
-        populateList();
-        getDiseaseImage(diseaseName);
+    private fun loadDiseaseInfo() {
+        val display = getIntent().getExtras()
+        val position = display!!.getInt("position")
+        val diseaseName = display.getString("diseaseName")
+        this.diseaseName!!.append(" " + position)
+        this.diseaseName!!.setText(diseaseName)
+        this.diseaseDesc!!.setText(getmDiseaseDesc(diseaseName))
+        populateList()
+        getDiseaseImage(diseaseName)
     }
 
-    private String getmDiseaseDesc(String mDiseaseName) {
-        DiseaseInfoDBHelper dbHelper = new DiseaseInfoDBHelper(this);
-        List<DiseaseInfoDBModel> dbModelList = dbHelper.getDiseasesInfo();
-        String diseaseDesc = "";
-        Log.d(TAG, "getmDiseaseDesc: " + dbModelList.size());
-        for (DiseaseInfoDBModel infoDBModel:dbModelList){
-            Log.d(TAG, "getmDiseaseDesc: " + infoDBModel.getDiseaseName() + " = " + mDiseaseName);
-            if (infoDBModel.getDiseaseName().equals(mDiseaseName)){
-                diseaseDesc = infoDBModel.getDiseaseDesc();
+    private fun getmDiseaseDesc(mDiseaseName: String?): String? {
+        val dbHelper = DiseaseInfoDBHelper(this)
+        val dbModelList = dbHelper.getDiseasesInfo()
+        var diseaseDesc: String? = ""
+        Log.d(TAG, "getmDiseaseDesc: " + dbModelList.size)
+        for (infoDBModel in dbModelList) {
+            Log.d(TAG, "getmDiseaseDesc: " + infoDBModel.getDiseaseName() + " = " + mDiseaseName)
+            if (infoDBModel.getDiseaseName() == mDiseaseName) {
+                diseaseDesc = infoDBModel.getDiseaseDesc()
             }
         }
 
-        return diseaseDesc;
+        return diseaseDesc
     }
 
-    private void getDiseaseImage(String mDiseaseName) {
-        String imgDir =  Environment.getExternalStorageDirectory() + "/Pictures/Diseases/" + mDiseaseName + ".jpg";
-        selectedImage = BitmapFactory.decodeFile(imgDir);
-        diseasePic.setImageBitmap(selectedImage);
+    private fun getDiseaseImage(mDiseaseName: String?) {
+        val imgDir = Environment.getExternalStorageDirectory()
+            .toString() + "/Pictures/Diseases/" + mDiseaseName + ".jpg"
+        selectedImage = BitmapFactory.decodeFile(imgDir)
+        diseasePic!!.setImageBitmap(selectedImage)
     }
 
 
+    companion object {
+        private const val TAG = "DiseaseInfo"
+    }
 }

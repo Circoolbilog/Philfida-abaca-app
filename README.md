@@ -8,8 +8,12 @@ A mobile application developed for the Philippine Fiber Industry Development Aut
 - 🎯 Real-time disease identification using TensorFlow Lite models
 - 📍 Location-based disease tracking and monitoring
 - 📊 Comprehensive disease information and management recommendations
-- 🔍 Image gallery for reviewing previous detections
+- 🔍 Image gallery for reviewing previous detections with delete functionality
 - 🌐 Offline-first functionality with cloud sync capabilities
+- 📦 **NEW**: Bounding box visualization to show exact detection locations
+- 🏆 **NEW**: Multi-disease detection with confidence-based ranking
+- ⭐ **NEW**: Visual indicators for highest confidence detections
+- 🎨 **NEW**: Modern Material Design 3 interface
 
 ## Project Structure
 
@@ -56,7 +60,7 @@ settings.gradle            # Project settings
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-organization/Philfida-abaca-app.git
+   git clone https://github.com/Circoolbilog/Philfida-abaca-app
    cd Philfida-abaca-app
    ```
 
@@ -86,10 +90,11 @@ settings.gradle            # Project settings
 5. The app will process the image and display detection results
   989
 ### Viewing Results
-- Detected diseases are shown with confidence scores
-- Tap on a result to view detailed information
-- View previously captured images in the gallery
-- Filter and sort detections by date, location, or disease type
+- **Multi-Disease Display**: All detected diseases shown sorted by confidence with star (⭐) indicators for highest confidence
+- **Bounding Box Visualization**: Click "Show Boxes" button to see exact detection locations on images
+- **Enhanced Information**: Comprehensive detection metadata including symptoms, confidence scores, and location
+- **Gallery Management**: View, analyze, and delete previously captured images
+- **Real-time Confidence**: Actual ML model confidence scores displayed instead of default values
 
 ### Data Management
 - All detections are stored locally on the device
@@ -97,17 +102,24 @@ settings.gradle            # Project settings
 - Sync data with the cloud when internet connection is available
 
 ### More Detailed Examples
-1. Disease Detection:
-- Open the Diagnose screen
-- Adjust detection confidence threshold if needed (default 0.5)
-- Hold camera steady for best results
-- Multiple symptoms can be detected simultaneously
+1. **Enhanced Disease Detection**:
+   - Open the camera/diagnose screen
+   - Capture image with proper lighting and steady hands
+   - View detection results with diseases ranked by confidence
+   - Highest confidence disease highlighted with star (⭐) indicator
+   - Multiple diseases and symptoms detected simultaneously
 
-2. Assessment Review:
-- Navigate to Assessment section
-- View historical diagnoses grouped by capture session
-- Filter by date or location
-- Export data for further analysis
+2. **Visual Analysis**:
+   - Navigate to Gallery and select any captured image
+   - Click "Show Boxes" to visualize detection bounding boxes
+   - Red rectangles show exact locations where diseases were detected
+   - Toggle between original image and annotated version
+
+3. **Assessment Review**:
+   - Navigate to Assessment section
+   - View historical diagnoses with enhanced metadata
+   - See confidence scores, location data, and detection timestamps
+   - Delete unwanted captures with integrated database cleanup
 
 ### Troubleshooting
 Common issues:
@@ -129,44 +141,49 @@ Common issues:
 - Check available device memory
 
 ## Data Flow
-The app processes image data through a pipeline that starts with camera capture and ends with disease detection and storage.
+The app processes image data through an enhanced pipeline with comprehensive metadata storage.
 
 ```
-Camera Input -> Image Processing -> TFLite Model Detection -> Result Analysis -> 
-Disease Classification -> Local Storage -> Optional Cloud Sync
+Camera Input -> Image Processing -> TFLite Model Detection -> Multi-Disease Analysis -> 
+Confidence Ranking -> Bounding Box Storage -> Database Integration -> Visual Display
 ```
 
 Key interactions:
-- Camera preview provides real-time feed to TensorFlow Lite detector
-- Detector identifies symptoms and calculates confidence scores
-- Results are matched against disease database
-- Detected diseases and symptoms are stored locally with geolocation
-- Data can be reviewed and analyzed in Assessment section
-- Optional synchronization with Firebase backend
-- Location data helps track disease spread patterns
+- **Enhanced Detection**: TensorFlow Lite model identifies multiple diseases with real confidence scores
+- **Comprehensive Storage**: Bounding boxes, confidence scores, symptoms, and location data stored in SQLite database
+- **Visual Analysis**: Bounding box coordinates enable precise detection visualization
+- **Multi-Disease Ranking**: All detected diseases sorted by confidence with visual indicators
+- **Metadata Integration**: Complete detection metadata available for analysis and export
+- **Real-time Processing**: Improved error handling and performance optimization
 ### Firebase Resources
 - Authentication: User management and login
 - Realtime Database: User profiles and shared disease data
 - Storage: Disease images and reference materials
 
 ### Local Storage
-- SQLite Database: Disease information and detection history
-- File Storage: Captured images and processed results
-- Shared Preferences: User settings and preferences
+- **Enhanced SQLite Database**: 
+  - Disease information and comprehensive detection history
+  - Bounding box coordinates and confidence scores
+  - Location metadata and timestamps
+  - Symptom-to-disease mapping with real confidence values
+- **File Storage**: Captured images with integrated database references
+- **Shared Preferences**: User settings and detection thresholds
 
 ## Development
 
 ### Technical Stack
-- **Language**: Kotlin
+- **Language**: Kotlin (with Java interop)
 - **Architecture**: MVVM (Model-View-ViewModel)
+- **UI Framework**: Material Design 3 components
 - **Libraries**:
   - AndroidX Core KTX
-  - CameraX
-  - TensorFlow Lite
-  - Room Database
-  - Dagger Hilt for dependency injection
-  - Coroutines & Flow
-  - Google Maps SDK
+  - CameraX for camera operations
+  - TensorFlow Lite for ML inference
+  - SQLite for local database
+  - Gson for JSON parsing
+  - Google Play Services (Location, Maps)
+  - Material Design Components
+  - Coroutines for async operations
 
 ### Building the Project
 
@@ -175,30 +192,45 @@ Key interactions:
 3. Sync project with Gradle files
 4. Build and run on a connected device or emulator
 
-### TODO
+### Recent Updates (v1.4.0)
+
+### ✅ Completed Features
+- [x] **Bounding Box Visualization**: Users can now see exact detection locations
+- [x] **Multi-Disease Detection**: All diseases displayed with confidence ranking
+- [x] **Material Design 3**: Modern UI with improved user experience
+- [x] **Enhanced Database**: Comprehensive metadata storage and retrieval
+- [x] **Gallery Management**: Delete functionality with database integration
+- [x] **Real Confidence Scores**: Actual ML model confidence values displayed
+- [x] **Visual Indicators**: Star (⭐) highlighting for highest confidence detections
+- [x] **Improved Error Handling**: Better stability and user feedback
+
+### TODO - Future Enhancements
 
 ### High Priority
 - [ ] Implement batch image processing for multiple plant analysis
 - [ ] Add disease severity assessment scoring
 - [ ] Implement user authentication and profile management
+- [ ] Add treatment recommendation system based on detected diseases
 
 ### Medium Priority
-- [ ] Develop treatment recommendation system
 - [ ] Add multi-language support (Filipino, Cebuano)
-- [ ] Implement data export to PDF reports
+- [ ] Implement data export to PDF reports with bounding box annotations
+- [ ] Create comprehensive analytics dashboard
+- [ ] Add offline map integration for field work
 
 ### Low Priority
 - [ ] Implement dark mode theme
 - [ ] Add voice-guided capture instructions
 - [ ] Create tutorial/onboarding flow
 - [ ] Implement advanced filtering and search options
+- [ ] Add social sharing features for detection results
 
 ### Technical Improvements
 - [ ] Optimize TensorFlow Lite model size and performance
-- [ ] Implement proper error handling and crash reporting
 - [ ] Add unit and integration tests
-- [ ] Improve camera preview performance
 - [ ] Implement proper data migration strategies
+- [ ] Add crash reporting and analytics
+- [ ] Optimize memory usage for large image processing
 
 ## Contributing
 
@@ -212,6 +244,23 @@ Key interactions:
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
+## Version History
+
+### v1.4.0 (Latest) - "Enhanced Detection & Visual Analysis"
+- Bounding box visualization for precise detection locations
+- Multi-disease detection with confidence-based ranking
+- Material Design 3 interface improvements
+- Enhanced database with comprehensive metadata storage
+- Gallery management with delete functionality
+- Real confidence scores from ML model
+- Visual indicators for highest confidence detections
+
+### v1.3.0 - Previous stable release
+- Basic disease detection and classification
+- Image capture and gallery functionality
+- Location-based tracking
+- Firebase integration
+
 ## Acknowledgments
 
 We gratefully acknowledge the support and contributions of the following:
@@ -220,3 +269,5 @@ We gratefully acknowledge the support and contributions of the following:
 - **Biotech Program Office (DA-BPO)** – Funding support
 - **Bureau of Agricultural Research (DA-BAR)** – Funding support
 - **TensorFlow Lite Team** – Machine learning framework
+- **Material Design Team** – UI/UX framework
+- **Android CameraX Team** – Camera functionality

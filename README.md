@@ -175,7 +175,32 @@ Key interactions:
 3. Sync project with Gradle files
 4. Build and run on a connected device or emulator
 
-### Contributing
+### TODO
+
+### High Priority
+- [ ] Implement batch image processing for multiple plant analysis
+- [ ] Add disease severity assessment scoring
+- [ ] Implement user authentication and profile management
+
+### Medium Priority
+- [ ] Develop treatment recommendation system
+- [ ] Add multi-language support (Filipino, Cebuano)
+- [ ] Implement data export to PDF reports
+
+### Low Priority
+- [ ] Implement dark mode theme
+- [ ] Add voice-guided capture instructions
+- [ ] Create tutorial/onboarding flow
+- [ ] Implement advanced filtering and search options
+
+### Technical Improvements
+- [ ] Optimize TensorFlow Lite model size and performance
+- [ ] Implement proper error handling and crash reporting
+- [ ] Add unit and integration tests
+- [ ] Improve camera preview performance
+- [ ] Implement proper data migration strategies
+
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
@@ -189,6 +214,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Acknowledgments
 
-- Philippine Fiber Industry Development Authority (PhilFIDA)
-- Department of Agriculture
-- TensorFlow Lite team for the machine learning framework
+We gratefully acknowledge the support and contributions of the following:
+
+- **Philippine Fiber Industry Development Authority (DA-PhilFIDA)** – Implementing agency
+- **Biotech Program Office (DA-BPO)** – Funding support
+- **Bureau of Agricultural Research (DA-BAR)** – Funding support
+- **TensorFlow Lite Team** – Machine learning framework

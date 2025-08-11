@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.graphics.Bitmap
+import android.graphics.Matrix
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -32,6 +33,11 @@ import com.google.gson.Gson
 import java.util.concurrent.TimeUnit
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R
 import androidx.core.graphics.createBitmap
+import android.os.Handler
+import android.os.Looper
+import android.widget.LinearLayout
+import android.widget.TextView
+import org.checkerframework.checker.index.qual.GTENegativeOne
 
 class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
@@ -51,6 +57,12 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     // Camera state management
     private var isCameraInitialized = false
     private var isDetectionActive = false
+    private var isModelLoaded = false
+    
+    // Loading screen components
+    private lateinit var loadingScreen: LinearLayout
+    private lateinit var restartHint: TextView
+    private val loadingHandler = Handler(Looper.getMainLooper())
 
     override fun onResume() {
         super.onResume()
@@ -103,12 +115,31 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
     ): View {
         _fragmentCameraBinding = FragmentCameraBinding.inflate(inflater, container, false)
 
+        // Initialize loading screen
+        loadingScreen = fragmentCameraBinding.loadingScreen
+        restartHint = fragmentCameraBinding.restartHint
+        
+        // Ensure loading screen is visible initially
+        loadingScreen.visibility = View.VISIBLE
+        
+        // Show restart hint after 10 seconds
+        loadingHandler.postDelayed({
+            if (!isModelLoaded && loadingScreen.visibility == View.VISIBLE) {
+                restartHint.visibility = View.VISIBLE
+            }
+        }, 10000)
+        
         // Set up capture button
         fragmentCameraBinding.newCapture.setOnClickListener {
-            if (isCameraInitialized && bitmapBuffer != null) {
+            if (isCameraInitialized && bitmapBuffer != null && isModelLoaded) {
                 captureNewImage()
             } else {
-                Toast.makeText(requireContext(), "Camera not ready", Toast.LENGTH_SHORT).show()
+                val message = when {
+                    !isModelLoaded -> "AI model is still loading..."
+                    !isCameraInitialized -> "Camera not ready"
+                    else -> "No image available"
+                }
+                Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -123,13 +154,11 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
             return
         }
 
+        // Show loading screen with processing text
+        showProcessingScreen()
+
         val rotation = getRotationDegrees()
-
-        Log.d(TAG, "Capturing image with dimensions: ${currentBitmap.width}x${currentBitmap.height}")
-
-        // Get detected objects
         val detectedObjects = fragmentCameraBinding.overlay.getDetectedObjects()
-        Log.d(TAG, "Detected objects: ${detectedObjects.size}")
 
         // Get location
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
@@ -138,9 +167,12 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                 val intent = Intent(requireContext(), CaptureImageNewActivity::class.java)
 
                 try {
-                    // Convert bitmap to byte array
+                    // Apply rotation to bitmap based on device orientation
+                    val rotatedBitmap = rotateBitmap(currentBitmap, rotation)
+                    
+                    // Convert rotated bitmap to byte array
                     val bitmapByteArray = ByteArrayOutputStream().use { stream ->
-                        currentBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                        rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
                         stream.toByteArray()
                     }
 
@@ -151,29 +183,48 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                     // Set intent extras
                     intent.putExtra("captured_bitmap", bitmapByteArray)
                     intent.putExtra("detectionJson", jsonDetection)
-
                     intent.putExtra("rotation", rotation)
                     if (location != null) {
                         intent.putExtra("location_latitude", location.latitude)
                         intent.putExtra("location_longitude", location.longitude)
-                        Log.d(TAG, "Location: ${location.latitude}, ${location.longitude}")
                     } else {
                         intent.putExtra("location_latitude", 0.0)
                         intent.putExtra("location_longitude", 0.0)
-                        Log.w(TAG, "Location not available")
                     }
 
+                    loadingScreen.visibility = View.GONE
                     startActivity(intent)
+
 
                 } catch (e: Exception) {
                     Log.e(TAG, "Error preparing capture data", e)
                     Toast.makeText(requireContext(), "Error processing image", Toast.LENGTH_SHORT).show()
+                    hideProcessingScreen()
                 }
             }
             .addOnFailureListener { exception ->
                 Log.e(TAG, "Failed to get location", exception)
                 Toast.makeText(requireContext(), "Failed to get location", Toast.LENGTH_SHORT).show()
+                hideProcessingScreen()
             }
+    }
+    
+    private fun showProcessingScreen() {
+        loadingScreen.visibility = View.VISIBLE
+        val loadingText = loadingScreen.findViewById<TextView>(R.id.loading_text)
+        loadingText.text = "Capturing Image..."
+        restartHint.visibility = View.GONE
+    }
+    
+    private fun hideProcessingScreen() {
+        loadingScreen.visibility = View.GONE
+    }
+    
+    private fun rotateBitmap(bitmap: Bitmap, degrees: Int): Bitmap {
+        if (degrees == 0) return bitmap
+        val matrix = Matrix()
+        matrix.postRotate(degrees.toFloat())
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -186,6 +237,8 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                 context = requireContext(),
                 objectDetectorListener = this
             )
+            
+            // Loading screen will be hidden when first detection results arrive
 
             // Initialize camera executor
             cameraExecutor = Executors.newSingleThreadExecutor()
@@ -430,8 +483,19 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         imageHeight: Int,
         imageWidth: Int
     ) {
+        // Hide loading screen on first successful detection
+        if (!isModelLoaded) {
+            hideLoadingScreen()
+        }
+        
         activity?.runOnUiThread {
             try {
+                // Check if fragment is still alive
+                if (_fragmentCameraBinding == null) {
+                    Log.d(TAG, "Fragment binding is null, skipping UI update")
+                    return@runOnUiThread
+                }
+                
                 Log.d(TAG, "onResults: ${results?.size ?: 0} detections, inference: ${inferenceTime}ms, image: ${imageWidth}x${imageHeight}")
 
                 // Update inference time display
@@ -499,29 +563,35 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
         Log.e(TAG, "Detection error: $error")
         activity?.runOnUiThread {
             Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show()
+            // Hide loading screen on error
+            hideLoadingScreen()
+        }
+    }
+    
+    private fun hideLoadingScreen() {
+        activity?.runOnUiThread {
+            if (_fragmentCameraBinding == null) return@runOnUiThread
+            loadingHandler.removeCallbacksAndMessages(null)
+            isModelLoaded = true
+            loadingScreen.visibility = View.GONE
         }
     }
     private fun getRotationDegrees(): Int {
-        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            // For Android 11 (API 30) and above
-            val windowMetrics = requireActivity().windowManager.currentWindowMetrics
-            val bounds = windowMetrics.bounds
-            val rotation = requireActivity().display?.rotation ?: 0
-            when (rotation) {
-                Surface.ROTATION_270 -> 270
-                Surface.ROTATION_180 -> 180
-                Surface.ROTATION_90 -> 90
-                else -> 0
-            }
+        val rotation = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            requireActivity().display?.rotation ?: Surface.ROTATION_0
         } else {
-            // For older versions
             @Suppress("DEPRECATION")
-            when (requireActivity().windowManager.defaultDisplay.rotation) {
-                Surface.ROTATION_270 -> 270
-                Surface.ROTATION_180 -> 180
-                Surface.ROTATION_90 -> 90
-                else -> 0
-            }
+            requireActivity().windowManager.defaultDisplay.rotation
+        }
+        
+        // Camera sensor is typically rotated 90 degrees on most devices
+        // We need to compensate for this to get the correct orientation
+        return when (rotation) {
+            Surface.ROTATION_0 -> 90    // Portrait: rotate 90 degrees
+            Surface.ROTATION_90 -> 0    // Landscape: no rotation needed
+            Surface.ROTATION_180 -> 270 // Portrait upside down: rotate 270 degrees
+            Surface.ROTATION_270 -> 180 // Landscape reversed: rotate 180 degrees
+            else -> 90
         }
     }
 }

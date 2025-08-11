@@ -103,6 +103,10 @@
             android:label="Image Viewer"
             android:parentActivityName=".GalleryActivity"
             android:theme="@style/AppTheme" />
+        <activity
+            android:name=".ImageDetailActivity"
+            android:exported="false"
+            android:theme="@style/NoActionBar" />
     </application>
 
 </manifest>

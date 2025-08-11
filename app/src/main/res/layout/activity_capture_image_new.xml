@@ -18,36 +18,32 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-        <!-- Captured Image Display with Detection Overlay -->
-        <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
+            <!-- Captured Image Display -->
             <ImageView
                 android:id="@+id/capturedNewImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:background="@android:color/darker_gray"
                 android:scaleType="fitCenter"
-                android:adjustViewBounds="true"
-                />
+                android:adjustViewBounds="true" />
 
+            <!-- Detection Results Card -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/detectionOverlay"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_margin="8dp"
-                app:cardBackgroundColor="#88000000"
-                app:cardCornerRadius="8dp"
-                app:cardElevation="4dp"
-                >
+                android:layout_marginTop="-40dp"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="16dp"
+                app:cardBackgroundColor="#DD000000"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="8dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:padding="8dp">
+                    android:padding="16dp">
 
                     <TextView
                         android:id="@+id/detectionTitle"
@@ -59,13 +55,31 @@
                         android:text="Detection Results" />
 
                     <TextView
-                        android:id="@+id/detectionResult"
+                        android:id="@+id/diseaseResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:text="Disease: Analyzing..." />
+
+                    <TextView
+                        android:id="@+id/diseaseConfidence"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
+                        android:textColor="#AAAAAA"
+                        android:textSize="14sp" />
+
+                    <TextView
+                        android:id="@+id/detectionResult"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
                         android:textColor="@android:color/white"
-                        android:textSize="16sp"
-                        android:text="No detections" />
+                        android:textSize="14sp"
+                        android:text="Symptoms: None detected" />
 
                     <TextView
                         android:id="@+id/confidenceText"
@@ -73,60 +87,59 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
                         android:textColor="#AAAAAA"
-                        android:textSize="14sp" />
+                        android:textSize="12sp" />
+
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
-        </FrameLayout>
 
-        <!-- Location Information -->
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
-            app:cardCornerRadius="8dp"
-            app:cardElevation="2dp">
-
-            <LinearLayout
+            <!-- Location Information -->
+            <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="12dp">
+                android:layout_marginBottom="16dp"
+                app:cardCornerRadius="8dp"
+                app:cardElevation="2dp">
 
-                <TextView
-                    style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Location Information"
-                    android:textStyle="bold" />
+                    android:orientation="vertical"
+                    android:padding="12dp">
 
-                <TextView
-                    android:id="@+id/locationText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Location: Acquiring..." />
+                    <TextView
+                        style="@style/TextAppearance.MaterialComponents.Subtitle1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Location Information"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/coordinatesText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Coordinates: " />
+                    <TextView
+                        android:id="@+id/locationText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Location: Acquiring..." />
 
-                <Button
-                    android:id="@+id/viewOnMapButton"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="end"
-                    android:layout_marginTop="8dp"
-                    android:text="View on Map"
-                     />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+                    <TextView
+                        android:id="@+id/coordinatesText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Coordinates: " />
 
-    </LinearLayout>
-</ScrollView>
+                    <Button
+                        android:id="@+id/viewOnMapButton"
+                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        android:layout_marginTop="8dp"
+                        android:text="View on Map" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+    </ScrollView>
 
     <!-- Fixed Bottom Buttons -->
     <LinearLayout

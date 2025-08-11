@@ -33,9 +33,10 @@ class GalleryActivity : AppCompatActivity() {
         galleryRecyclerView = findViewById(R.id.galleryRecyclerView)
         galleryRecyclerView.layoutManager = GridLayoutManager(this, 3)
 
-        galleryAdapter = GalleryAdapter { imageFile ->
-            openImageInNewActivity(imageFile)
-        }
+        galleryAdapter = GalleryAdapter(
+            onImageClick = { imageFile -> openImageInNewActivity(imageFile) },
+            onImageDeleted = { loadGalleryImages() }
+        )
         galleryRecyclerView.adapter = galleryAdapter
     }
 

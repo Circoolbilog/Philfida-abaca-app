@@ -27,6 +27,11 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.database.CaptureDao
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.database.CaptureRecord
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.database.DatabaseHelper
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseSymptomsDbHelper
+import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseDBModel
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -34,6 +39,27 @@ import java.text.DecimalFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.math.roundToInt
+
+
+// Data classes for parsing detection JSON
+data class DetectionResult(
+    val boundingBox: BoundingBox,
+    val categories: List<Category>
+)
+
+data class BoundingBox(
+    val bottom: Float,
+    val left: Float,
+    val right: Float,
+    val top: Float
+)
+
+data class Category(
+    val displayName: String,
+    val index: Int,
+    val label: String,
+    val score: Float
+)
 
 class CaptureImageNewActivity : AppCompatActivity() {
 
@@ -45,8 +71,13 @@ class CaptureImageNewActivity : AppCompatActivity() {
     lateinit var bitmap: Bitmap
     lateinit var boxedBitmap: Bitmap
     lateinit var symptomsDetected: ArrayList<String>
+    private var detectionResults: List<DetectionResult> = emptyList()
+    private var boundingBoxes: List<BoundingBox> = emptyList()
+    private var confidenceScores: List<Float> = emptyList()
     var lat: Double? = null
     var longt: Double? = null
+    
+
 
     // UI components
     private lateinit var saveImageButton: Button
@@ -55,6 +86,8 @@ class CaptureImageNewActivity : AppCompatActivity() {
     private lateinit var detectionOverlay: MaterialCardView
     private lateinit var detectionResultText: TextView
     private lateinit var confidenceText: TextView
+    private lateinit var diseaseResultText: TextView
+    private lateinit var diseaseConfidenceText: TextView
     private lateinit var locationText: TextView
     private lateinit var coordinatesText: TextView
     private var rotation: Int = 0
@@ -102,6 +135,8 @@ class CaptureImageNewActivity : AppCompatActivity() {
         detectionOverlay = findViewById(R.id.detectionOverlay)
         detectionResultText = findViewById(R.id.detectionResult)
         confidenceText = findViewById(R.id.confidenceText)
+        diseaseResultText = findViewById(R.id.diseaseResult)
+        diseaseConfidenceText = findViewById(R.id.diseaseConfidence)
         locationText = findViewById(R.id.locationText)
         capturedNewImageView = findViewById(R.id.capturedNewImage)
         coordinatesText = findViewById(R.id.coordinatesText)
@@ -135,12 +170,140 @@ class CaptureImageNewActivity : AppCompatActivity() {
     }
 
     private fun processImageAndShowDetections() {
-        // Process the image and show detections
-        if (::bitmap.isInitialized) {
-            // TODO: Process the image with your ML model here
-            // For now, we'll simulate a detection
-            simulateDetection()
+        // Use the detection results passed from CameraFragment
+        if (::bitmap.isInitialized && ::symptomsDetected.isInitialized) {
+            displayDetectionResults()
         }
+    }
+
+    private fun displayDetectionResults() {
+        runOnUiThread {
+            if (symptomsDetected.isNotEmpty() && symptomsDetected[0] != "No symptoms detected") {
+                detectionOverlay.visibility = View.VISIBLE
+                
+                // Identify diseases based on symptoms
+                val identifiedDiseases = identifyDisease(symptomsDetected)
+                if (identifiedDiseases.isNotEmpty()) {
+                    // Display all detected diseases sorted by confidence
+                    val diseasesText = identifiedDiseases.mapIndexed { index, (disease, confidence) ->
+                        if (index == 0) {
+                            "★ $disease ($confidence%)"
+                        } else {
+                            "• $disease ($confidence%)"
+                        }
+                    }.joinToString("\n")
+                    
+                    diseaseResultText.text = "Detected Diseases:\n$diseasesText"
+                    diseaseConfidenceText.text = "${identifiedDiseases.size} disease(s) identified"
+                    diseaseResultText.visibility = View.VISIBLE
+                    diseaseConfidenceText.visibility = View.VISIBLE
+                } else {
+                    diseaseResultText.text = "Disease: Unknown"
+                    diseaseConfidenceText.visibility = View.GONE
+                    diseaseResultText.visibility = View.VISIBLE
+                }
+                
+                // Show symptoms sorted by confidence
+                val sortedSymptoms = getSortedSymptomsWithConfidence()
+                detectionResultText.text = sortedSymptoms
+                
+                // Show average confidence
+                if (confidenceScores.isNotEmpty()) {
+                    val avgConfidence = confidenceScores.average()
+                    confidenceText.text = "Avg Symptom Confidence: ${(avgConfidence * 100).roundToInt()}%"
+                    confidenceText.visibility = View.VISIBLE
+                } else {
+                    confidenceText.visibility = View.GONE
+                }
+            } else {
+                detectionOverlay.visibility = View.VISIBLE
+                detectionResultText.text = "No symptoms detected"
+                confidenceText.visibility = View.GONE
+                diseaseResultText.text = "No disease identified"
+                diseaseConfidenceText.visibility = View.GONE
+            }
+
+            // Update location info if available
+            currentLocation?.let { location ->
+                updateLocationUI(location)
+                viewOnMapButton.visibility = View.VISIBLE
+            }
+        }
+    }
+    
+    private fun getSortedSymptomsWithConfidence(): String {
+        if (symptomsDetected.isEmpty() || confidenceScores.isEmpty()) {
+            return "Symptoms: ${symptomsDetected.joinToString(", ")}"
+        }
+        
+        // Pair symptoms with their confidence scores
+        val symptomConfidencePairs = symptomsDetected.zip(confidenceScores)
+            .sortedByDescending { it.second }
+        
+        val result = StringBuilder("Symptoms:\n")
+        symptomConfidencePairs.forEachIndexed { index, (symptom, confidence) ->
+            val confidencePercent = (confidence * 100).roundToInt()
+            if (index == 0) {
+                // Highest confidence - make it bold/highlighted
+                result.append("• $symptom ($confidencePercent%) ★\n")
+            } else {
+                result.append("• $symptom ($confidencePercent%)\n")
+            }
+        }
+        
+        return result.toString().trimEnd()
+    }
+    
+    private fun identifyDisease(symptoms: ArrayList<String>): List<Pair<String, Int>> {
+        val dbHelper = DiseaseSymptomsDbHelper(this)
+        val diseases = dbHelper.getDiseases()
+        
+        val diseaseMatches = mutableMapOf<String, MutableList<Float>>()
+        
+        // Check each symptom against disease database
+        for (symptom in symptoms) {
+            val cleanSymptom = symptom.replace("\r", "").trim()
+            
+            for (disease in diseases) {
+                val diseaseSymptoms = listOfNotNull(
+                    disease.no_Allocation,
+                    disease.bract_Mosaic,
+                    disease.bunchy_Top,
+                    disease.cmv,
+                    disease.gen_Mosaic,
+                    disease.scmv
+                ).filter { it.isNotEmpty() && it != "NULL" }
+                
+                if (diseaseSymptoms.contains(cleanSymptom)) {
+                    val diseaseName = when {
+                        disease.bract_Mosaic == cleanSymptom -> "Bract Mosaic"
+                        disease.bunchy_Top == cleanSymptom -> "Bunchy Top"
+                        disease.cmv == cleanSymptom -> "CMV"
+                        disease.gen_Mosaic == cleanSymptom -> "General Mosaic"
+                        disease.scmv == cleanSymptom -> "SCMV"
+                        else -> "No Allocation"
+                    }
+                    
+                    if (!diseaseMatches.containsKey(diseaseName)) {
+                        diseaseMatches[diseaseName] = mutableListOf()
+                    }
+                    
+                    // Add confidence score for this symptom match
+                    val symptomIndex = symptoms.indexOf(symptom)
+                    if (symptomIndex < confidenceScores.size) {
+                        diseaseMatches[diseaseName]?.add(confidenceScores[symptomIndex])
+                    }
+                }
+            }
+        }
+        
+        // Return all diseases sorted by average confidence
+        return diseaseMatches.map { (diseaseName, confidences) ->
+            val avgConfidence = if (confidences.isNotEmpty()) {
+                (confidences.average() * 100).roundToInt()
+            } else 50
+            Pair(diseaseName, avgConfidence)
+        }.sortedByDescending { it.second }
     }
 
     private fun simulateDetection() {
@@ -250,9 +413,16 @@ class CaptureImageNewActivity : AppCompatActivity() {
     }
 
     private fun importExtras() {
-        capturedNewImage = intent.getByteArrayExtra("captured_bitmap")!!
+        val bitmapExtra = intent.getByteArrayExtra("captured_bitmap")
+        if (bitmapExtra == null) {
+            Toast.makeText(this, "No image data received", Toast.LENGTH_SHORT).show()
+            finish()
+            return
+        }
+        
+        capturedNewImage = bitmapExtra
         location = intent.getDoubleArrayExtra("location") ?: doubleArrayOf(0.0, 0.0)
-        detectionInfo = intent.getStringExtra("detectionInfo") ?: "No detection info"
+        detectionInfo = intent.getStringExtra("detectionJson") ?: "No detection info"
 
         // If location was passed in the intent, use it
         if (location.isNotEmpty() && location[0] != 0.0 && location[1] != 0.0) {
@@ -263,30 +433,38 @@ class CaptureImageNewActivity : AppCompatActivity() {
             currentLocation?.longitude = longt ?: 0.0
         }
 
-        // Convert byte array to bitmap and handle rotation
+        // Convert byte array to bitmap (already rotated from CameraFragment)
         bitmap = BitmapFactory.decodeByteArray(capturedNewImage, 0, capturedNewImage.size)
-        // For in-memory bitmaps, we'll assume a default rotation if needed
-        bitmap = getRotatedBitmap(bitmap)
         capturedNewImageView.setImageBitmap(bitmap)
         rotation = intent.getIntExtra("rotation", 0)
-        bitmap = rotateBitmap(bitmap, rotation)
         // Process the detection info if available
         if (detectionInfo.isNotEmpty() && detectionInfo != "No detection info") {
             try {
                 val gson = Gson()
-                val type = object : TypeToken<ArrayList<String>>() {}.type
-                symptomsDetected = gson.fromJson(detectionInfo, type)
-
-                // Update UI with detection info
-                if (symptomsDetected.isNotEmpty()) {
-                    runOnUiThread {
-                        detectionOverlay.visibility = View.VISIBLE
-                        detectionResultText.text = "Detected: ${symptomsDetected.joinToString(", ")}"
-                        confidenceText.visibility = View.GONE // Hide if no confidence score
+                val type = object : TypeToken<List<DetectionResult>>() {}.type
+                detectionResults = gson.fromJson(detectionInfo, type)
+                
+                // Extract symptoms, bounding boxes, and confidence scores
+                symptomsDetected = arrayListOf()
+                val tempBoundingBoxes = mutableListOf<BoundingBox>()
+                val tempConfidenceScores = mutableListOf<Float>()
+                
+                detectionResults.forEach { detection ->
+                    detection.categories.forEach { category ->
+                        // Clean up the label (remove \r and trim)
+                        val cleanLabel = category.label.replace("\r", "").trim()
+                        symptomsDetected.add(cleanLabel)
+                        tempBoundingBoxes.add(detection.boundingBox)
+                        tempConfidenceScores.add(category.score)
                     }
                 }
+                
+                boundingBoxes = tempBoundingBoxes
+                confidenceScores = tempConfidenceScores
+                
             } catch (e: Exception) {
-                symptomsDetected = arrayListOf(detectionInfo)
+                Log.e("CaptureImageNew", "Error parsing detection JSON", e)
+                symptomsDetected = arrayListOf("Error parsing detections")
             }
         } else {
             symptomsDetected = arrayListOf("No symptoms detected")
@@ -323,11 +501,41 @@ class CaptureImageNewActivity : AppCompatActivity() {
             fileOutputStream.flush()
             fileOutputStream.close()
 
+            // Save to database
+            saveCaptureToDatabase(imageFile, filename)
+
             Toast.makeText(this, "Image saved successfully", Toast.LENGTH_SHORT).show()
             finish()
 
         } catch (e: IOException) {
             Toast.makeText(this, "Failed to save image: ${e.message}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    private fun saveCaptureToDatabase(imageFile: File, filename: String) {
+        try {
+            val dbHelper = DatabaseHelper(this)
+            val captureDao = CaptureDao(dbHelper.writableDatabase)
+            
+            Log.d("CaptureImageNew", "Saving bounding boxes: ${boundingBoxes.size} boxes")
+            Log.d("CaptureImageNew", "Bounding boxes JSON: ${if (boundingBoxes.isNotEmpty()) Gson().toJson(boundingBoxes) else "null"}")
+            
+            val captureRecord = CaptureRecord(
+                imagePath = imageFile.absolutePath,
+                imageName = filename,
+                detectionResults = if (detectionResults.isNotEmpty()) Gson().toJson(detectionResults) else null,
+                symptomsDetected = if (symptomsDetected.isNotEmpty()) symptomsDetected.joinToString(", ") else null,
+                confidenceScores = if (confidenceScores.isNotEmpty()) confidenceScores.joinToString(", ") else null,
+                boundingBoxes = if (boundingBoxes.isNotEmpty()) Gson().toJson(boundingBoxes) else null,
+                latitude = currentLocation?.latitude,
+                longitude = currentLocation?.longitude,
+                timestamp = System.currentTimeMillis() / 1000
+            )
+            
+            captureDao.insertCapture(captureRecord)
+            Log.d("CaptureImageNew", "Capture saved successfully")
+        } catch (e: Exception) {
+            Log.e("CaptureImageNew", "Error saving to database", e)
         }
     }
 
@@ -347,4 +555,6 @@ class CaptureImageNewActivity : AppCompatActivity() {
     private fun categorize(symptomsDetected: ArrayList<String>) {
         // Your existing categorization logic
     }
+    
+
 }

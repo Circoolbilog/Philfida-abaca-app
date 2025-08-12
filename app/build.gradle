@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.google.gms.google-services'
+// apply plugin: 'com.google.gms.google-services'  // Temporarily disabled for release
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -21,7 +21,7 @@ android {
         targetCompatibility JavaVersion.VERSION_17
     }
     defaultConfig {
-        applicationId "ph.gov.philfida.da.abaddapp"
+        applicationId "ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout"
         minSdkVersion 23
         targetSdkVersion 35
         versionCode 31

@@ -32,6 +32,7 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.bumptech.glide.Glide
@@ -185,10 +186,27 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-    //Open Diagnose Activity
+    //Open Diagnose Activity Choice Dialog
     fun openDiagnoseActivity(view: View?) {
-        val diagnose = Intent(this, NewDetectorActivity::class.java)
-        startActivity(diagnose)
+        showDiagnoseChoiceDialog()
+    }
+
+    private fun showDiagnoseChoiceDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_diagnose_choice, null)
+        val builder = AlertDialog.Builder(this)
+        builder.setView(dialogView)
+
+        val dialog = builder.create()
+
+        dialogView.findViewById<View>(R.id.btnCamera).setOnClickListener {
+            val diagnose = Intent(this, NewDetectorActivity::class.java)
+            startActivity(diagnose)
+            dialog.dismiss()
+        }
+
+        // btnUpload is disabled by default in XML
+        
+        dialog.show()
     }
 
     //Open Assesment Activity
@@ -360,4 +378,3 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
-

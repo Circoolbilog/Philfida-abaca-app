@@ -86,9 +86,6 @@ class ObjectDetectorHelper(
             // Select model file
             val modelName = when (currentModel) {
                 MODEL_MOBILENETV1 -> "last_model.tflite"
-                MODEL_EFFICIENTDETV0 -> "efficientdet-lite0.tflite"
-                MODEL_EFFICIENTDETV1 -> "efficientdet-lite1.tflite"
-                MODEL_EFFICIENTDETV2 -> "efficientdet-lite2.tflite"
                 else -> {
                     Log.w(TAG, "Unknown model type: $currentModel, using default")
                     "mobilenetv1.tflite"

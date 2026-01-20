@@ -63,7 +63,7 @@ data class Category(
 
 class CaptureImageNewActivity : AppCompatActivity() {
 
-    lateinit var capturedNewImage: ByteArray
+    private var capturedNewImage: ByteArray? = null
     lateinit var location: DoubleArray
     lateinit var timestamp: String
     lateinit var capturedNewImageView: ImageView
@@ -413,14 +413,33 @@ class CaptureImageNewActivity : AppCompatActivity() {
     }
 
     private fun importExtras() {
-        val bitmapExtra = intent.getByteArrayExtra("captured_bitmap")
-        if (bitmapExtra == null) {
-            Toast.makeText(this, "No image data received", Toast.LENGTH_SHORT).show()
-            finish()
-            return
+        val imagePath = intent.getStringExtra("captured_image_path")
+        if (imagePath != null) {
+            val file = File(imagePath)
+            if (file.exists()) {
+                bitmap = BitmapFactory.decodeFile(imagePath)
+                capturedNewImageView.setImageBitmap(bitmap)
+                // Optionally delete the temp file after loading
+                // file.delete()
+            } else {
+                Toast.makeText(this, "Image file not found", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
+        } else {
+            // Fallback for older code if still using byte array (though it causes the crash)
+            val bitmapExtra = intent.getByteArrayExtra("captured_bitmap")
+            if (bitmapExtra != null) {
+                capturedNewImage = bitmapExtra
+                bitmap = BitmapFactory.decodeByteArray(bitmapExtra, 0, bitmapExtra.size)
+                capturedNewImageView.setImageBitmap(bitmap)
+            } else {
+                Toast.makeText(this, "No image data received", Toast.LENGTH_SHORT).show()
+                finish()
+                return
+            }
         }
         
-        capturedNewImage = bitmapExtra
         location = intent.getDoubleArrayExtra("location") ?: doubleArrayOf(0.0, 0.0)
         detectionInfo = intent.getStringExtra("detectionJson") ?: "No detection info"
 
@@ -433,9 +452,6 @@ class CaptureImageNewActivity : AppCompatActivity() {
             currentLocation?.longitude = longt ?: 0.0
         }
 
-        // Convert byte array to bitmap (already rotated from CameraFragment)
-        bitmap = BitmapFactory.decodeByteArray(capturedNewImage, 0, capturedNewImage.size)
-        capturedNewImageView.setImageBitmap(bitmap)
         rotation = intent.getIntExtra("rotation", 0)
         // Process the detection info if available
         if (detectionInfo.isNotEmpty() && detectionInfo != "No detection info") {
@@ -495,7 +511,6 @@ class CaptureImageNewActivity : AppCompatActivity() {
             val filename = "IMG_${timestamp}.jpg"
             val imageFile = File(customDir, filename)
 
-            val bitmap = BitmapFactory.decodeByteArray(capturedNewImage, 0, capturedNewImage.size)
             val fileOutputStream = FileOutputStream(imageFile)
             bitmap.compress(Bitmap.CompressFormat.JPEG, 90, fileOutputStream)
             fileOutputStream.flush()

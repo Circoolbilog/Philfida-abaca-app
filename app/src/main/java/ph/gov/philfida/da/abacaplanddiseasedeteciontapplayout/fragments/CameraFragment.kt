@@ -28,7 +28,8 @@ import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.ObjectDetectorHelper
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.CaptureImageNewActivity
-import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import com.google.gson.Gson
 import java.util.concurrent.TimeUnit
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.R
@@ -37,7 +38,6 @@ import android.os.Handler
 import android.os.Looper
 import android.widget.LinearLayout
 import android.widget.TextView
-import org.checkerframework.checker.index.qual.GTENegativeOne
 
 class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
 
@@ -170,10 +170,10 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                     // Apply rotation to bitmap based on device orientation
                     val rotatedBitmap = rotateBitmap(currentBitmap, rotation)
                     
-                    // Convert rotated bitmap to byte array
-                    val bitmapByteArray = ByteArrayOutputStream().use { stream ->
-                        rotatedBitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                        stream.toByteArray()
+                    // Save rotated bitmap to a temporary file to avoid TransactionTooLargeException (DeadObjectException)
+                    val tempFile = File(requireContext().cacheDir, "temp_capture_${System.currentTimeMillis()}.jpg")
+                    FileOutputStream(tempFile).use { out ->
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
                     }
 
                     // Convert detections to JSON
@@ -181,15 +181,14 @@ class CameraFragment : Fragment(), ObjectDetectorHelper.DetectorListener {
                     val jsonDetection = gson.toJson(detectedObjects)
 
                     // Set intent extras
-                    intent.putExtra("captured_bitmap", bitmapByteArray)
+                    intent.putExtra("captured_image_path", tempFile.absolutePath)
                     intent.putExtra("detectionJson", jsonDetection)
                     intent.putExtra("rotation", rotation)
+                    
                     if (location != null) {
-                        intent.putExtra("location_latitude", location.latitude)
-                        intent.putExtra("location_longitude", location.longitude)
+                        intent.putExtra("location", doubleArrayOf(location.latitude, location.longitude))
                     } else {
-                        intent.putExtra("location_latitude", 0.0)
-                        intent.putExtra("location_longitude", 0.0)
+                        intent.putExtra("location", doubleArrayOf(0.0, 0.0))
                     }
 
                     loadingScreen.visibility = View.GONE

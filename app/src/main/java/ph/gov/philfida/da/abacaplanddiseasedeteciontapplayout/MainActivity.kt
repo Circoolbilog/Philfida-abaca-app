@@ -16,10 +16,13 @@
 package ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout
 
 import android.Manifest
+import android.app.Activity
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.Color
+import android.graphics.ImageDecoder
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -30,14 +33,21 @@ import android.provider.MediaStore
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.exifinterface.media.ExifInterface
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.google.android.gms.location.LocationServices
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DataSnapshot
@@ -45,12 +55,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
+import com.google.gson.Gson
+import org.tensorflow.lite.task.vision.detector.Detection
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.DiseaseInfoDBHelper
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.containers.SettingsContainer
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.AboutApp
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.MapActivity
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity
+import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -59,7 +72,7 @@ import java.io.OutputStream
 import java.util.Objects
 
 // Import stuff
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ObjectDetectorHelper.DetectorListener {
     var toggle: ActionBarDrawerToggle? = null
     private var user: FirebaseUser? = null
     private val reference2: DatabaseReference? = null
@@ -89,9 +102,24 @@ class MainActivity : AppCompatActivity() {
     var ALL_PERMISSIONS: Int = 101
     var saving: Boolean = false
 
+    private lateinit var objectDetectorHelper: ObjectDetectorHelper
+    private var uploadedBitmap: Bitmap? = null
+    private lateinit var loadingScreen: LinearLayout
+    private lateinit var loadingText: TextView
+    private var imageLocation: DoubleArray? = null
+
+    private val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        uri?.let {
+            processUploadedImage(it)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        loadingScreen = findViewById(R.id.loadingScreen)
+        loadingText = findViewById(R.id.loadingText)
 
         if ((this.getApplication() as SettingsContainer).getShowWelcome() == null) {
             (this.getApplication() as SettingsContainer).setShowWelcome(true)
@@ -111,6 +139,11 @@ class MainActivity : AppCompatActivity() {
         }
         // Initialize the database
         val dbHelper = DiseaseInfoDBHelper(this)
+
+        objectDetectorHelper = ObjectDetectorHelper(
+            context = this,
+            objectDetectorListener = this
+        )
     }
 
     private fun askPermissions() {
@@ -186,27 +219,179 @@ class MainActivity : AppCompatActivity() {
             })
         }
 
-    //Open Diagnose Activity Choice Dialog
+    //Open Diagnose Activity
     fun openDiagnoseActivity(view: View?) {
-        showDiagnoseChoiceDialog()
-    }
+        val options = arrayOf("Open Camera", "Upload Picture")
+        val adapter = object : ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, options) {
+            override fun isEnabled(position: Int): Boolean {
+                return true
+            }
 
-    private fun showDiagnoseChoiceDialog() {
-        val dialogView = layoutInflater.inflate(R.layout.dialog_diagnose_choice, null)
-        val builder = AlertDialog.Builder(this)
-        builder.setView(dialogView)
-
-        val dialog = builder.create()
-
-        dialogView.findViewById<View>(R.id.btnCamera).setOnClickListener {
-            val diagnose = Intent(this, NewDetectorActivity::class.java)
-            startActivity(diagnose)
-            dialog.dismiss()
+            override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+                val view = super.getView(position, convertView, parent)
+                val textView = view.findViewById<TextView>(android.R.id.text1)
+                textView.setTextColor(Color.BLACK)
+                return view
+            }
         }
 
-        // btnUpload is disabled by default in XML
+        AlertDialog.Builder(this)
+            .setTitle("Select Option")
+            .setAdapter(adapter) { _, which ->
+                if (which == 0) {
+                    val diagnose = Intent(this, NewDetectorActivity::class.java)
+                    startActivity(diagnose)
+                } else if (which == 1) {
+                    getContent.launch("image/*")
+                }
+            }
+            .show()
+    }
+
+    private fun processUploadedImage(uri: Uri) {
+        showLoading("Processing Uploaded Image...")
         
-        dialog.show()
+        Thread {
+            try {
+                // Try to extract location metadata first
+                imageLocation = try {
+                    contentResolver.openInputStream(uri)?.use { inputStream ->
+                        val exifInterface = ExifInterface(inputStream)
+                        val latLong = FloatArray(2)
+                        if (exifInterface.getLatLong(latLong)) {
+                            doubleArrayOf(latLong[0].toDouble(), latLong[1].toDouble())
+                        } else {
+                            null
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e(TAG, "Error extracting EXIF metadata", e)
+                    null
+                }
+
+                uploadedBitmap = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                    val source = ImageDecoder.createSource(contentResolver, uri)
+                    ImageDecoder.decodeBitmap(source) { decoder, _, _ ->
+                        decoder.isMutableRequired = true
+                    }
+                } else {
+                    @Suppress("DEPRECATION")
+                    MediaStore.Images.Media.getBitmap(contentResolver, uri).copy(Bitmap.Config.ARGB_8888, true)
+                }
+
+                uploadedBitmap?.let {
+                    objectDetectorHelper.detect(it, 0)
+                } ?: run {
+                    runOnUiThread {
+                        hideLoading()
+                        Toast.makeText(this, "Failed to load image", Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error processing uploaded image", e)
+                runOnUiThread {
+                    hideLoading()
+                    Toast.makeText(this, "Error processing image", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }.start()
+    }
+
+    private fun showLoading(text: String) {
+        runOnUiThread {
+            loadingText.text = text
+            loadingScreen.visibility = View.VISIBLE
+        }
+    }
+
+    private fun hideLoading() {
+        runOnUiThread {
+            loadingScreen.visibility = View.GONE
+        }
+    }
+
+    override fun onResults(
+        results: MutableList<Detection>?,
+        inferenceTime: Long,
+        imageHeight: Int,
+        imageWidth: Int
+    ) {
+        val bitmap = uploadedBitmap ?: run {
+            hideLoading()
+            return
+        }
+        
+        // If we found a location in metadata, use it
+        if (imageLocation != null) {
+            val location = android.location.Location("exif")
+            location.latitude = imageLocation!![0]
+            location.longitude = imageLocation!![1]
+            startCaptureActivity(bitmap, results, location)
+            return
+        }
+
+        // Otherwise, fall back to current location
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // If location permission not granted, proceed with default location
+            startCaptureActivity(bitmap, results, null)
+            return
+        }
+        
+        fusedLocationClient.lastLocation.addOnSuccessListener { location ->
+            startCaptureActivity(bitmap, results, location)
+        }.addOnFailureListener {
+            startCaptureActivity(bitmap, results, null)
+        }
+    }
+
+    private fun startCaptureActivity(bitmap: Bitmap, results: MutableList<Detection>?, location: android.location.Location?) {
+        try {
+            // Save bitmap to a temporary file to avoid TransactionTooLargeException (DeadObjectException)
+            val tempFile = File(cacheDir, "temp_upload_${System.currentTimeMillis()}.jpg")
+            FileOutputStream(tempFile).use { out ->
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out)
+            }
+
+            val gson = Gson()
+            val jsonDetection = gson.toJson(results)
+
+            val intent = Intent(this, CaptureImageNewActivity::class.java)
+            intent.putExtra("captured_image_path", tempFile.absolutePath)
+            intent.putExtra("detectionJson", jsonDetection)
+            intent.putExtra("rotation", 0)
+            
+            if (location != null) {
+                intent.putExtra("location", doubleArrayOf(location.latitude, location.longitude))
+            } else {
+                intent.putExtra("location", doubleArrayOf(0.0, 0.0))
+            }
+
+            runOnUiThread {
+                hideLoading()
+                startActivity(intent)
+            }
+        } catch (e: Exception) {
+            Log.e(TAG, "Error starting capture activity", e)
+            runOnUiThread {
+                hideLoading()
+                Toast.makeText(this, "Error preparing detection results", Toast.LENGTH_SHORT).show()
+            }
+        }
+    }
+
+    override fun onError(error: String) {
+        runOnUiThread {
+            hideLoading()
+            Toast.makeText(this, error, Toast.LENGTH_SHORT).show()
+        }
     }
 
     //Open Assesment Activity

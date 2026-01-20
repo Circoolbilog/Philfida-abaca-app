@@ -20,6 +20,35 @@ class CaptureDao(private val db: SQLiteDatabase) {
         return db.insert(DatabaseHelper.TABLE_CAPTURES, null, values)
     }
 
+    fun getAllCaptures(): List<CaptureRecord> {
+        val captures = mutableListOf<CaptureRecord>()
+        val cursor = db.query(
+            DatabaseHelper.TABLE_CAPTURES,
+            null, null, null, null, null,
+            "${DatabaseHelper.COLUMN_TIMESTAMP} DESC"
+        )
+
+        with(cursor) {
+            while (moveToNext()) {
+                val record = CaptureRecord(
+                    id = getLong(getColumnIndexOrThrow(DatabaseHelper.COLUMN_ID)),
+                    imagePath = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_IMAGE_PATH)),
+                    imageName = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_IMAGE_NAME)),
+                    detectionResults = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_DETECTION_RESULTS)),
+                    symptomsDetected = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_SYMPTOMS_DETECTED)),
+                    confidenceScores = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_CONFIDENCE_SCORES)),
+                    boundingBoxes = getString(getColumnIndexOrThrow(DatabaseHelper.COLUMN_BOUNDING_BOXES)),
+                    latitude = if (isNull(getColumnIndexOrThrow(DatabaseHelper.COLUMN_LATITUDE))) null else getDouble(getColumnIndexOrThrow(DatabaseHelper.COLUMN_LATITUDE)),
+                    longitude = if (isNull(getColumnIndexOrThrow(DatabaseHelper.COLUMN_LONGITUDE))) null else getDouble(getColumnIndexOrThrow(DatabaseHelper.COLUMN_LONGITUDE)),
+                    timestamp = getLong(getColumnIndexOrThrow(DatabaseHelper.COLUMN_TIMESTAMP))
+                )
+                captures.add(record)
+            }
+            close()
+        }
+        return captures
+    }
+
     fun deleteCaptureByImagePath(imagePath: String): Int {
         return db.delete(
             DatabaseHelper.TABLE_CAPTURES,
@@ -27,6 +56,4 @@ class CaptureDao(private val db: SQLiteDatabase) {
             arrayOf(imagePath)
         )
     }
-    
-    // You might want to add a method to query all captures if needed for the gallery
 }

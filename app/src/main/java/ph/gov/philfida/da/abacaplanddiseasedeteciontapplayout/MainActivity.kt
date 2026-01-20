@@ -50,7 +50,6 @@ import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.Ab
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.DiseaseIndex
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.MapActivity
 import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.SettingsActivity
-import ph.gov.philfida.da.abacaplanddiseasedeteciontapplayout.otherActivities.WelcomeScreen
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -131,7 +130,6 @@ class MainActivity : AppCompatActivity() {
 
 
     private fun welcomeScreen() {
-        val intent = Intent(this, WelcomeScreen::class.java)
         startActivity(intent)
     }
 

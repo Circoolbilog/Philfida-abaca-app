@@ -41,9 +41,7 @@ class GalleryAdapter(
 
         // Set click listener
         holder.itemView.setOnClickListener {
-            val intent = Intent(holder.itemView.context, ImageDetailActivity::class.java)
-            intent.putExtra("IMAGE_PATH", imageFile.absolutePath)
-            holder.itemView.context.startActivity(intent)
+            onImageClick(imageFile)
         }
         
         // Set long click listener for delete

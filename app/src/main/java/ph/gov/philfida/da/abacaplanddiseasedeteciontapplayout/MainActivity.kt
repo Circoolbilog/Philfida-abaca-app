@@ -121,21 +121,19 @@ class MainActivity : AppCompatActivity(), ObjectDetectorHelper.DetectorListener 
         loadingScreen = findViewById(R.id.loadingScreen)
         loadingText = findViewById(R.id.loadingText)
 
-        if ((this.getApplication() as SettingsContainer).getShowWelcome() == null) {
-            (this.getApplication() as SettingsContainer).setShowWelcome(true)
-        }
-        if ((this.getApplication() as SettingsContainer).getShowWelcome()) {
-            welcomeScreen()
-        }
         askPermissions()
         try {
-            if (!(this.getApplication() as SettingsContainer).getGuest()) {
+            val settings = this.application as SettingsContainer
+            if (settings.guest == null) {
+                settings.guest = true
+            }
+            if (!settings.guest) {
                 this.userDBDetails
                 loadUserData()
                 saveUserData()
             }
         } catch (e: Exception) {
-            Toast.makeText(this, "Error: " + e.message, Toast.LENGTH_SHORT).show()
+            Log.e(TAG, "Error in onCreate", e)
         }
         // Initialize the database
         val dbHelper = DiseaseInfoDBHelper(this)
@@ -160,11 +158,6 @@ class MainActivity : AppCompatActivity(), ObjectDetectorHelper.DetectorListener 
 
     override fun onResume() {
         super.onResume()
-    }
-
-
-    private fun welcomeScreen() {
-        startActivity(intent)
     }
 
 

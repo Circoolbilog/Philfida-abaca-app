@@ -31,7 +31,7 @@ public class SettingsContainer extends Application {
 
     public Boolean getGuest() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        downloadOnce = sharedPreferences.getBoolean("GUEST", true);
+        guest = sharedPreferences.getBoolean("GUEST", true);
         return guest;
     }
 
@@ -80,12 +80,15 @@ public class SettingsContainer extends Application {
 
     public int getDiagnoseMode() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
-        diagnoseMode = sharedPreferences.getInt(DIAGNOSE_MODE, 0);
+        diagnoseMode = sharedPreferences.getInt(DIAG_MODE_KEY, 0); // Note: renamed to avoid confusion if needed, but staying consistent
         return diagnoseMode;
     }
+    
+    private static final String DIAG_MODE_KEY = "diagnoseMode";
+
     public void setDiagnoseMode(int diagnoseMode) {
         this.diagnoseMode = diagnoseMode;
-        saveIntToSharedPrefs(DIAGNOSE_MODE,diagnoseMode);
+        saveIntToSharedPrefs(DIAG_MODE_KEY,diagnoseMode);
     }
 
     //Method used to save a string to shared prefs.

@@ -29,6 +29,24 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+
+        <activity
+            android:name=".otherActivities.SplashScreenActivity"
+            android:exported="true"
+            android:theme="@style/NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+            tools:ignore="LockedOrientationActivity">
+        </activity>
+
         <activity
             android:name=".GalleryActivity"
             android:exported="false" />
@@ -69,6 +87,10 @@
             android:theme="@style/NoActionBar" />
         <activity android:name=".otherActivities.AboutApp" />
         <activity
+            android:name=".otherActivities.DatabaseViewerActivity"
+            android:label="Database Viewer"
+            android:exported="false" />
+        <activity
             android:name=".otherActivities.MapActivity"
             android:theme="@style/NoActionBar" />
         <activity
@@ -87,17 +109,7 @@
         <activity
             android:name=".otherActivities.AccountDetails"
             android:theme="@style/NoActionBar" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:windowSoftInputMode="adjustPan"
-            tools:ignore="LockedOrientationActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
         <activity
             android:name=".ImageViewerActivity"
             android:label="Image Viewer"

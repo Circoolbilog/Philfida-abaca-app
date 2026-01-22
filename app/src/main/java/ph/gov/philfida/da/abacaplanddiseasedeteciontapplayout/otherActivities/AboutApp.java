@@ -23,13 +23,19 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class AboutApp extends AppCompatActivity {
     private static final String TAG = "AboutApp";
-    LinearLayout appVersion, tutorial, developer,reportBug;
+    LinearLayout appVersion, tutorial, developer, reportBug;
     TextView appVersionVal;
+    
+    private int secretClickCount = 0;
+    private long lastClickTime = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,14 +50,35 @@ public class AboutApp extends AppCompatActivity {
         reportBug = findViewById(R.id.reportBug);
         appVersionVal = findViewById(R.id.AppVersionVal);
         appVersionVal.setText(getAppVersion());
+
+        appVersion.setOnClickListener(v -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastClickTime < 500) {
+                secretClickCount++;
+            } else {
+                secretClickCount = 1;
+            }
+            lastClickTime = currentTime;
+
+            if (secretClickCount == 7) {
+                secretClickCount = 0;
+                Toast.makeText(this, "Opening Database Viewer...", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(this, DatabaseViewerActivity.class);
+                startActivity(intent);
+            } else if (secretClickCount > 3) {
+                Toast.makeText(this, "Taps remaining: " + (7 - secretClickCount), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         developer.setOnClickListener(v -> {
             Intent dev = new Intent(this, AboutDev.class);
             startActivity(dev);
-        }) ;
+        });
+
         reportBug.setOnClickListener(view -> {
             Intent email = new Intent(Intent.ACTION_SEND);
-            email.putExtra(Intent.EXTRA_EMAIL, new String[]{ "circoolardev@gmail.com"});
-            email.putExtra(Intent.EXTRA_SUBJECT, "Bug report: " + Build.MANUFACTURER + Build.MODEL);
+            email.putExtra(Intent.EXTRA_EMAIL, new String[]{"circoolardev@gmail.com"});
+            email.putExtra(Intent.EXTRA_SUBJECT, "Bug report: " + Build.MANUFACTURER + " " + Build.MODEL);
             email.putExtra(Intent.EXTRA_TEXT, "App Version: " + getAppVersion() + "\nSDK Version: " + Build.VERSION.SDK_INT + "\n" +
                     "Describe the bug or problem with the app: ");
 
@@ -60,7 +87,8 @@ public class AboutApp extends AppCompatActivity {
 
             startActivity(Intent.createChooser(email, "Choose an Email client :"));
         });
-        tutorial.setOnClickListener(view ->{
+
+        tutorial.setOnClickListener(view -> {
 
         });
     }
@@ -71,7 +99,7 @@ public class AboutApp extends AppCompatActivity {
             PackageInfo pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             version = pInfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            version = e.getMessage();
+            version = "Unknown";
         }
         return version;
     }

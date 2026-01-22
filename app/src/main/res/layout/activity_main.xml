@@ -12,6 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <!-- Watermark Logo (Corner) -->
+        <ImageView
+            android:id="@+id/cornerLogo"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:alpha="0.25"
+            android:src="@drawable/philfida_logo"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:layout_margin="8dp" />
+
         <!-- Header Section -->
         <LinearLayout
             android:id="@+id/headerSection"
@@ -362,6 +373,19 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/abaca_welcome_1" />
+
+        <TextView
+            android:id="@+id/mainCopyright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="© 2024 Philippine Fiber Industry Development Authority"
+            android:textColor="@android:color/darker_gray"
+            android:textSize="10sp"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
         <!-- Loading Screen Overlay -->
         <LinearLayout

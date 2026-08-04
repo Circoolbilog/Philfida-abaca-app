@@ -11,10 +11,10 @@
     android:showDividers="middle">
 
     <TextView
-        android:layout_margin="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="App Developed through the initiative by PhilFIDA" />
+        android:layout_margin="5dp"
+        android:text="App developed through the project funded by DA-Biotech Program Office  led by Dr. Leny C. Galvez of DA-PhilFIDA" />
 
     <TextView
         android:layout_margin="5dp"

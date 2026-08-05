@@ -118,8 +118,7 @@ dependencies {
     implementation 'com.google.android.gms:play-services-location:21.3.0'
 
     implementation 'org.osmdroid:osmdroid-android:6.1.20'
-    //noinspection GradleDependency
-    implementation 'androidx.core:core:1.6.0'
+    implementation 'androidx.core:core-ktx:1.15.0'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.10.2'
 // jsoup HTML parser library @ https://jsoup.org/
     implementation 'com.google.android.play:app-update:2.1.0'

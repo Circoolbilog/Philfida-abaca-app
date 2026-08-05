@@ -12,3 +12,8 @@
 /captures
 .externalNativeBuild
 .cxx
+*.jks
+/private_key.pem
+/upload_certificate.pem
+/certificate.pem
+/keystore.p12
